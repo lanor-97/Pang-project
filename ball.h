@@ -1,29 +1,29 @@
 #ifndef BALL_H
 #define BALL_H
-
 #include <iostream>
 #include <allegro5/allegro.h>
 using namespace std;
 
-class Ball  {
+class Ball
+{
 private:
-  int 	dim,
-  		posX,
-  		posY;
+  int dim;
+  int posX;
+  int posY;
   ALLEGRO_BITMAP *ball;
 public:
-  Ball(): dim(0), posX(0), posY(0), ball(NULL)  {}
-  Ball(int d, int x, int y): dim(d), posX(x), posY(y)  { 
-  	ball = al_create_bitmap(d,d);
-  }
-  ALLEGRO_BITMAP* getBall()  { return ball; }
-  void setBall(ALLEGRO_BITMAP *bitmap)  { ball = bitmap; }
-  int getX() const { return posX; }
-  int getY() const { return posY; }
-  int getDim() const { return dim; }
-  void setX(int x)  { posX = x; }
-  void setY(int y)  { posY = y; }
-  void setDim(int d)  { dim = d; }
-  void Draw()  { al_draw_bitmap(ball,posX,posY,0); }
+  Ball(){dim=0;posX=0;posY=0; ball=NULL;}
+  Ball(int dim, int x, int y){this->dim=dim;this->posX=x; this->posY=y; ball=al_create_bitmap(dim,dim);}
+  ~Ball(){al_destroy_bitmap(ball);}
+  ALLEGRO_BITMAP* getBall(){return ball;}
+  void setBall(ALLEGRO_BITMAP *bitmap){this->ball=bitmap;}
+  int getX(){return posX;}
+  int getY(){return posY;}
+  int getDim(){return dim;}
+  void setX(int x){this->posX=x;}
+  void setY(int y){this->posY=y;}
+  void setDim(int dim){this->dim=dim;}
+  void Draw(){ al_draw_bitmap(ball,posX,posY,0);}
+
 };
 #endif
