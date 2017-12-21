@@ -60,6 +60,7 @@ int main(int argc, char **argv)
      cerr<<"failed to initialize player!\n";
      al_destroy_timer(timer);
      al_destroy_display(display);
+
      return -1;
    }
    al_set_target_bitmap(tizio.getPlayer());
@@ -71,8 +72,6 @@ int main(int argc, char **argv)
      cerr<<"failed to initialize hook!\n";
      al_destroy_timer(timer);
      al_destroy_display(display);
-     tizio.Destroy();
-     return -1;
    }
    al_set_target_bitmap(rampino.getHook());
    al_clear_to_color(al_map_rgb(255, 0, 255));
@@ -84,8 +83,6 @@ int main(int argc, char **argv)
       fprintf(stderr, "failed to create event_queue!\n");
       al_destroy_display(display);
       al_destroy_timer(timer);
-      tizio.Destroy();
-      rampino.Destroy();
       return -1;
    }
 
@@ -172,7 +169,7 @@ int main(int argc, char **argv)
          if(shoot && rampino.getY()>0)
          {
              rampino.Draw();
-             rampino.setY(rampino.getY()-rampino.getDim()/100);
+             rampino.setY(rampino.getY()-rampino.getDim()/48);
         }
            else
            {
@@ -188,8 +185,6 @@ int main(int argc, char **argv)
          al_flip_display();
       }
 }
-  rampino.Destroy();
-   tizio.Destroy();
    al_destroy_timer(timer);
    al_destroy_display(display);
    al_destroy_event_queue(event_queue);

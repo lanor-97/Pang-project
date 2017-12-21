@@ -14,6 +14,7 @@ private:
 public:
   Player(){dim=0;posX=0;posY=0; player=NULL;}
   Player(int dim, int x, int y){this->dim=dim;this->posX=x; this->posY=y; player=al_create_bitmap(dim-10,dim);}
+  ~Player(){al_destroy_bitmap(player);}
   ALLEGRO_BITMAP* getPlayer(){return player;}
   void setPlayer(ALLEGRO_BITMAP *bitmap){this->player=bitmap;}
   int getX(){return posX;}
@@ -23,7 +24,6 @@ public:
   void setY(int y){this->posY=y;}
   void setDim(int dim){this->dim=dim;}
   void Draw(){ al_draw_bitmap(player,posX,posY,0);}
-  void Destroy(){al_destroy_bitmap(player);}
 
 };
 #endif
