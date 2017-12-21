@@ -12,11 +12,8 @@ private:
   int posY;
   ALLEGRO_BITMAP *ball;
 public:
-<<<<<<< HEAD
   Ball(){dim=0;posX=0;posY=0; ball=NULL;} //mi piace la figa
-=======
   Ball(){dim=0;posX=0;posY=0; ball=NULL;}
->>>>>>> 5cb49817b7b488b05067f25525d02030fa80c263
   Ball(int dim, int x, int y){this->dim=dim;this->posX=x; this->posY=y; ball=al_create_bitmap(dim,dim);}
   ~Ball(){al_destroy_bitmap(ball);}
   ALLEGRO_BITMAP* getBall(){return ball;}
