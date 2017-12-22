@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <allegro5/allegro_primitives.h>
 #include "Player.h"
 #include "Ball.h"
@@ -15,11 +14,16 @@ int main(int argc, char **argv)  {
    	bool redraw = true;
    	bool keyRight=false, keyLeft=false, keySpace=false;
    	float bouncer_dx=5;
-   	float bouncer_dy=-5;
+   	float bouncer_dy=5;
 
    	if(!al_init()) {
      	 cerr << "failed to initialize allegro!\n";
       	return -1;
+   	}
+
+   	if(!al_init_image_addon()) {
+      cerr<<"failed to initialize allegro_image\n";
+      return -1;
    	}
 
    	timer = al_create_timer(1.0 / FPS);
@@ -35,18 +39,16 @@ int main(int argc, char **argv)  {
       	return -1;
    	}
 
-
-   	Ball palla(70,SCREEN_W/2-35,SCREEN_H/2-25);
+	Ball palla;
+   	palla.setBall(al_load_bitmap("images/palla.png"));
    	if(!palla.getBall())  {
      	cerr<<"failed to initialize palla!\n";
      	al_destroy_timer(timer);
      	al_destroy_display(display);
      	return -1;
    	}
-
-   	al_set_target_bitmap(palla.getBall());
-   	al_clear_to_color(al_map_rgb(255, 0, 255));
-
+   	
+   	palla.setDim(70);
    	Player tizio(50,SCREEN_W/2-25,SCREEN_H-50);
 	if(!tizio.getPlayer())  {
      	cerr<<"failed to initialize player!\n";
@@ -65,12 +67,11 @@ int main(int argc, char **argv)  {
    	}
    	al_set_target_bitmap(rampino.getHook());
    	al_clear_to_color(al_map_rgb(255, 0, 255));
-
    	al_set_target_bitmap(al_get_backbuffer(display));
 
    	event_queue = al_create_event_queue();
    	if(!event_queue) {
-      	fprintf(stderr, "failed to create event_queue!\n");
+      	cerr<<"failed to create event_queue!\n";
       	al_destroy_display(display);
       	al_destroy_timer(timer);
       	return -1;
@@ -148,8 +149,8 @@ int main(int argc, char **argv)  {
            	}
          	tizio.Draw();
          	palla.Draw();
-         	redraw = false;
          	al_flip_display();
+         	redraw = false;
       	}
 	}
 
