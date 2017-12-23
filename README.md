@@ -7,4 +7,5 @@ Allora, ho fatto un paio di cose, niente di speciale:
 4) cambiato nome da bouncing.cpp a main.cpp
 5) tolta quella brutta libreria iosdt e sostituito ogni printf con cerr
 6) ordinate parentesi e tabulazioni varie
+7) messa una palla.png come bitmap della palla, così posso iniziare con la fisica
 
