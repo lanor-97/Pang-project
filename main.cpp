@@ -13,8 +13,6 @@ int main(int argc, char **argv)  {
    	ALLEGRO_TIMER *timer = NULL;
    	bool redraw = true;
    	bool keyRight=false, keyLeft=false, keySpace=false;
-   	float bouncer_dx=5;
-   	float bouncer_dy=5;
 
    	if(!al_init()) {
      		cerr << "failed to initialize allegro!\n";
@@ -39,7 +37,7 @@ int main(int argc, char **argv)  {
       		return -1;
    	}
 
-	Ball palla;
+	Ball palla(170);
    	palla.setBall(al_load_bitmap("palla.png"));
    	if(!palla.getBall())  {
 		cerr<<"failed to initialize palla!\n";
@@ -49,6 +47,8 @@ int main(int argc, char **argv)  {
    	}
    	
    	palla.setDim(70);
+   	palla.setX(SCREEN_W/2); 
+   	palla.setY(palla.calculateY(SCREEN_H));
    	Player tizio(50,SCREEN_W/2-25,SCREEN_H-50);
 	if(!tizio.getPlayer())  {
 		cerr<<"failed to initialize player!\n";
@@ -56,6 +56,7 @@ int main(int argc, char **argv)  {
 		al_destroy_display(display);
 		return -1;
    	}
+
    	al_set_target_bitmap(tizio.getPlayer());
    	al_clear_to_color(al_map_rgb(255, 0, 255));
 
@@ -84,10 +85,10 @@ int main(int argc, char **argv)  {
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	al_clear_to_color(al_map_rgb(0,0,0));
-	al_flip_display();
-	al_start_timer(timer);
 	palla.Draw();
 	tizio.Draw();
+	al_flip_display();
+	al_start_timer(timer);
    	bool shoot=false;
 
    	while(1) {
@@ -100,15 +101,11 @@ int main(int argc, char **argv)  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER) {
 			if(palla.getX() < 0 || palla.getX() > SCREEN_W - palla.getDim()) {
-				bouncer_dx = -bouncer_dx;
+				palla.setBouncer(-palla.getBouncer());
 			}
 
-			if(palla.getY() < 0 || palla.getY() > SCREEN_H - palla.getDim()) {
-				bouncer_dy = -bouncer_dy;
-			}
-
-			palla.setX(palla.getX()+ bouncer_dx);
-			palla.setY(palla.getY()+bouncer_dy);
+			palla.setX(palla.getX()+palla.getBouncer());
+			palla.setY(palla.calculateY(SCREEN_H));
 
 			if(keyRight)
 				tizio.setX(tizio.getX()+10);
