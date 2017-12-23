@@ -49,16 +49,15 @@ int main(int argc, char **argv)  {
    	palla.setDim(70);
    	palla.setX(SCREEN_W/2); 
    	palla.setY(palla.calculateY(SCREEN_H));
-   	Player tizio(50,SCREEN_W/2-25,SCREEN_H-50);
+
+   	Player tizio(35,50, SCREEN_W/2-35, SCREEN_H-50);
+   	tizio.setPlayer(al_load_bitmap("man.png"));
 	if(!tizio.getPlayer())  {
 		cerr<<"failed to initialize player!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
 		return -1;
    	}
-
-   	al_set_target_bitmap(tizio.getPlayer());
-   	al_clear_to_color(al_map_rgb(255, 0, 255));
 
    	Hook rampino(SCREEN_H,SCREEN_W/2,SCREEN_H/2);
    	if(!rampino.getHook())  {
@@ -108,9 +107,9 @@ int main(int argc, char **argv)  {
 			palla.setY(palla.calculateY(SCREEN_H));
 
 			if(keyRight)
-				tizio.setX(tizio.getX()+10);
+				tizio.setX(tizio.getX()+5);
 			if(keyLeft)
-				tizio.setX(tizio.getX()-10);
+				tizio.setX(tizio.getX()-5);
 			if(keySpace)  {
 				shoot=true;
 				keySpace=false;
