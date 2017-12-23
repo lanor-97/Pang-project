@@ -9,4 +9,5 @@ Allora, ho fatto un paio di cose, niente di speciale:
 6) ordinate parentesi e tabulazioni varie
 7) messa una palla.png come bitmap della palla, così posso iniziare con la fisica
 8) fisica fatta (più o meno, si può tranquillamente ridefinire l'altezza max, vedremo in futuro)
+9) cambiato il bitmap del player, aggiunto un .png
 
