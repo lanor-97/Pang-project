@@ -45,9 +45,9 @@ int main(int argc, char **argv)  {
 		al_destroy_display(display);
 		return -1;
    	}
-   	
+
    	palla.setDim(70);
-   	palla.setX(SCREEN_W/2); 
+   	palla.setX(SCREEN_W/2);
    	palla.setY(palla.calculateY(SCREEN_H));
 
    	Player tizio(35,50, SCREEN_W/2-35, SCREEN_H-50);
@@ -60,14 +60,15 @@ int main(int argc, char **argv)  {
    	}
 
    	Hook rampino(SCREEN_H,SCREEN_W/2,SCREEN_H/2);
+		rampino.setHook(al_load_bitmap("hook1.png"));
    	if(!rampino.getHook())  {
 		cerr<<"failed to initialize hook!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
 		return -1;
    	}
-   	al_set_target_bitmap(rampino.getHook());
-   	al_clear_to_color(al_map_rgb(255, 0, 255));
+   //	al_set_target_bitmap(rampino.getHook());
+   //	al_clear_to_color(al_map_rgb(255, 0, 255));
    	al_set_target_bitmap(al_get_backbuffer(display));
 
    	event_queue = al_create_event_queue();
