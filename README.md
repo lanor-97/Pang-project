@@ -1,5 +1,4 @@
 # Pang-project
 
-Urto palla-rampino fatto
-Urto palla-player fatto
+Fatti urti palla-rampino e palla-player
 
