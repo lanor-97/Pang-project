@@ -11,10 +11,13 @@ int main(int argc, char **argv)  {
 	ALLEGRO_DISPLAY *display = NULL;
    	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    	ALLEGRO_TIMER *timer = NULL;
+		ALLEGRO_BITMAP *life=NULL;
    	bool redraw = true;
    	bool keyRight=false, keyLeft=false, keySpace=false;
+		int Vite=3;
+		bool GameOver=false;
 
-   	if(!al_init()) {
+		if(!al_init()) {
      		cerr << "failed to initialize allegro!\n";
       		return -1;
    	}
@@ -67,13 +70,22 @@ int main(int argc, char **argv)  {
 		al_destroy_display(display);
 		return -1;
    	}
-   	//	al_set_target_bitmap(rampino.getHook());
-   	//	al_clear_to_color(al_map_rgb(255, 0, 255));
+
+   	life=al_create_bitmap(30,30);
+		life=al_load_bitmap("heart.png");
+		if(!life)
+		{
+			cerr<<"failed to initialize life!\n";
+			al_destroy_bitmap(life);
+			al_destroy_timer(timer);
+			al_destroy_display(display);
+		}
    	al_set_target_bitmap(al_get_backbuffer(display));
 
    	event_queue = al_create_event_queue();
    	if(!event_queue) {
 		cerr<<"failed to create event_queue!\n";
+		al_destroy_bitmap(life);
 		al_destroy_display(display);
 		al_destroy_timer(timer);
 		return -1;
@@ -90,8 +102,8 @@ int main(int argc, char **argv)  {
 	al_flip_display();
 	al_start_timer(timer);
    	bool shoot=false, urto_palla = false;
-
-   	while(1) {
+		bool colpito=false;
+   	while(!GameOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -108,13 +120,13 @@ int main(int argc, char **argv)  {
 			palla.setY(palla.calculateY(SCREEN_H));
 
 			bool 	ball_hook_1 = rampino.getX() <= palla.getX()+palla.getDim(),
-					ball_hook_2 = rampino.getX()+rampino.getDim() >= palla.getX(), 
+					ball_hook_2 = rampino.getX()+rampino.getDim() >= palla.getX(),
 					ball_hook_3 = rampino.getY() <= palla.getY()+palla.getDim();
 
 			if(ball_hook_1 && ball_hook_2 && ball_hook_3)  {
 				//rampino colpisce palla
 			}
-						
+
 
 			if(keyRight)
 				tizio.setX(tizio.getX()+5);
@@ -129,9 +141,13 @@ int main(int argc, char **argv)  {
 					ball_player_2 = palla.getX() <= tizio.getX()+tizio.getDim_x(),
 					ball_player_3 = tizio.getY() <= palla.getY()+palla.getDim();
 
-			if(ball_player_1 && ball_player_2 && ball_player_3)  {
+			if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
 				//palla colpisce player
+				colpito=true;
+				Vite--;
 			}
+			if(!ball_player_1 || !ball_player_2 || !ball_player_3)
+				colpito=false;
 
 			redraw = true;
 		}
@@ -163,14 +179,24 @@ int main(int argc, char **argv)  {
 			else  {
 				shoot=false;
 			}
+
+			if(Vite>=1)
+			al_draw_bitmap(life,580,50,0);
+			if(Vite>=2)
+			al_draw_bitmap(life,540,50,0);
+			if(Vite>=3)
+			al_draw_bitmap(life,500,50,0);
+			if(Vite<=0)
+			GameOver=true;
 			tizio.Draw();
 			palla.Draw();
+
 
 			al_flip_display();
 			redraw = false;
 		}
 	}
-
+		al_destroy_bitmap(life);
    	al_destroy_timer(timer);
    	al_destroy_display(display);
    	al_destroy_event_queue(event_queue);
