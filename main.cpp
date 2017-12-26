@@ -38,7 +38,7 @@ int main(int argc, char **argv)  {
    	}
 
 	Ball palla(170);
-   	palla.setBall(al_load_bitmap("palla.png"));
+   	palla.setBall(al_load_bitmap("palla_gra.png"));
    	if(!palla.getBall())  {
 		cerr<<"failed to initialize palla!\n";
 		al_destroy_timer(timer);
@@ -59,16 +59,16 @@ int main(int argc, char **argv)  {
 		return -1;
    	}
 
-   	Hook rampino(SCREEN_H,SCREEN_W/2,SCREEN_H/2);
-		rampino.setHook(al_load_bitmap("hook1.png"));
+   	Hook rampino(24,SCREEN_W/2,SCREEN_H/2);
+	rampino.setHook(al_load_bitmap("hook1.png"));
    	if(!rampino.getHook())  {
 		cerr<<"failed to initialize hook!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
 		return -1;
    	}
-   //	al_set_target_bitmap(rampino.getHook());
-   //	al_clear_to_color(al_map_rgb(255, 0, 255));
+   	//	al_set_target_bitmap(rampino.getHook());
+   	//	al_clear_to_color(al_map_rgb(255, 0, 255));
    	al_set_target_bitmap(al_get_backbuffer(display));
 
    	event_queue = al_create_event_queue();
@@ -89,23 +89,32 @@ int main(int argc, char **argv)  {
 	tizio.Draw();
 	al_flip_display();
 	al_start_timer(timer);
-   	bool shoot=false;
+   	bool shoot=false, urto_palla = false;
 
    	while(1) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
 			rampino.setX(tizio.getX());
-			rampino.setY(tizio.getY());
+			rampino.setY(tizio.getY()+tizio.getDim_y()+2);
 		}
 
-		if(ev.type == ALLEGRO_EVENT_TIMER) {
+		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			if(palla.getX() < 0 || palla.getX() > SCREEN_W - palla.getDim()) {
-				palla.setBouncer(-palla.getBouncer());
-			}
+					palla.setBouncer(-palla.getBouncer());
+				}
 
 			palla.setX(palla.getX()+palla.getBouncer());
 			palla.setY(palla.calculateY(SCREEN_H));
+
+			bool 	ball_hook_1 = rampino.getX() <= palla.getX()+palla.getDim(),
+					ball_hook_2 = rampino.getX()+rampino.getDim() >= palla.getX(), 
+					ball_hook_3 = rampino.getY() <= palla.getY()+palla.getDim();
+
+			if(ball_hook_1 && ball_hook_2 && ball_hook_3)  {
+				//rampino colpisce palla
+			}
+						
 
 			if(keyRight)
 				tizio.setX(tizio.getX()+5);
@@ -115,6 +124,15 @@ int main(int argc, char **argv)  {
 				shoot=true;
 				keySpace=false;
 			}
+
+			bool	ball_player_1 = palla.getX()+palla.getDim() >= tizio.getX(),
+					ball_player_2 = palla.getX() <= tizio.getX()+tizio.getDim_x(),
+					ball_player_3 = tizio.getY() <= palla.getY()+palla.getDim();
+
+			if(ball_player_1 && ball_player_2 && ball_player_3)  {
+				//palla colpisce player
+			}
+
 			redraw = true;
 		}
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -140,13 +158,14 @@ int main(int argc, char **argv)  {
 			al_clear_to_color(al_map_rgb(0,0,0));
 			if(shoot && rampino.getY()>0)  {
 				rampino.Draw();
-				rampino.setY(rampino.getY()-rampino.getDim()/48);
+				rampino.setY(rampino.getY()-rampino.getDim()/4);	//il /4 è per rallentarlo
 			}
 			else  {
 				shoot=false;
 			}
 			tizio.Draw();
 			palla.Draw();
+
 			al_flip_display();
 			redraw = false;
 		}

@@ -6,13 +6,17 @@
 #include "cmath"
 using namespace std;
 
+enum SIZE  { PIC = 0, MED, GRA};  //piccola, media, grande, estrema
+                                  //piccola = 20px, media = 40px
+                                  //grande = 70px
 class Ball  {
 private:
- 	int dim;
+ 	  int dim;
   	float posX;
   	float posY;
   	float bouncer;
   	float cont;
+    SIZE size;
   	ALLEGRO_BITMAP *ball;
 
 public:
@@ -26,6 +30,7 @@ public:
   	float getY() const  { return posY; }
   	int getDim() const  { return dim; }
   	float getBouncer() const  { return bouncer; }
+    float getCont() const  { return cont; }
   	void setBall(ALLEGRO_BITMAP *bitmap)  { ball = bitmap; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
@@ -36,9 +41,10 @@ public:
 };
 
 float Ball::calculateY(const int SY)  { 
-	if(cont > 314)
-		cont = 1;
-  	float abc = SY-(abs(sin(cont/100))*(SY/2))-dim;
+    if(cont > 314)
+		    cont = 1;
+      
+    float abc = SY-(abs(sin(cont/100))*(SY/2))-dim;
   	cont += abs(bouncer);
   	return abc;
 }
