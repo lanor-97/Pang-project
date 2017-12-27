@@ -128,10 +128,18 @@ int main()  {
 			}
 
 
-			if(keyRight)
-				player.setX(player.getX()+5);
-			if(keyLeft)
-				player.setX(player.getX()-5);
+			if(keyRight)  {
+				if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
+					player.setX(player.getX()+5);
+				else
+					player.setX(SCREEN_W-player.getDim_x());
+			}
+			if(keyLeft)  {
+				if(player.getX()-5 >= 0)
+					player.setX(player.getX()-5);
+				else
+					player.setX(0);
+			}
 			if(keySpace)  {
 				shoot=true;
 				keySpace=false;
