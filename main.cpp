@@ -73,6 +73,7 @@ int main()  {
 		cerr<<"failed to initialize cuore.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
+		return -1;
 	}
 	
 	Sfondo sfondo;
@@ -80,6 +81,7 @@ int main()  {
 		cerr<<"failed to initialize sfondo1.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
+		return -1;
 	}
 
    	event_queue = al_create_event_queue();
@@ -111,12 +113,7 @@ int main()  {
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			if(palla.getX() < 0 || palla.getX() > SCREEN_W - palla.getDim()) {
-				palla.setBouncer(-palla.getBouncer());
-			}
-
-			palla.setX(palla.getX()+palla.getBouncer());
-			palla.setY(palla.calculateY(SCREEN_H));
+			palla.Move(SCREEN_W, SCREEN_H);
 
 			bool 	ball_hook_1 = arma.getX() <= palla.getX()+palla.getDim(),
 					ball_hook_2 = arma.getX()+arma.getDim() >= palla.getX(),
