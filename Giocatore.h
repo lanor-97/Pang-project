@@ -7,10 +7,10 @@ using namespace std;
 
 class Giocatore  {
 private:
-  	int dim_x;
-    int dim_y;
-  	int posX;
-  	int posY;
+  	int 	dim_x,
+			dim_y,
+			posX,
+			posY;
   	ALLEGRO_BITMAP *bitmap;
 
 public:

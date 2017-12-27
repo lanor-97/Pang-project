@@ -6,8 +6,8 @@
 
 class Sfondo  {
 private:
-	int posX;
-	int posY;
+	int 	posX,
+			posY;
 	ALLEGRO_BITMAP *bitmap;
 	
 public:

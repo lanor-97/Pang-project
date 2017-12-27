@@ -6,16 +6,16 @@
 #include "cmath"
 using namespace std;
 
-enum SIZE  { PIC = 0, MED, GRA};  //piccola, media, grande, estrema
-                                  //piccola = 20px, media = 40px
+enum SIZE  { PIC = 0, MED, GRA};  //piccola = 20px, media = 40px
                                   //grande = 70px
 class Palla  {
 private:
 	int dim;
-  	float posX;
-  	float posY;
-  	float bouncer;
-  	float cont;
+  	float	posX,
+			posY,
+			bouncer,
+			cont,		
+			h_max;		//coeff. altezza massima
     SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 
@@ -40,27 +40,32 @@ public:
 Palla::Palla(float c, SIZE s)  {
 	size = s;
 	switch(s)  {
-		case PIC: dim = 20;
+		case PIC:	dim = 20;
+					h_max = 3;
+					bitmap = al_load_bitmap("images/palla_pic.png");
 		break;
 		
-		case MED: dim = 40;
+		case MED: 	dim = 40;
+					h_max = 2;
+					bitmap = al_load_bitmap("images/palla_med.png");
 		break;
 		
-		case GRA: dim = 70;
+		case GRA: 	dim = 70;
+					h_max = 1.5;
+					bitmap = al_load_bitmap("images/palla_gra.png");
 		break;
 	}
 	posX = 0;
 	posY = 0;
 	bouncer = 2;
 	cont = c;
-	bitmap = NULL;
 }
 
 float Palla::calculateY(const int SY)  { 
     if(cont > 314)
 		    cont = 1;
       
-    float abc = SY-(abs(sin(cont/100))*(SY/2))-dim;
+    float abc = SY-(abs(sin(cont/100))*(SY/h_max))-dim;
   	cont += abs(bouncer);
   	return abc;
 }

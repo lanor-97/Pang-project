@@ -6,8 +6,8 @@
 class Arma  {
 private:
 	float dim;
-  	int posX;
-  	int posY;
+  	int 	posX,
+			posY;
   	ALLEGRO_BITMAP *bitmap;
   	
 public:
