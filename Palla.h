@@ -20,8 +20,8 @@ private:
   	ALLEGRO_BITMAP *bitmap;
 
 public:
-  	Palla(float c);
-  	~Palla()  { al_destroy_bitmap(ball); }
+  	Palla(float, SIZE);
+  	~Palla()  { al_destroy_bitmap(bitmap); }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }
@@ -53,10 +53,10 @@ Palla::Palla(float c, SIZE s)  {
 	posY = 0;
 	bouncer = 2;
 	cont = c;
-	ball = NULL;
+	bitmap = NULL;
 }
 
-float Ball::calculateY(const int SY)  { 
+float Palla::calculateY(const int SY)  { 
     if(cont > 314)
 		    cont = 1;
       
