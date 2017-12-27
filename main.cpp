@@ -41,7 +41,7 @@ int main()  {
    	}
 
 	Palla palla(170, GRA);
-   	palla.setBitmap(al_load_bitmap("palla_gra.png"));
+   	palla.setBitmap(al_load_bitmap("images/palla_gra.png"));
    	if(!palla.getBitmap())  {
 		cerr<<"failed to initialize palla_gra.png!\n";
 		al_destroy_timer(timer);
@@ -173,7 +173,7 @@ int main()  {
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			/*COSA BELLA, SERVIRÀ IN FUTURO
 			if(Vite == 2 && !sfondo2)  {
-				sfondo.setBitmap(al_load_bitmap("sfondo2.png"));
+				sfondo.setBitmap(al_load_bitmap("images/sfondo2.png"));
 				if(!sfondo.getBitmap())  {
 					cerr<<"failed to initializate sfondo2.png";
 					break;

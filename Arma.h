@@ -28,7 +28,7 @@ Arma::Arma(float d, int x, int y)  {
 	dim = d;
 	posX = x;
 	posY = y;
-	bitmap = al_load_bitmap("arpione.png");
+	bitmap = al_load_bitmap("images/arpione.png");
 }
 
 

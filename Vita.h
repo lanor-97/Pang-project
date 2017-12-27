@@ -10,7 +10,7 @@ private:
 	ALLEGRO_BITMAP *bitmap;
 	
 public:
-	Vita(int n): numVite(n)  { bitmap=al_load_bitmap("cuore.png"); }
+	Vita(int n): numVite(n)  { bitmap=al_load_bitmap("images/cuore.png"); }
 	~Vita()  { al_destroy_bitmap(bitmap); }
 	int getNumVite() const  { return numVite; }
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }

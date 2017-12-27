@@ -34,7 +34,7 @@ Giocatore::Giocatore(int dx, int dy)  {
 	dim_y = dy;
 	posX = 0;
 	posY = 0;
-	bitmap = al_load_bitmap("man.png");
+	bitmap = al_load_bitmap("images/man.png");
 }
 
 
