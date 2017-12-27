@@ -7,6 +7,7 @@
 const float FPS = 60;
 const int SCREEN_W = 640;
 const int SCREEN_H = 480;
+void setPalle(Palla*, int);
 
 int main()  {
 	ALLEGRO_DISPLAY *display = NULL;
@@ -40,7 +41,7 @@ int main()  {
       	return -1;
    	}
 
-	Palla palla(170, GRA);
+	/*Palla palla(170, GRA);
    	if(!palla.getBitmap())  {
 		cerr<<"failed to initialize palla.png!\n";
 		al_destroy_timer(timer);
@@ -48,7 +49,7 @@ int main()  {
 		return -1;
    	}
    	palla.setX(SCREEN_W/2);
-   	palla.setY(palla.calculateY(SCREEN_H));
+   	palla.setY(palla.calculateY(SCREEN_H));*/
 
    	Giocatore player(35,50);
 	if(!player.getBitmap())  {
@@ -98,11 +99,14 @@ int main()  {
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	sfondo.Draw();
-	palla.Draw();
+	//palla.Draw();
 	player.Draw();
 	al_flip_display();
 	al_start_timer(timer);
    	bool shoot=false, colpito=false, sfondo2=false;
+   	bool bool_palla_g[7] = { true, false };
+   	Palla palla_g[7];
+   	setPalle(palla_g, 7);
 	
    	while(!GameOver) {
 		ALLEGRO_EVENT ev;
@@ -113,14 +117,33 @@ int main()  {
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			palla.Move(SCREEN_W, SCREEN_H);
+			//palla.Move(SCREEN_W, SCREEN_H);
+			for(unsigned i = 0; i < 7; i++)  {
+				if(bool_palla_g[i])
+					palla_g[i].Move(SCREEN_W, SCREEN_H);
+			}
+			
+			for(unsigned i = 0; i < 7; i++)  {
+				if(!bool_palla_g[i])
+					continue;
+				bool 	ball_hook_1 = arma.getX() <= palla_g[i].getX()+palla_g[i].getDim(),
+						ball_hook_2 = arma.getX()+arma.getDim() >= palla_g[i].getX(),
+						ball_hook_3 = arma.getY() <= palla_g[i].getY()+palla_g[i].getDim();
 
-			bool 	ball_hook_1 = arma.getX() <= palla.getX()+palla.getDim(),
-					ball_hook_2 = arma.getX()+arma.getDim() >= palla.getX(),
-					ball_hook_3 = arma.getY() <= palla.getY()+palla.getDim();
-
-			if(ball_hook_1 && ball_hook_2 && ball_hook_3)  {
-				//rampino colpisce palla
+				if(ball_hook_1 && ball_hook_2 && ball_hook_3)  {
+					if(palla_g[i].getSize() == GRA)  {
+						bool_palla_g[i] = 0;
+						bool_palla_g[i+1] = 1;
+						palla_g[i+1].set(palla_g[i].getCont(), MED);
+						palla_g[i+1].setBouncer(palla_g[i].getBouncer());
+						palla_g[i+1].setX(palla_g[i].getX());
+						bool_palla_g[i+2] = 1;
+						palla_g[i+2].set(palla_g[i].getCont(), MED);
+						palla_g[i+2].setBouncer(-palla_g[i].getBouncer());
+						palla_g[i+2].setX(palla_g[i].getX());
+					}
+					
+				}
 			}
 
 
@@ -141,7 +164,7 @@ int main()  {
 				keySpace=false;
 			}
 
-			bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
+			/*bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
 					ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
 					ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
 
@@ -151,7 +174,7 @@ int main()  {
 				vite--;
 			}
 			if(!ball_player_1 || !ball_player_2 || !ball_player_3)
-				colpito=false;
+				colpito=false;*/
 
 			redraw = true;
 		}
@@ -204,7 +227,11 @@ int main()  {
 				GameOver=true;
 				
 			player.Draw();
-			palla.Draw();
+			//palla.Draw();
+			for(unsigned i = 0; i < 7; i++)  {
+				if(bool_palla_g[i])
+					palla_g[i].Draw();
+			}
 
 			al_flip_display();
 			redraw = false;
@@ -217,3 +244,37 @@ int main()  {
 
    	return 0;
 }
+
+void setPalle(Palla *P, int n)  {
+	switch(n)  {
+		case 7:
+			P[0].set(170, GRA);
+			P[1].set(1, MED);
+			P[2].set(1, MED);
+			P[3].set(1, PIC);
+			P[4].set(1, PIC);
+			P[5].set(1, PIC);
+			P[6].set(1, PIC);
+		break;
+	}
+}
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
