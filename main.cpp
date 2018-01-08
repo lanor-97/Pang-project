@@ -16,6 +16,8 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
    	ALLEGRO_TIMER *timer = NULL;
 		ALLEGRO_FONT *font1=NULL;
 		ALLEGRO_FONT *	font2=NULL;
+		ALLEGRO_TRANSFORM redimencionamento;
+		ALLEGRO_MONITOR_INFO info;
 
 		al_init_font_addon();
 		al_init_ttf_addon();
@@ -24,6 +26,10 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 	bool GameOver=false;
 		int punteggio=0;
 		int tempo=3600;
+		int res_monitor_x;
+	int res_monitor_y;
+	float res_x;
+	float res_y;
 
 	if(!al_init()) {
     	cerr << "failed to initialize allegro!\n";
@@ -54,13 +60,22 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 			return -1;
 		}
 
-   	display = al_create_display(SCREEN_W, SCREEN_H);
+		al_get_monitor_info(0,&info);
+	res_monitor_x = info.x2 - info.x1;
+	res_monitor_y = info.y2 - info.y1;
+	res_x = res_monitor_x / (float) SCREEN_W;
+	res_y = res_monitor_y / (float) SCREEN_H;
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	display = al_create_display(res_monitor_x,res_monitor_y);
    	if(!display) {
 		cerr<<"failed to create display!\n";
 		al_destroy_timer(timer);
       	return -1;
    	}
 
+		al_identity_transform(&redimencionamento);
+	al_scale_transform(&redimencionamento,res_x,res_y);
+	al_use_transform(&redimencionamento);
 
 		font1=al_load_ttf_font("images/SHREK.TTF",40,0);
 		if(!font1)
