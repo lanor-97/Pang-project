@@ -3,95 +3,153 @@
 #include "Arma.h"
 #include "Sfondo.h"
 #include "Vita.h"
-
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 const float FPS = 60;
 const int SCREEN_W = 640;
 const int SCREEN_H = 480;
-void setPalle(Palla*, int);
 
-int main()  {
+int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se no non va a me
+																			//poi a limite li togliamo
 	ALLEGRO_DISPLAY *display = NULL;
-   	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-   	ALLEGRO_TIMER *timer = NULL;
-	
-   	bool redraw = true;
-   	bool keyRight=false, keyLeft=false, keySpace=false;
-	bool GameOver=false;
+   ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+   ALLEGRO_TIMER *timer = NULL;
+	ALLEGRO_FONT *font1=NULL;
+	ALLEGRO_FONT *	font2=NULL;
+	ALLEGRO_TRANSFORM redimencionamento;
+	ALLEGRO_MONITOR_INFO info;
 
-	if(!al_init()) {
+	al_init_font_addon();
+	al_init_ttf_addon();
+   bool redraw = true;
+   bool keyRight=false, keyLeft=false, keySpace=false;
+	bool GameOver=false;
+	int punteggio=0;
+	int tempo=3600;
+	int res_monitor_x;
+	int res_monitor_y;
+	float res_x;
+	float res_y;
+
+	if(!al_init())  {
     	cerr << "failed to initialize allegro!\n";
     	return -1;
-   	}
+   }
 
-   	if(!al_init_image_addon()) {
-      	cerr<<"failed to initialize allegro_image\n";
+   if(!al_init_image_addon())  {
+     	cerr<<"failed to initialize allegro_image\n";
 		return -1;
-   	}
+   }
 
-   	timer = al_create_timer(1.0 / FPS);
-   	if(!timer) {
+
+	if(!al_init_ttf_addon())  {
+		cerr<<"failed to initialize allegro_ttf\n";
+		return -1;
+	}
+
+	if(!al_init_font_addon())  {
+		cerr<<"failed to initialize allegro_font\n";
+		return -1;
+	}
+
+	timer = al_create_timer(1.0 / FPS);
+	if(!timer) {
 		cerr<<"failed to create timer!\n";
 		return -1;
-   	}
+	}
 
-   	display = al_create_display(SCREEN_W, SCREEN_H);
-   	if(!display) {
+	al_get_monitor_info(0,&info);
+	res_monitor_x = info.x2 - info.x1;
+	res_monitor_y = info.y2 - info.y1;
+	res_x = res_monitor_x / (float) SCREEN_W;
+	res_y = res_monitor_y / (float) SCREEN_H;
+	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+	display = al_create_display(res_monitor_x,res_monitor_y);
+   if(!display) {
 		cerr<<"failed to create display!\n";
 		al_destroy_timer(timer);
-      	return -1;
-   	}
+     	return -1;
+   }
 
-	/*Palla palla(170, GRA);
-   	if(!palla.getBitmap())  {
+	al_identity_transform(&redimencionamento);
+	al_scale_transform(&redimencionamento,res_x,res_y);
+	al_use_transform(&redimencionamento);
+
+	font1=al_load_ttf_font("images/SHREK.TTF",40,0);
+	if(!font1)  {
+		cerr<<"failed to initialize font1\n";
+		al_destroy_timer(timer);
+		return -1;
+	}
+
+	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
+	if(!font2)  {
+		cerr<<"failed to initialize font2\n";
+		al_destroy_timer(timer);
+		return -1;
+	}
+
+	Palla palla(170, GRA);
+  	if(!palla.getBitmap())  {
 		cerr<<"failed to initialize palla.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 		return -1;
-   	}
-   	palla.setX(SCREEN_W/2);
-   	palla.setY(palla.calculateY(SCREEN_H));*/
+   }
+   palla.setX(SCREEN_W/2);
+   palla.setY(palla.calculateY(SCREEN_H));
 
-   	Giocatore player(35,50);
+   Giocatore player(35,50);
 	if(!player.getBitmap())  {
 		cerr<<"failed to initialize man.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 		return -1;
-   	}
-   	player.setX(SCREEN_W/2 - player.getDim_x());
-   	player.setY(SCREEN_H - player.getDim_y());
+   }
+   player.setX(SCREEN_W/2 - player.getDim_x());
+   player.setY(SCREEN_H - player.getDim_y());
 
-   	Arma arma(24,player.getX(), player.getY());
-   	if(!arma.getBitmap())  {
+   Arma arma(24,player.getX(), player.getY());
+   if(!arma.getBitmap())  {
 		cerr<<"failed to initialize arpione.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 		return -1;
-   	}
+   }
 
-   	Vita vite(3);
+   Vita vite(3);
 	if(!vite.getBitmap())  {
 		cerr<<"failed to initialize cuore.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
-		return -1;
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 	}
-	
+
 	Sfondo sfondo;
 	if(!sfondo.getBitmap())  {
 		cerr<<"failed to initialize sfondo1.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
-		return -1;
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 	}
 
-   	event_queue = al_create_event_queue();
-   	if(!event_queue) {
+   event_queue = al_create_event_queue();
+   if(!event_queue) {
 		cerr<<"failed to create event_queue!\n";
 		al_destroy_display(display);
 		al_destroy_timer(timer);
+		al_destroy_font(font1);
+		al_destroy_font(font2);
 		return -1;
-   	}
+   }
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_install_keyboard();
@@ -99,16 +157,13 @@ int main()  {
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	sfondo.Draw();
-	//palla.Draw();
+	palla.Draw();
 	player.Draw();
 	al_flip_display();
 	al_start_timer(timer);
-   	bool shoot=false, colpito=false, sfondo2=false;
-   	bool bool_palla_g[7] = { true, false };
-   	Palla palla_g[7];
-   	setPalle(palla_g, 7);
-	
-   	while(!GameOver) {
+   bool shoot=false, colpito=false, sfondo2=false, presa=false;
+
+   while(!GameOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -117,66 +172,55 @@ int main()  {
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			//palla.Move(SCREEN_W, SCREEN_H);
-			for(unsigned i = 0; i < 7; i++)  {
-				if(bool_palla_g[i])
-					palla_g[i].Move(SCREEN_W, SCREEN_H);
-			}
-			
-			for(unsigned i = 0; i < 7; i++)  {
-				if(!bool_palla_g[i])
-					continue;
-				bool 	ball_hook_1 = arma.getX() <= palla_g[i].getX()+palla_g[i].getDim(),
-						ball_hook_2 = arma.getX()+arma.getDim() >= palla_g[i].getX(),
-						ball_hook_3 = arma.getY() <= palla_g[i].getY()+palla_g[i].getDim();
+			if(palla.getX() < 0 || palla.getX() > SCREEN_W - palla.getDim()) {
+				palla.setBouncer(-palla.getBouncer());
+		}
 
-				if(ball_hook_1 && ball_hook_2 && ball_hook_3)  {
-					if(palla_g[i].getSize() == GRA)  {
-						bool_palla_g[i] = 0;
-						bool_palla_g[i+1] = 1;
-						palla_g[i+1].set(palla_g[i].getCont(), MED);
-						palla_g[i+1].setBouncer(palla_g[i].getBouncer());
-						palla_g[i+1].setX(palla_g[i].getX());
-						bool_palla_g[i+2] = 1;
-						palla_g[i+2].set(palla_g[i].getCont(), MED);
-						palla_g[i+2].setBouncer(-palla_g[i].getBouncer());
-						palla_g[i+2].setX(palla_g[i].getX());
-					}
-					
-				}
-			}
+		palla.setX(palla.getX()+palla.getBouncer());
+		palla.setY(palla.calculateY(SCREEN_H));
 
+		bool 	ball_hook_1 = arma.getX() <= palla.getX()+palla.getDim(),
+				ball_hook_2 = arma.getX()+arma.getDim() >= palla.getX(),
+				ball_hook_3 = arma.getY() <= palla.getY()+palla.getDim();
 
-			if(keyRight)  {
-				if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
-					player.setX(player.getX()+5);
-				else
-					player.setX(SCREEN_W-player.getDim_x());
-			}
-			if(keyLeft)  {
-				if(player.getX()-5 >= 0)
-					player.setX(player.getX()-5);
-				else
-					player.setX(0);
-			}
-			if(keySpace)  {
-				shoot=true;
-				keySpace=false;
-			}
+		if(ball_hook_1 && ball_hook_2 && ball_hook_3 && !presa)  {
+			//rampino colpisce palla
+			punteggio+=200;
+			presa=true;
+		}
+		if(!ball_hook_1 || !ball_hook_2 || !ball_hook_3)
+			presa=false;
 
-			/*bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
-					ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
-					ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
+		if(keyRight)  {
+			if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
+				player.setX(player.getX()+5);
+			else
+				player.setX(SCREEN_W-player.getDim_x());
+		}
+		if(keyLeft)  {
+			if(player.getX()-5 >= 0)
+				player.setX(player.getX()-5);
+			else
+				player.setX(0);
+		}
+		if(keySpace)  {
+			shoot=true;
+			keySpace=false;
+		}
 
-			if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
-				//palla colpisce player
-				colpito=true;
-				vite--;
-			}
-			if(!ball_player_1 || !ball_player_2 || !ball_player_3)
-				colpito=false;*/
+		bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
+				ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
+				ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
 
-			redraw = true;
+		if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
+			//palla colpisce player
+			colpito=true;
+			vite--;
+		}
+		if(!ball_player_1 || !ball_player_2 || !ball_player_3)
+			colpito=false;
+
+		redraw = true;
 		}
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
@@ -198,7 +242,6 @@ int main()  {
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			
 			if(vite.getNumVite() == 2 && !sfondo2)  {
 				sfondo.setBitmap(al_load_bitmap("images/sfondo2.png"));
 				if(!sfondo.getBitmap())  {
@@ -207,9 +250,9 @@ int main()  {
 				}
 				sfondo2=true;
 			}
-			
+
 			sfondo.Draw();
-			if(shoot && arma.getY()>0)  {
+			if(shoot && arma.getY()>0 && !presa)  {
 				arma.Draw();
 				arma.setY(arma.getY()-arma.getDim()/4);	//il /4 è per rallentarlo
 			}
@@ -223,58 +266,23 @@ int main()  {
 				vite.Draw(540,50);
 			if(vite>=3)
 				vite.Draw(500,50);
-			if(vite<=0)
+			if(vite<=0 || tempo<=0)
 				GameOver=true;
-				
-			player.Draw();
-			//palla.Draw();
-			for(unsigned i = 0; i < 7; i++)  {
-				if(bool_palla_g[i])
-					palla_g[i].Draw();
-			}
 
+			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
+			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
+			player.Draw();
+			palla.Draw();
+			tempo--;
 			al_flip_display();
 			redraw = false;
 		}
 	}
-	
-   	al_destroy_timer(timer);
-   	al_destroy_display(display);
-   	al_destroy_event_queue(event_queue);
+	al_destroy_font(font1);
+	al_destroy_font(font2);
+   al_destroy_timer(timer);
+  	al_destroy_display(display);
+  	al_destroy_event_queue(event_queue);
 
-   	return 0;
+  	return 0;
 }
-
-void setPalle(Palla *P, int n)  {
-	switch(n)  {
-		case 7:
-			P[0].set(170, GRA);
-			P[1].set(1, MED);
-			P[2].set(1, MED);
-			P[3].set(1, PIC);
-			P[4].set(1, PIC);
-			P[5].set(1, PIC);
-			P[6].set(1, PIC);
-		break;
-	}
-}
-			
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
