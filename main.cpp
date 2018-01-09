@@ -1,5 +1,5 @@
 #include "Giocatore.h"
-#include "Palla.h"
+#include "GestorePalle.h"
 #include "Arma.h"
 #include "Sfondo.h"
 #include "Vita.h"
@@ -9,8 +9,8 @@ const float FPS = 60;
 const int SCREEN_W = 640;
 const int SCREEN_H = 480;
 
-int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se no non va a me
-																			//poi a limite li togliamo
+int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se no non va a me
+												//poi a limite li togliamo
 	ALLEGRO_DISPLAY *display = NULL;
    ALLEGRO_EVENT_QUEUE *event_queue = NULL;
    ALLEGRO_TIMER *timer = NULL;
@@ -89,17 +89,18 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 		return -1;
 	}
 
-	Palla palla(170, GRA);
-  	if(!palla.getBitmap())  {
+	GestorePalle GP;
+	GP.aggiungiPalla(SCREEN_W/2, 170, GRA);
+	if(!GP.front().getBitmap())  {
 		cerr<<"failed to initialize palla.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
 		al_destroy_font(font1);
 		al_destroy_font(font2);
 		return -1;
-   }
-   palla.setX(SCREEN_W/2);
-   palla.setY(palla.calculateY(SCREEN_H));
+	}
+	GP.setSW(SCREEN_W);
+	GP.setSY(SCREEN_H);
 
    Giocatore player(35,50);
 	if(!player.getBitmap())  {
@@ -157,7 +158,7 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	sfondo.Draw();
-	palla.Draw();
+	GP.Draw();
 	player.Draw();
 	al_flip_display();
 	al_start_timer(timer);
@@ -172,61 +173,55 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			if(palla.getX() < 0 || palla.getX() > SCREEN_W - palla.getDim()) {
-				palla.setBouncer(-palla.getBouncer());
-		}
+			GP.Bouncer();
 
-		palla.setX(palla.getX()+palla.getBouncer());
-		palla.setY(palla.calculateY(SCREEN_H));
+			bool hit = GP.Hit(arma.getX(), arma.getY(), arma.getDim());  //rampino colpisce palla
 
-		bool 	ball_hook_1 = arma.getX() <= palla.getX()+palla.getDim(),
-				ball_hook_2 = arma.getX()+arma.getDim() >= palla.getX(),
-				ball_hook_3 = arma.getY() <= palla.getY()+palla.getDim();
+			if(hit && !presa)  {
+				punteggio+=200;
+				presa=true;
+			}
+			if(!hit)
+				presa=false;
 
-		if(ball_hook_1 && ball_hook_2 && ball_hook_3 && !presa)  {
-			//rampino colpisce palla
-			punteggio+=200;
-			presa=true;
-		}
-		if(!ball_hook_1 || !ball_hook_2 || !ball_hook_3)
-			presa=false;
+			if(keyRight)  {
+				if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
+					player.setX(player.getX()+5);
+				else
+					player.setX(SCREEN_W-player.getDim_x());
+			}
+			if(keyLeft)  {
+				if(player.getX()-5 >= 0)
+					player.setX(player.getX()-5);
+				else
+					player.setX(0);
+			}
+			if(keySpace)  {
+				shoot=true;
+				keySpace=false;
+			}
 
-		if(keyRight)  {
-			if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
-				player.setX(player.getX()+5);
-			else
-				player.setX(SCREEN_W-player.getDim_x());
-		}
-		if(keyLeft)  {
-			if(player.getX()-5 >= 0)
-				player.setX(player.getX()-5);
-			else
-				player.setX(0);
-		}
-		if(keySpace)  {
-			shoot=true;
-			keySpace=false;
-		}
+			/*bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
+					ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
+					ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
 
-		bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
-				ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
-				ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
+			if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
+				//palla colpisce player
+				colpito=true;
+				vite--;
+			}
+			if(!ball_player_1 || !ball_player_2 || !ball_player_3)
+				colpito=false;*/
 
-		if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
-			//palla colpisce player
-			colpito=true;
-			vite--;
-		}
-		if(!ball_player_1 || !ball_player_2 || !ball_player_3)
-			colpito=false;
-
-		redraw = true;
+			redraw = true;
 		}
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			break;
 		}
 
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)
+				break;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
@@ -272,7 +267,7 @@ int main(int argc, char **argv)  {   //int argc e char **argv li devi mettere se
 			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 			player.Draw();
-			palla.Draw();
+			GP.Draw();
 			tempo--;
 			al_flip_display();
 			redraw = false;

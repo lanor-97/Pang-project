@@ -14,30 +14,32 @@ private:
   	float	posX,
 			posY,
 			bouncer,
-			cont,		
+			cont,			//pos h
 			h_max;		//coeff. altezza massima
    SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 
 public:
-  	Palla(float, SIZE);
-  	~Palla()  { al_destroy_bitmap(bitmap); }
+  	Palla(float, float, SIZE);
+  	//~Palla()  { al_destroy_bitmap(bitmap); }
+	void destroyBitmap()  { al_destroy_bitmap(bitmap); }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }
   	int getDim() const  { return dim; }
   	float getBouncer() const  { return bouncer; }
    float getCont() const  { return cont; }
+	SIZE getSize() const  { return size; }
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
   	void setDim(int d)  { dim=d; }
   	void setBouncer(float x)  { bouncer=x; }
-  	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+  	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
   	float calculateY(const int);
 };
 
-Palla::Palla(float c, SIZE s)  {
+Palla::Palla(float x, float c, SIZE s)  {
 	size = s;
 	switch(s)  {
 		case PIC:	dim = 20;
@@ -55,13 +57,13 @@ Palla::Palla(float c, SIZE s)  {
 						bitmap = al_load_bitmap("images/palla_gra.png");
 		break;
 	}
-	posX = 0;
+	posX = x;
 	posY = 0;
 	bouncer = 2;
 	cont = c;
 }
 
-float Palla::calculateY(const int SY)  { 
+float Palla::calculateY(int SY)  { 
 	if(cont > 314)
 		cont = 1;
       
