@@ -90,7 +90,9 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 	}
 
 	GestorePalle GP;
-	GP.aggiungiPalla(SCREEN_W/2, 170, GRA);
+	GP.setSW(SCREEN_W);
+	GP.setSY(SCREEN_H);
+	GP.aggiungiPalla(SCREEN_W/2, 157, GRA);
 	if(!GP.front().getBitmap())  {
 		cerr<<"failed to initialize palla.png!\n";
 		al_destroy_timer(timer);
@@ -99,8 +101,6 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		al_destroy_font(font2);
 		return -1;
 	}
-	GP.setSW(SCREEN_W);
-	GP.setSY(SCREEN_H);
 
    Giocatore player(35,50);
 	if(!player.getBitmap())  {
@@ -175,7 +175,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			GP.Bouncer();
 
-			bool hit = GP.Hit(arma.getX(), arma.getY(), arma.getDim());  //rampino colpisce palla
+			bool hit = GP.hitByHook(arma.getX(), arma.getY(), arma.getDim());  //rampino colpisce palla
 
 			if(hit && !presa)  {
 				punteggio+=200;
@@ -200,18 +200,16 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 				shoot=true;
 				keySpace=false;
 			}
+			
+			bool p_hit = GP.playerHit(player.getX(), player.getY(), player.getDim_x());
 
-			/*bool	ball_player_1 = palla.getX()+palla.getDim() >= player.getX(),
-					ball_player_2 = palla.getX() <= player.getX()+player.getDim_x(),
-					ball_player_3 = player.getY() <= palla.getY()+palla.getDim();
-
-			if(ball_player_1 && ball_player_2 && ball_player_3 && !colpito)  {
+			if(p_hit && !colpito)  {
 				//palla colpisce player
 				colpito=true;
 				vite--;
 			}
-			if(!ball_player_1 || !ball_player_2 || !ball_player_3)
-				colpito=false;*/
+			if(!p_hit)
+				colpito=false;
 
 			redraw = true;
 		}

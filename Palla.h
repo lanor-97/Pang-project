@@ -4,6 +4,8 @@
 #include "allegro5/allegro_image.h"
 #include "iostream"
 #include "cmath"
+#include "stdlib.h"
+#include "time.h"
 using namespace std;
 
 enum SIZE  { PIC = 0, MED, GRA};  //piccola = 20px, media = 40px
@@ -14,6 +16,7 @@ private:
   	float	posX,
 			posY,
 			bouncer,
+			bouncer_h,
 			cont,			//pos h
 			h_max;		//coeff. altezza massima
    SIZE size;
@@ -40,21 +43,25 @@ public:
 };
 
 Palla::Palla(float x, float c, SIZE s)  {
+	srand(time(0));	
 	size = s;
 	switch(s)  {
 		case PIC:	dim = 20;
 						h_max = 3;
 						bitmap = al_load_bitmap("images/palla_pic.png");
+						bouncer_h = 3.3 + (rand()%100)*0.004;
 		break;
 		
 		case MED: 	dim = 40;
 						h_max = 2;
 						bitmap = al_load_bitmap("images/palla_med.png");
+						bouncer_h = 2.35 + (rand()%100)*0.003;
 		break;
 		
 		case GRA: 	dim = 70;
 						h_max = 1.5;
 						bitmap = al_load_bitmap("images/palla_gra.png");
+						bouncer_h = 1.9 + (rand()%100)*0.002;
 		break;
 	}
 	posX = x;
@@ -68,7 +75,7 @@ float Palla::calculateY(int SY)  {
 		cont = 1;
       
    float abc = SY-(abs(sin(cont/100))*(SY/h_max))-dim;
-  	cont += abs(bouncer);
+  	cont += bouncer_h;
   	return abc;
 }
 

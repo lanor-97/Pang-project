@@ -19,7 +19,8 @@ public:
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
 	void Bouncer();
-	bool Hit(float, float, float);
+	bool hitByHook(float, float, float);
+	bool playerHit(float, float, float);
 };
 
 GestorePalle::~GestorePalle()  {
@@ -30,6 +31,8 @@ GestorePalle::~GestorePalle()  {
 
 void GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
 	Palla p(x, c, s);
+	float y = p.calculateY(SY);
+	p.setY(y);
 	balls.push_back(p);
 }
 
@@ -49,7 +52,7 @@ void GestorePalle::Bouncer()  {
 	}
 }
 	
-bool GestorePalle::Hit(float x1, float y1, float d1)  {
+bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
 	for(list<Palla>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= it->getX()+it->getDim(),
 				b2 = x1+d1 >= it->getX(),
@@ -57,6 +60,7 @@ bool GestorePalle::Hit(float x1, float y1, float d1)  {
 		
 		if(b1 && b2 && b3)  {
 			float x = it->getX(), c = it->getCont();
+			
 			SIZE s;
 			switch(it->getSize())  {
 				case GRA:	s = MED;
@@ -81,5 +85,17 @@ bool GestorePalle::Hit(float x1, float y1, float d1)  {
 	return false;
 }
 
+
+bool GestorePalle::playerHit(float x, float y, float d)  {
+	for(list<Palla>::iterator it = balls.begin(); it != balls.end(); it++)  {
+		bool	b1 = it->getX()+it->getDim() >= x,
+				b2 = it->getX() <= x+d,
+				b3 = y <= it->getY()+it->getDim();
+		
+		if(b1 && b2 && b3)
+			return true;
+	}
+	return false;
+}
 
 #endif
