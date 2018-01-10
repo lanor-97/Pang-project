@@ -24,6 +24,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
    bool redraw = true;
    bool keyRight=false, keyLeft=false, keySpace=false;
 	bool GameOver=false;
+	bool bitmap_ = true;
 	int punteggio=0;
 	int tempo=3600;
 	int res_monitor_x;
@@ -92,8 +93,8 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 	GestorePalle GP;
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
-	GP.aggiungiPalla(SCREEN_W/2, 157, GRA);
-	if(!GP.front().getBitmap())  {
+	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
+	if(!bitmap_)  {
 		cerr<<"failed to initialize palla.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
@@ -175,8 +176,12 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			GP.Bouncer();
 
-			bool hit = GP.hitByHook(arma.getX(), arma.getY(), arma.getDim());  //rampino colpisce palla
-
+			bool hit = GP.hitByHook(arma.getX(), arma.getY(), arma.getDim(), bitmap_);  //rampino colpisce palla
+			
+			if(!bitmap_)  {
+				cerr << "failed to initialize some palla.png";
+				break;
+			}
 			if(hit && !presa)  {
 				punteggio+=200;
 				presa=true;

@@ -12,14 +12,14 @@ private:
 
 public:
 	~GestorePalle();
-	void aggiungiPalla(float, float, SIZE);
+	bool aggiungiPalla(float, float, SIZE);
 	void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
 	const Palla& front() const  { return balls.front(); }
 	void Draw() const;
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
 	void Bouncer();
-	bool hitByHook(float, float, float);
+	bool hitByHook(float, float, float, bool&);
 	bool playerHit(float, float, float);
 };
 
@@ -29,11 +29,14 @@ GestorePalle::~GestorePalle()  {
 	}
 }
 
-void GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
+bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
 	Palla p(x, c, s);
+	if(!p.getBitmap())
+		return false;
 	float y = p.calculateY(SY);
 	p.setY(y);
 	balls.push_back(p);
+	return true;
 }
 
 void GestorePalle::Draw() const  {
@@ -52,7 +55,7 @@ void GestorePalle::Bouncer()  {
 	}
 }
 	
-bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
+bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 	for(list<Palla>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= it->getX()+it->getDim(),
 				b2 = x1+d1 >= it->getX(),
@@ -74,6 +77,10 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
 								return true;
 			}
 			Palla p1(x, c, s), p2(x, c, s);
+			if(!p1.getBitmap() && !p2.getBitmap())  {
+				b = false;
+				break;
+			}
 			p2.setBouncer(-p1.getBouncer());
 			balls.push_back(p1);
 			balls.push_back(p2);
