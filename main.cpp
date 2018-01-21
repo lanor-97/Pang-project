@@ -31,7 +31,10 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 	int res_monitor_y;
 	float res_x;
 	float res_y;
-
+	bool toLeft=false;
+	int currFrame=0;
+	int frameCount=0;
+	int frameDelay=5;
 	if(!al_init())  {
     	cerr << "failed to initialize allegro!\n";
     	return -1;
@@ -103,7 +106,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		return -1;
 	}
 
-   Giocatore player(35,50);
+   Giocatore player(60,70,6);
 	if(!player.getBitmap())  {
 		cerr<<"failed to initialize man.png!\n";
 		al_destroy_timer(timer);
@@ -158,12 +161,14 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
+	bool drawShoot=false;
+	bool caduto=false;
+	bool shoot=false, colpito=false, sfondo2=false, presa=false;
 	sfondo.Draw();
 	GP.Draw();
-	player.Draw();
+	player.Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
 	al_flip_display();
 	al_start_timer(timer);
-   bool shoot=false, colpito=false, sfondo2=false, presa=false;
 
    while(!GameOver) {
 		ALLEGRO_EVENT ev;
@@ -174,14 +179,40 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
+			if(drawShoot && !caduto)
+				{
+				 	frameDelay=7;
+				 	player.setFrames(2);
+				}
+			else if(caduto)
+				{		
+					player.setFrames(11);
+					frameDelay=7;
+				}	
+			else	
+				frameDelay=5;
+
+			if(++frameCount>=frameDelay)
+			{
+						if(++currFrame>=player.getFrames())
+						{
+						drawShoot=false;
+						caduto=false;
+						currFrame=0;
+					}
+				frameCount=0;
+			}
+
+
 			GP.Bouncer();
 
 			bool hit = GP.hitByHook(arma.getX(), arma.getY(), arma.getDim(), bitmap_);  //rampino colpisce palla
-			
+
 			if(!bitmap_)  {
 				cerr << "failed to initialize some palla.png";
 				break;
 			}
+
 			if(hit && !presa)  {
 				punteggio+=200;
 				presa=true;
@@ -189,27 +220,36 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 			if(!hit)
 				presa=false;
 
-			if(keyRight)  {
+			if(keyRight && !caduto && !drawShoot)  {
+				player.setFrames(6);
+				drawShoot=false;
+				toLeft=false;
 				if(player.getX()+player.getDim_x()+5 <= SCREEN_W)
 					player.setX(player.getX()+5);
 				else
 					player.setX(SCREEN_W-player.getDim_x());
 			}
-			if(keyLeft)  {
+			if(keyLeft && !caduto && !drawShoot)  {
+				player.setFrames(6);
+				drawShoot=false;
+				toLeft=true;
 				if(player.getX()-5 >= 0)
 					player.setX(player.getX()-5);
 				else
 					player.setX(0);
 			}
-			if(keySpace)  {
+			if(keySpace && !caduto)  {
+				if(!shoot)
+				drawShoot=true;
 				shoot=true;
 				keySpace=false;
 			}
-			
+
 			bool p_hit = GP.playerHit(player.getX(), player.getY(), player.getDim_x());
 
-			if(p_hit && !colpito)  {
+			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
+				caduto=true;
 				colpito=true;
 				vite--;
 			}
@@ -241,7 +281,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			if(vite.getNumVite() == 2 && !sfondo2)  {
-				sfondo.setBitmap(al_load_bitmap("images/sfondo2.png"));
+				sfondo.setBitmap(al_load_bitmap("images/sfondo1.png"));
 				if(!sfondo.getBitmap())  {
 					cerr<<"failed to initializate sfondo2.png";
 					break;
@@ -266,10 +306,14 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 				vite.Draw(500,50);
 			if(vite<=0 || tempo<=0)
 				GameOver=true;
-
+			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
-			player.Draw();
+
+			if((caduto || drawShoot) && currFrame>=player.getFrames())
+			currFrame=0;
+
+			player.Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
 			GP.Draw();
 			tempo--;
 			al_flip_display();

@@ -9,9 +9,9 @@ private:
 	int 	posX,
 			posY;
 	ALLEGRO_BITMAP *bitmap;
-	
+
 public:
-	Sfondo(): posX(0), posY(0)  { bitmap=al_load_bitmap("images/sfondo1.png"); }
+	Sfondo(): posX(0), posY(0)  { bitmap=al_load_bitmap("images/sfondo2.png"); }
 	~Sfondo()  { al_destroy_bitmap(bitmap); }
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
 	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
@@ -20,4 +20,3 @@ public:
 
 
 #endif
-	

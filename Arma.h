@@ -9,9 +9,9 @@ private:
   	int 	posX,
 			posY;
   	ALLEGRO_BITMAP *bitmap;
-  	
+
 public:
-  	Arma(float, int, int);	
+  	Arma(float, int, int);
   	~Arma()  { al_destroy_bitmap(bitmap); }
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
 	int getX() const  { return posX; }
@@ -28,7 +28,7 @@ Arma::Arma(float d, int x, int y)  {
 	dim = d;
 	posX = x;
 	posY = y;
-	bitmap = al_load_bitmap("images/arpione.png");
+	bitmap = al_load_bitmap("images/arpione1.png");
 }
 
 
