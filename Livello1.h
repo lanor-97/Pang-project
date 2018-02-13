@@ -1,65 +1,44 @@
-#include "Giocatore.h"
+#ifndef LIVELLO1_H
+#define LIVELLO1_H
+
 #include "GestorePalle.h"
 #include "Sfondo.h"
-#include "Vita.h"
+#include "Giocatore.h"
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "Vita.h"
 
-const float FPS = 60;
-const int SCREEN_W = 640;
-const int SCREEN_H = 480;
+class Livello1  {
+public:
+	Livello1(float, float, Giocatore);
+	bool Esegui();
+	void Draw();
 
-int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se no non va a me
-												//poi a limite li togliamo
-	ALLEGRO_DISPLAY *display = NULL;
-   ALLEGRO_EVENT_QUEUE *event_queue = NULL;
-   ALLEGRO_TIMER *timer = NULL;
-	ALLEGRO_FONT *font1=NULL;
-	ALLEGRO_FONT *	font2=NULL;
-	ALLEGRO_TRANSFORM redimencionamento;
-	ALLEGRO_MONITOR_INFO info;
-
-	al_init_font_addon();
-	al_init_ttf_addon();
-   bool redraw = true;
-   bool keyRight=false, keyLeft=false, keySpace=false;
-	bool GameOver=false;
-	bool bitmap_ = true;
-	int punteggio=0;
-	int tempo=3600;
-	int res_monitor_x;
-	int res_monitor_y;
-	float res_x;
-	float res_y;
-	bool toLeft=false;
-	int currFrame=0;
-	int frameCount=0;
-	int frameDelay=5;
-	if(!al_init())  {
-    	cerr << "failed to initialize allegro!\n";
-    	return -1;
-   }
-
-   if(!al_init_image_addon())  {
-     	cerr<<"failed to initialize allegro_image\n";
-		return -1;
-   }
+protected:
+	Sfondo sfondo;
+	Giocatore player;
+	GestorePalle GP;
+	float SCREEN_W, SCREEN_H;
+};
 
 
-	if(!al_init_ttf_addon())  {
-		cerr<<"failed to initialize allegro_ttf\n";
-		return -1;
-	}
+Livello1::Livello1(float SW, float SH, Giocatore p): sfondo(0), player(p), SCREEN_W(SW), SCREEN_H(SH)  {
+	GP.setSW(SCREEN_W);
+	GP.setSY(SCREEN_H);
 
-	if(!al_init_font_addon())  {
-		cerr<<"failed to initialize allegro_font\n";
-		return -1;
-	}
+	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
+}
+
+bool Livello1::Esegui()  {
+
+	bool 	redraw = true, keyRight=false, keyLeft=false, keySpace=false, GameOver=false,
+			bitmap_ = true, toLeft=false;
+	int 	punteggio=0, tempo=3600, res_monitor_x, res_monitor_y, currFrame=0, frameCount=0, frameDelay=5;
 
 	timer = al_create_timer(1.0 / FPS);
 	if(!timer) {
 		cerr<<"failed to create timer!\n";
-		return -1;
+		return 0;
 	}
 
 	al_get_monitor_info(0,&info);
@@ -72,7 +51,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
    if(!display) {
 		cerr<<"failed to create display!\n";
 		al_destroy_timer(timer);
-     	return -1;
+     	return 0;
    }
 
 	al_identity_transform(&redimencionamento);
@@ -93,7 +72,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		return -1;
 	}
 
-	GestorePalle GP;
+	/*GestorePalle GP;
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
@@ -104,10 +83,10 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		al_destroy_font(font1);
 		al_destroy_font(font2);
 		return -1;
-	}
+	}*/
 
    Giocatore player(60,70,6);
-	if(!player.getBitmap())  {
+	if(!player.getBitmap() && !player.getArma_Bitmap())  {
 		cerr<<"failed to initialize man.png!\n";
 		al_destroy_timer(timer);
 		al_destroy_display(display);
@@ -117,7 +96,6 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
    }
    player.setX(SCREEN_W/2 - player.getDim_x());
    player.setY(SCREEN_H - player.getDim_y());
-   player.posizionaArma();
 
    Vita vite(3);
 	if(!vite.getBitmap())  {
@@ -128,14 +106,7 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		al_destroy_font(font2);
 	}
 
-	Sfondo sfondo;
-	if(!sfondo.getBitmap())  {
-		cerr<<"failed to initialize sfondo1.png!\n";
-		al_destroy_timer(timer);
-		al_destroy_display(display);
-		al_destroy_font(font1);
-		al_destroy_font(font2);
-	}
+	
 
    event_queue = al_create_event_queue();
    if(!event_queue) {
@@ -152,51 +123,53 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
-	bool drawShoot=false;
-	bool caduto=false;
-	bool shoot=false, colpito=false, sfondo2=false, presa=false;
-	sfondo.Draw();
-	GP.Draw();
+	bool drawShoot=false, caduto=false, colpito=false, sfondo2=false, presa=false;
+
+	//sfondo.Draw();
+	//GP.Draw();
 	player.Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
 	al_flip_display();
 	al_start_timer(timer);
 
+	Livello1 L1(SCREEN_W, SCREEN_H, player);
+
    while(!GameOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-		if(shoot==false)  {
-			player.posizionaArma();
+		if(!player.getShoot())  {
+			player.setArma_x(player.getX());
+			player.setArma_y(player.getY()+player.getDim_y()+2);
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			if(drawShoot && !caduto)
-				{
-				 	frameDelay=7;
-				 	player.setFrames(2);
-				}
+			{
+				frameDelay=7;
+				player.setFrames(2);
+			}
 			else if(caduto)
-				{		
-					player.setFrames(11);
-					frameDelay=7;
-				}	
+			{		
+				player.setFrames(11);
+				frameDelay=7;
+			}	
 			else	
 				frameDelay=5;
 
 			if(++frameCount>=frameDelay)
 			{
-						if(++currFrame>=player.getFrames())
-						{
-						drawShoot=false;
-						caduto=false;
-						currFrame=0;
-					}
+				if(++currFrame>=player.getFrames())
+				{
+					drawShoot=false;
+					caduto=false;
+					currFrame=0;
+				}
 				frameCount=0;
 			}
 
 
-			GP.Bouncer();
+			//GP.Bouncer();
 
-			bool hit = GP.hitByHook(player.getX_arma(), player.getY_arma(), player.getDim_arma(), bitmap_);  //rampino colpisce palla
+			//bool hit = GP.hitByHook(player.getArma_x(), player.getArma_y(), player.getArma_dim(), bitmap_);  //rampino colpisce palla
 
 			if(!bitmap_)  {
 				cerr << "failed to initialize some palla.png";
@@ -229,10 +202,10 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 					player.setX(0);
 			}
 			if(keySpace && !caduto)  {
-				if(!shoot)
+				if(!player.getShoot())
 					drawShoot=true;
-					shoot=true;
-					keySpace=false;
+				player.setShoot(true);
+				keySpace=false;
 			}
 
 			bool p_hit = GP.playerHit(player.getX(), player.getY(), player.getDim_x());
@@ -270,21 +243,13 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			if(vite.getNumVite() == 2 && !sfondo2)  {
-				sfondo.setBitmap(al_load_bitmap("images/sfondo1.png"));
-				if(!sfondo.getBitmap())  {
-					cerr<<"failed to initializate sfondo2.png";
-					break;
-				}
-				sfondo2=true;
-			}
-
-			sfondo.Draw();
-			if(shoot && player.getY_arma()>0 && !presa)  {
-				player.setY_arma(player.getY_arma()-player.getDim_arma()/4);	//il /4 è per rallentarlo
+			
+			if(player.getShoot() && player.getArma_y() > 0 && !presa)  {
+				//arma.Draw();
+				player.setArma_y(player.getArma_y()-player.getArma_dim()/4);	//il /4 è per rallentarlo
 			}
 			else  {
-				shoot=false;
+				player.setShoot(false);
 			}
 
 			if(vite>=1)
@@ -300,10 +265,10 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
 			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
 			if((caduto || drawShoot) && currFrame>=player.getFrames())
-			currFrame=0;
+				currFrame=0;
 
 			player.Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
-			GP.Draw();
+			//GP.Draw();
 			tempo--;
 			al_flip_display();
 			redraw = false;
@@ -314,6 +279,8 @@ int main(int argc, char **argv)  {  //int argc e char **argv li devi mettere se 
    al_destroy_timer(timer);
   	al_destroy_display(display);
   	al_destroy_event_queue(event_queue);
-
-  	return 0;
 }
+
+
+
+#endif
