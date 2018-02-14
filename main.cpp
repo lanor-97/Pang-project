@@ -10,18 +10,17 @@ const float 	FPS = 60;
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
-ALLEGRO_DISPLAY*		display = NULL;
-ALLEGRO_EVENT_QUEUE*	event_queue = NULL;
-ALLEGRO_TIMER*			timer = NULL;
-ALLEGRO_FONT*			font1=NULL;
-ALLEGRO_FONT*			font2=NULL;
-ALLEGRO_BITMAP*			vite_bmp=NULL;
-
 int main(int argc, char **argv)  { 
 	
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 	ALLEGRO_MONITOR_INFO 	info;
+	ALLEGRO_DISPLAY*		display = NULL;
+	ALLEGRO_EVENT_QUEUE*	event_queue = NULL;
+	ALLEGRO_TIMER*			timer = NULL;
+	ALLEGRO_FONT*			font1=NULL;
+	ALLEGRO_FONT*			font2=NULL;
+	ALLEGRO_BITMAP*			vite_bmp=NULL;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
@@ -56,10 +55,6 @@ int main(int argc, char **argv)  {
 	}
 
 	timer = al_create_timer(1.0 / FPS);
-	if(!timer) {
-		cerr<<"failed to create timer!\n";
-		return -1;
-	}
 
 	//AGGIUSTAMENTO E CREAZIONE DISPLAY
 	al_get_monitor_info(0,&info);
@@ -70,75 +65,36 @@ int main(int argc, char **argv)  {
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 	display = al_create_display(res_monitor_x, res_monitor_y);
 
-   	if(!display) {
-		cerr<<"failed to create display!\n";
-		destroyAllegro(1);
-     	return -1;
-   	}
-
 	al_identity_transform(&redimencionamento);
 	al_scale_transform(&redimencionamento,res_x,res_y);
 	al_use_transform(&redimencionamento);
 
 	//CARICAMENTO FONT
 	font1=al_load_ttf_font("images/SHREK.TTF",40,0);
-	if(!font1)  {
-		cerr<<"failed to initialize font1\n";
-		destroyAllegro(2);
-		return -1;
-	}
 
 	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
-	if(!font2)  {
-		cerr<<"failed to initialize font2\n";
-		destroyAllegro(3);
-		return -1;
-	}
 
 	//CARICAMENTO BITMAP VITE
 	vite_bmp = al_load_bitmap("images/vita.png");
-	if(!vite_bmp)  {
-		cerr << "failed to initialize vita.png";
-		destroyAllegro(4);
-		return -1;
-	}
 
 	//CREAZIONE GESTORE PALLE
 	GestorePalle GP;
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
-	if(!bitmap_)  {
-		cerr<<"failed to initialize palla.png!\n";
-		destroyAllegro(5);
-		return -1;
-	}
 
 	//CREAZIONE PLAYER
    	Giocatore player(60,70,6);
-	if(!player.getBitmap())  {
-		cerr<<"failed to initialize man.png!\n";
-		destroyAllegro(5);
-		return -1;
-   	}
+
    	player.setX(SCREEN_W/2 - player.getDim_x());
    	player.setY(SCREEN_H - player.getDim_y());
    	player.posizionaArma();
 
 	//CREAZIONE SFONDO
 	Sfondo sfondo(0);
-	if(!sfondo.getBitmap())  {
-		cerr<<"failed to initialize sfondo1.png!\n";
-		destroyAllegro(5);
-	}
 
 	//CREAZIONE CODA EVENTI
   	event_queue = al_create_event_queue();
-   	if(!event_queue) {
-		cerr<<"failed to create event_queue!\n";
-		destroyAllegro(5);
-		return -1;
-   	}
 
    	//FUNZIONI REGISTRAZIONE + DRAW
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -315,22 +271,12 @@ int main(int argc, char **argv)  {
 	}
 
 	//DISTRUGGO TUTTO
-	destroyAllegro(6);
+	al_destroy_timer(timer);
+	al_destroy_display(display);
+	al_destroy_font(font1);
+	al_destroy_font(font2);
+	al_destroy_bitmap(vite_bmp);
+	al_destroy_event_queue(event_queue);
 
   	return 0;
-}
-
-void destroyAllegro(unsigned x)  {
-	if(x >= 1)
-		al_destroy_timer(timer);
-	if(x >= 2)
-		al_destroy_display(display);
-	if(x >= 3)
-		al_destroy_font(font1);
-	if(x >= 4)
-		al_destroy_font(font2);
-	if(x >= 5)
-		al_destroy_bitmap(vite_bmp);
-	if(x >= 6)
-		al_destroy_event_queue(event_queue);
 }
