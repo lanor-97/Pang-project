@@ -10,11 +10,11 @@ private:
 			posX,
 			posY;
   	ALLEGRO_BITMAP *bitmap;
-   int frames;
-   Arma* arma;
+   	int frames;
+   	Arma* arma;
 
 public:
-   Giocatore(int, int,int);
+   	Giocatore(int, int,int);
   	~Giocatore()  { al_destroy_bitmap(bitmap); delete arma; }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	int getX() const  { return posX; }
@@ -22,19 +22,19 @@ public:
   	int getX_arma() const  { return arma->getX(); }
   	int getY_arma() const  { return arma->getY(); }
   	int getDim_x() const  { return dim_x; }
-   int getDim_y() const  { return dim_y; }
-   int getDim_arma() const  { return arma->getDim(); }
-   int getFrames() const {return frames;}
+   	int getDim_y() const  { return dim_y; }
+   	int getDim_arma() const  { return arma->getDim(); }
+   	int getFrames() const {return frames;}
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(int x)  { posX=x; }
   	void setY(int y)  { posY=y; }
   	void setX_arma(int x)  { arma->setX(x); }
   	void setY_arma(int y)  { arma->setY(y); }
   	void setDim_x(int d)  { dim_x=d; }
-   void setDim_y(int d)  { dim_y=d; }
-   void setFrames(int f) {frames=f;}
-   void Draw(int currFrame, bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
-   void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
+   	void setDim_y(int d)  { dim_y=d; }
+   	void setFrames(int f) {frames=f;}
+   	void Draw(int currFrame, bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
+   	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
 
 };
 
