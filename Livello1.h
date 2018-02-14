@@ -9,8 +9,7 @@
 class Livello1  {
 public:
 	Livello1(float, float, Giocatore*);
-	bool Esegui(const int);
-	void Draw();
+	bool Esegui(int);
 
 protected:
 	Sfondo sfondo;
@@ -27,7 +26,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p): sfondo(0), player(p), SCRE
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
 }
 
-bool Livello1::Esegui(const int FPS)  {
+bool Livello1::Esegui(int vite)  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 	ALLEGRO_MONITOR_INFO 	info;
@@ -41,14 +40,14 @@ bool Livello1::Esegui(const int FPS)  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, GameOver=false, bitmap_ = true, fullscreen=true;
+			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=true;
 
 	int 	punteggio=0, tempo=3600, res_monitor_x, res_monitor_y, currFrame=0, 
-			frameCount=0, frameDelay=5, vite=3;
+			frameCount=0, frameDelay=5;
 
 	float 	res_x, res_y;
 
-	timer = al_create_timer(1.0 / FPS);
+	timer = al_create_timer(1.0 / 60);								//60 = FPS
 
 	//AGGIUSTAMENTO E CREAZIONE DISPLAY
 	al_get_monitor_info(0,&info);
@@ -72,10 +71,10 @@ bool Livello1::Esegui(const int FPS)  {
 	vite_bmp = al_load_bitmap("images/vita.png");
 
 	//CREAZIONE GESTORE PALLE
-	GestorePalle GP;
+	/*GestorePalle GP;
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
-	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
+	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);*/
 
 	//CREAZIONE CODA EVENTI
   	event_queue = al_create_event_queue();
@@ -93,7 +92,7 @@ bool Livello1::Esegui(const int FPS)  {
 	al_start_timer(timer);
 
 	//IL GIOCO VERO E PROPRIO
-   	while(!GameOver) {
+   	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -168,9 +167,9 @@ bool Livello1::Esegui(const int FPS)  {
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
+				MatchOver = true;
 				caduto=true;
 				colpito=true;
-				vite--;
 			}
 			if(!p_hit)
 				colpito=false;
@@ -237,7 +236,7 @@ bool Livello1::Esegui(const int FPS)  {
 			if(vite>=3)
 				al_draw_bitmap(vite_bmp, 500, 50, 0);
 			if(vite<=0 || tempo<=0)
-				GameOver=true;
+				MatchOver=true;
 
 			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
@@ -251,10 +250,17 @@ bool Livello1::Esegui(const int FPS)  {
 			tempo--;
 			al_flip_display();
 			redraw = false;
+			if(GP.Empty())  {
+				
+				break;
+			}
 		}
 	}
 
 	//DISTRUGGO TUTTO
+	GP.Clear();
+	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
+
 	al_destroy_timer(timer);
 	al_destroy_display(display);
 	al_destroy_font(font1);
@@ -262,7 +268,7 @@ bool Livello1::Esegui(const int FPS)  {
 	al_destroy_bitmap(vite_bmp);
 	al_destroy_event_queue(event_queue);
 
-	return false;
+	return !MatchOver;
 }
 
 

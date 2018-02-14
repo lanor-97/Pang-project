@@ -21,6 +21,8 @@ public:
 	void Bouncer();
 	bool hitByHook(float, float, float, bool&);
 	bool playerHit(float, float, float);
+	bool Empty() const  { return balls.empty(); }
+	void Clear();
 };
 
 GestorePalle::~GestorePalle()  {
@@ -104,5 +106,12 @@ bool GestorePalle::playerHit(float x, float y, float d)  {
 	}
 	return false;
 }
+
+void GestorePalle::Clear()  {
+	for(list<Palla>::iterator it = balls.begin(); it != balls.end(); it++)
+		it->destroyBitmap();
+	balls.clear();
+}
+
 
 #endif

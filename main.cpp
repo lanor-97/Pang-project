@@ -1,12 +1,12 @@
 #include "Livello1.h"
 
-const float 	FPS = 60;
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
 int main(int argc, char **argv)  { 
 
-	//INIZIALIZZAZIONE ALLEGRO E CO
+	int vite = 3;
+	//INIZIALIZZAZIONE FUNZIONI ALLEGRO E CO
 	if(!al_init())  {
     	cerr << "failed to initialize allegro!\n";
     	return -1;
@@ -28,14 +28,24 @@ int main(int argc, char **argv)  {
 		return -1;
 	}
 
+	//CREAZIONE GIOCATORE
 	Giocatore* player = new Giocatore(60,70,6);
 
    	player->setX(SCREEN_W/2 - player->getDim_x());
    	player->setY(SCREEN_H - player->getDim_y());
    	player->posizionaArma();
 
+   	//CREAZIONE LIVELLO
    	Livello1 L(SCREEN_W, SCREEN_H, player);
-   	L.Esegui(FPS);
+
+   	while(vite > 0)  {
+   		if(!L.Esegui(vite))  {
+   			vite--;
+   			continue;
+   		}
+   		cout << "hai vinto coglione\n";
+   		break;
+   	}
 
    	delete player;
   	return 0;
