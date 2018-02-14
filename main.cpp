@@ -26,7 +26,7 @@ int main(int argc, char **argv)  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, GameOver=false, bitmap_ = true;
+			toLeft=false, GameOver=false, bitmap_ = true, fullscreen=true;
 
 	int 	punteggio=0, tempo=3600, res_monitor_x, res_monitor_y, currFrame=0, 
 			frameCount=0, frameDelay=5, vite=3;
@@ -68,7 +68,7 @@ int main(int argc, char **argv)  {
 	res_x = res_monitor_x / (float) SCREEN_W;
 	res_y = res_monitor_y / (float) SCREEN_H;
 	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
-	display = al_create_display(res_monitor_x,res_monitor_y);
+	display = al_create_display(res_monitor_x, res_monitor_y);
 
    	if(!display) {
 		cerr<<"failed to create display!\n";
@@ -250,6 +250,29 @@ int main(int argc, char **argv)  {
 				keyRight=true;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
+			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
+				if(!fullscreen)  {
+					al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+					res_monitor_x = info.x2 - info.x1;
+					res_monitor_y = info.y2 - info.y1;
+					res_x = res_monitor_x / (float) SCREEN_W;
+					res_y = res_monitor_y / (float) SCREEN_H;
+				}
+				else  {
+					al_set_new_display_flags(ALLEGRO_WINDOWED);
+					res_monitor_x = 640;
+					res_monitor_y = 480;
+					res_x = res_monitor_x / (float) SCREEN_W;
+					res_y = res_monitor_y / (float) SCREEN_H;
+				}		
+
+				al_destroy_display(display);
+				display = al_create_display(res_monitor_x,res_monitor_y);
+				al_identity_transform(&redimencionamento);
+				al_scale_transform(&redimencionamento,res_x,res_y);
+				al_use_transform(&redimencionamento);
+				fullscreen = !fullscreen;
+			}
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
