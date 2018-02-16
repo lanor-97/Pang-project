@@ -24,7 +24,7 @@ private:
 
 public:
   	Palla(float, float, SIZE);
-  	//~Palla()  { al_destroy_bitmap(bitmap); }
+  	~Palla()  { al_destroy_bitmap(bitmap); }
 	void destroyBitmap()  { al_destroy_bitmap(bitmap); }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
