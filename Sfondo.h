@@ -18,7 +18,7 @@ public:
 
 Sfondo::Sfondo(unsigned x)  {
 	switch(x)  {
-		case 0:	bitmap=al_load_bitmap("images/sfondo1.jpg");
+		case 0:	bitmap=al_load_bitmap("images/shrekMenu1.jpg");
 		break;
 
 		case 1:	bitmap=al_load_bitmap("images/sfondo2.jpg");
