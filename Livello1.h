@@ -9,7 +9,7 @@
 class Livello1  {
 public:
 	Livello1(float, float, Giocatore*);
-	bool Esegui(int);
+	bool Esegui(ALLEGRO_DISPLAY*, int, float[]);
 
 protected:
 	Sfondo sfondo;
@@ -26,41 +26,24 @@ Livello1::Livello1(float SW, float SH, Giocatore* p): sfondo(0), player(p), SCRE
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
 }
 
-bool Livello1::Esegui(int vite)  {
+bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
-	ALLEGRO_TRANSFORM 		redimencionamento;
-	ALLEGRO_MONITOR_INFO 	info;
-	ALLEGRO_DISPLAY*		display = NULL;
 	ALLEGRO_EVENT_QUEUE*	event_queue = NULL;
 	ALLEGRO_TIMER*			timer = NULL;
 	ALLEGRO_FONT*			font1=NULL;
 	ALLEGRO_FONT*			font2=NULL;
 	ALLEGRO_BITMAP*			vite_bmp=NULL;
+	ALLEGRO_TRANSFORM 		redimencionamento;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=true;
+			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false;
 
-	int 	punteggio=0, tempo=3600, res_monitor_x, res_monitor_y, currFrame=0, 
+	int 	punteggio=0, tempo=3600, currFrame=0, 
 			frameCount=0, frameDelay=5;
 
-	float 	res_x, res_y;
-
 	timer = al_create_timer(1.0 / 60);								//60 = FPS
-
-	//AGGIUSTAMENTO E CREAZIONE DISPLAY
-	al_get_monitor_info(0,&info);
-	res_monitor_x = info.x2 - info.x1;
-	res_monitor_y = info.y2 - info.y1;
-	res_x = res_monitor_x / (float) SCREEN_W;
-	res_y = res_monitor_y / (float) SCREEN_H;
-	al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
-	display = al_create_display(res_monitor_x, res_monitor_y);
-
-	al_identity_transform(&redimencionamento);
-	al_scale_transform(&redimencionamento,res_x,res_y);
-	al_use_transform(&redimencionamento);
 
 	//CARICAMENTO FONT
 	font1=al_load_ttf_font("images/SHREK.TTF",40,0);
@@ -69,12 +52,6 @@ bool Livello1::Esegui(int vite)  {
 
 	//CARICAMENTO BITMAP VITE
 	vite_bmp = al_load_bitmap("images/vita.png");
-
-	//CREAZIONE GESTORE PALLE
-	/*GestorePalle GP;
-	GP.setSW(SCREEN_W);
-	GP.setSY(SCREEN_H);
-	bitmap_ = GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);*/
 
 	//CREAZIONE CODA EVENTI
   	event_queue = al_create_event_queue();
@@ -190,27 +167,21 @@ bool Livello1::Esegui(int vite)  {
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
-				if(!fullscreen)  {
-					al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
-					res_monitor_x = info.x2 - info.x1;
-					res_monitor_y = info.y2 - info.y1;
-					res_x = res_monitor_x / (float) SCREEN_W;
-					res_y = res_monitor_y / (float) SCREEN_H;
+				fullscreen = !fullscreen;
+
+				if(fullscreen)  {
+					res_info[0] = res_info[2] / res_info[4];
+					res_info[1] = res_info[3] / res_info[5];
 				}
 				else  {
-					al_set_new_display_flags(ALLEGRO_WINDOWED);
-					res_monitor_x = 640;
-					res_monitor_y = 480;
-					res_x = res_monitor_x / (float) SCREEN_W;
-					res_y = res_monitor_y / (float) SCREEN_H;
-				}		
+					res_info[0] = 1;
+					res_info[1] = 1;
+				}
 
-				al_destroy_display(display);
-				display = al_create_display(res_monitor_x,res_monitor_y);
 				al_identity_transform(&redimencionamento);
-				al_scale_transform(&redimencionamento,res_x,res_y);
+				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
 				al_use_transform(&redimencionamento);
-				fullscreen = !fullscreen;
+				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
 			}
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
@@ -262,7 +233,6 @@ bool Livello1::Esegui(int vite)  {
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
 
 	al_destroy_timer(timer);
-	al_destroy_display(display);
 	al_destroy_font(font1);
 	al_destroy_font(font2);
 	al_destroy_bitmap(vite_bmp);
