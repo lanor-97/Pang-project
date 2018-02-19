@@ -238,7 +238,7 @@ bool Livello1::Esegui(int vite)  {
 			if(vite<=0 || tempo<=0)
 				MatchOver=true;
 
-			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
+			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 

@@ -18,10 +18,13 @@ public:
 
 Sfondo::Sfondo(unsigned x)  {
 	switch(x)  {
-		case 0:	bitmap=al_load_bitmap("images/sfondo1.png");
+		case 0:	bitmap=al_load_bitmap("images/sfondo1.jpg");
 		break;
 
-		case 1:	bitmap=al_load_bitmap("images/sfondo2.png");
+		case 1:	bitmap=al_load_bitmap("images/sfondo2.jpg");
+		break;
+
+		case 3: bitmap=al_load_bitmap("images/sfondo3Piani.jpg");
 		break;
 	}
 }

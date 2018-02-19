@@ -32,7 +32,7 @@ int main(int argc, char **argv)  {
 	Giocatore* player = new Giocatore(60,70,6);
 
    	player->setX(SCREEN_W/2 - player->getDim_x());
-   	player->setY(SCREEN_H - player->getDim_y());
+   	player->setY(SCREEN_H/1.37 - player->getDim_y());
    	player->posizionaArma();
 
    	//CREAZIONE LIVELLO
