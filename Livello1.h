@@ -40,13 +40,13 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false;
 
-	int 	punteggio=0, tempo=3600, currFrame=0, 
+	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
 
 	timer = al_create_timer(1.0 / 60);								//60 = FPS
 
 	//CARICAMENTO FONT
-	font1=al_load_ttf_font("images/SHREK.TTF",40,0);
+	font1=al_load_ttf_font("images/SHREK.TTF",30,0);
 
 	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
 
@@ -201,17 +201,17 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			}
 
 			if(vite>=1)
-				al_draw_bitmap(vite_bmp, 580, 50, 0);
+				al_draw_bitmap(vite_bmp, SCREEN_W/25, SCREEN_H/11, 0);
 			if(vite>=2)
-				al_draw_bitmap(vite_bmp, 540, 50, 0);
+				al_draw_bitmap(vite_bmp, SCREEN_W/11, SCREEN_H/11, 0);
 			if(vite>=3)
-				al_draw_bitmap(vite_bmp, 500, 50, 0);
+				al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
 			if(vite<=0 || tempo<=0)
 				MatchOver=true;
 
 			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
-			al_draw_textf(font1,al_map_rgb(0,255,0),30,20,ALLEGRO_ALIGN_LEFT,"%d",tempo/60);
-			al_draw_textf(font2,al_map_rgb(0,0,255),620,100,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
+			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
+			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
 			if((caduto || drawShoot) && currFrame>=player->getFrames())
 				currFrame=0;
