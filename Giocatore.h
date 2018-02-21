@@ -1,6 +1,6 @@
 #ifndef GIOCATORE_H
 #define GIOCATORE_H
-
+#include "Animation.h"
 #include "Arma.h"
 
 class Giocatore  {
@@ -10,6 +10,7 @@ private:
 			posX,
 			posY;
   	ALLEGRO_BITMAP *bitmap;
+    Animation animazione;
    	int frames;
    	Arma* arma;
 
@@ -33,7 +34,7 @@ public:
   	void setDim_x(int d)  { dim_x=d; }
    	void setDim_y(int d)  { dim_y=d; }
    	void setFrames(int f) {frames=f;}
-   	void Draw(int currFrame, bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
+   	bool Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
 
 };
@@ -46,53 +47,65 @@ Giocatore::Giocatore(int dx, int dy, int f)  {
 	posY = 0;
 	bitmap = al_load_bitmap("images/shrekFermoSinistra.png");
 	arma = new Arma(24, 0, 0);
+  animazione.setFrameCount(0);
+  animazione.setFrameDelay(5);
+  animazione.setCurrFrame(0);
 }
 
-void Giocatore:: Draw(int currFrame, bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto){
+bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto){
+  arma->Draw();
   if(keyLeft && !drawShoot && !caduto)
   {
+    setFrames(6);
+    animazione.setFrameDelay(5);
     setBitmap(al_load_bitmap("images/shrekSinistra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
+
   else if(keyRight && !drawShoot && !caduto)
   {
+    setFrames(6);
+    animazione.setFrameDelay(5);
     setBitmap(al_load_bitmap("images/shrekDestra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
   else if(drawShoot && toLeft && !caduto)
   {
+    animazione.setFrameDelay(7);
+	  setFrames(2);
     setBitmap(al_load_bitmap("images/shrekHookSinistra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
   else if(drawShoot && !toLeft && !caduto)
   {
+    animazione.setFrameDelay(7);
+	  setFrames(2);
     setBitmap(al_load_bitmap("images/shrekHookDestra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
   else if(caduto && toLeft)
   {
+    setFrames(11);
+		animazione.setFrameDelay(7);
     setBitmap(al_load_bitmap("images/shrekColpitoSinistra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
   else if(caduto && !toLeft)
   {
+    setFrames(11);
+		animazione.setFrameDelay(7);
     setBitmap(al_load_bitmap("images/shrekColpitoDestra.png"));
-    al_draw_bitmap_region(bitmap,currFrame*getDim_x(),0,getDim_x(),getDim_y(),getX(),getY(),0);
   }
 
   else if(!drawShoot && toLeft && !caduto)
   {
     setBitmap(al_load_bitmap("images/shrekFermoSinistra.png"));
     al_draw_bitmap(bitmap,posX,posY,0);
+    return true;
   }
   else if(!drawShoot && !caduto)
   {
     setBitmap(al_load_bitmap("images/shrekFermoDestra.png"));
     al_draw_bitmap(bitmap,posX,posY,0);
+    return true;
   }
-
-  arma->Draw();
   
+  return animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), false,getFrames());
 }
 
 

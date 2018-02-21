@@ -1,6 +1,6 @@
 #ifndef LIVELLO1_H
 #define LIVELLO1_H
-
+#include "Animation.h"
 #include "GestorePalle.h"
 #include "Sfondo.h"
 #include "Giocatore.h"
@@ -38,7 +38,8 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false;
+			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
+			drawExplosion=false;
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
@@ -63,8 +64,8 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	sfondo.Draw();
-	GP.Draw();
-	player->Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
+	GP.Draw(drawExplosion);
+	player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto);
 	al_flip_display();
 	al_start_timer(timer);
 
@@ -77,26 +78,6 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			if(drawShoot && !caduto)  {
-				frameDelay=7;
-				player->setFrames(2);
-			}
-			else if(caduto)  {		
-				player->setFrames(11);
-				frameDelay=7;
-			}	
-			else	
-				frameDelay=5;
-
-			if(++frameCount>=frameDelay)  {
-				if(++currFrame>=player->getFrames())  {
-					drawShoot=false;
-					caduto=false;
-					currFrame=0;
-				}
-				frameCount=0;
-			}
-
 
 			GP.Bouncer();
 
@@ -110,6 +91,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			if(hit && !presa)  {
 				punteggio+=200;
 				presa=true;
+				drawExplosion=true;
 			}
 			if(!hit)
 				presa=false;
@@ -213,11 +195,17 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-			if((caduto || drawShoot) && currFrame>=player->getFrames())
-				currFrame=0;
+			
 
-			player->Draw(currFrame,keyLeft,keyRight,drawShoot,toLeft, caduto);
-			GP.Draw();
+			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto))
+				{
+					caduto=false;
+					drawShoot=false;
+				}	
+			
+			if(!GP.Draw(drawExplosion))
+			drawExplosion=false;
+
 			tempo--;
 			al_flip_display();
 			redraw = false;

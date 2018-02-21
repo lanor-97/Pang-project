@@ -1,21 +1,20 @@
 #ifndef GESTOREPALLE_H
 #define GESTOREPALLE_H
-
 #include "Palla.h"
 #include "list"
-
+#include "Esplosione.h"
 class GestorePalle  {
 private:
 	list<Palla*> balls;
 	float	SW,
 			SY;
-
+	Esplosione explosion;
 public:
 	~GestorePalle();
 	bool aggiungiPalla(float, float, SIZE);
 	//void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
 	//const Palla& front() const  { return balls.front(); }
-	void Draw() const;
+	bool Draw(bool) ;
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
 	void Bouncer();
@@ -28,7 +27,7 @@ public:
 GestorePalle::~GestorePalle()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		delete (*it);
-	}
+	}	
 }
 
 bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
@@ -41,10 +40,15 @@ bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
 	return true;
 }
 
-void GestorePalle::Draw() const  {
+bool GestorePalle::Draw(bool drawExplosion)   {
 	for(list<Palla*>::const_iterator it = balls.begin(); it != balls.end(); it++)  {
 		(*it)->Draw();
 	}
+	
+	if(drawExplosion)
+		if(!explosion.Draw())
+			return false;
+	return true;
 }
 
 void GestorePalle::Bouncer()  {
@@ -58,6 +62,7 @@ void GestorePalle::Bouncer()  {
 }
 	
 bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
+
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= (*it)->getX()+(*it)->getDim(),
 				b2 = x1+d1 >= (*it)->getX(),
@@ -65,7 +70,9 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 		
 		if(b1 && b2 && b3)  {
 			float x = (*it)->getX(), c = (*it)->getCont();
-			
+			explosion.setSize((*it)->getSize());
+			explosion.setPosX((*it)->getX());
+			explosion.setPosY((*it)->getY());
 			SIZE s;
 			switch((*it)->getSize())  {
 				case GRA:	s = MED;
