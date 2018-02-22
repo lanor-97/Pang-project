@@ -161,7 +161,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 
 		if(drawTransition)  {
 			if(play)
-				Transition(menu_play, 1);
+				Transition(menu_play, 0);
 			else
 				Transition(menu_exit, 0);		
 		}

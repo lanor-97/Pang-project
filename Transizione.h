@@ -92,9 +92,18 @@ class Transizione
 
     bool Draw()
     {
-        if(tipo==menuClose)
+        if(tipo==menuClose || tipo==levelStart)
             if(animazione.eseguiFrame(transition,dimX,dimY,0,0,false,15))
-                return true; 
+                return true;   
+
+        if(tipo==stageClear || tipo==victory)
+            if(animazione.eseguiFrame(transition,dimX,dimY,0,0,false,10))
+                return true;
+
+        if(tipo==stageClearClose || tipo==victoryClose)
+            if(animazione.eseguiFrame(transition,dimX,dimY,0,0,false,5))
+                return true;
+                           
         return false;         
     }
 
