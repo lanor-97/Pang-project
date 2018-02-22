@@ -1,5 +1,5 @@
 #include "Livello1.h"
-
+#include "Transizione.h"
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
@@ -12,7 +12,7 @@ int main(int argc, char **argv)  {
 	bool					play = true;
 	ALLEGRO_TRANSFORM 		redimencionamento;
 	ALLEGRO_MONITOR_INFO 	info;
-
+	
 
 	//INIZIALIZZAZIONE FUNZIONI ALLEGRO E CO
 	if(!al_init())  {
@@ -94,11 +94,12 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 	ALLEGRO_BITMAP*			menu_exit=NULL;
 	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
+	Transizione             transizione;
 
 	menu_play = al_load_bitmap("images/shrekMenu1.jpg");
 	menu_exit = al_load_bitmap("images/shrekMenu2.jpg");
 	bool play = true, fullscreen = false;
-
+	bool drawTransition=false;
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -107,11 +108,10 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 
 	al_draw_bitmap(menu_play, 0, 0, 0);
 	al_flip_display();
-
+	
 	while(true)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
 				play = false;
@@ -119,7 +119,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 			}
 
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE || ev.keyboard.keycode==ALLEGRO_KEY_ENTER)  {
-				break;
+				drawTransition=true;
 			}
 
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
@@ -144,12 +144,22 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					res_info[1] = 1;
 				}
 
+				if(drawTransition)
+				{
+					transizione.setTipo(0);
+					if(!transizione.Draw())
+					{
+						drawTransition=false;
+						break;
+					}	
+				}	
 				al_identity_transform(&redimencionamento);
 				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
 				al_use_transform(&redimencionamento);
 				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
+				
 
-				if(play)  {
+				if( play)  {
 					al_draw_bitmap(menu_play,0,0,0);
 					al_flip_display();
 				}
@@ -157,6 +167,9 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					al_draw_bitmap(menu_play,0,0,0);
 					al_flip_display();
 				}
+				
+
+
 			}
 
 		}
