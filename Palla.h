@@ -77,7 +77,8 @@ Palla::Palla(float x, float c, SIZE s)  {
 	cont = c;
 }
 
-float Palla::calculateY(int SY)  { 
+float Palla::calculateY(int SY)  {
+	SY = SY-120;
 	if(cont > 314)
 		cont = 1;
       
