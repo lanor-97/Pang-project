@@ -22,7 +22,7 @@ class Esplosione{
         posX=0; posY=0;
         dimX=0; dimY=0; tipo=pallaPic;
     animazione.setFrameCount(0);
-    animazione.setFrameDelay(6);
+    animazione.setFrameDelay(5);
     animazione.setCurrFrame(0);
     }
 
@@ -62,7 +62,7 @@ class Esplosione{
             setExplosion(al_load_bitmap("images/animazioneVetro1.png"));
         }    
         animazione.setFrameCount(0);
-        animazione.setFrameDelay(7);
+        animazione.setFrameDelay(5);
         animazione.setCurrFrame(0);
     }
 	~Esplosione()  { al_destroy_bitmap(explosion);}

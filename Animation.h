@@ -31,6 +31,7 @@ class Animation{
     bool eseguiFrame(ALLEGRO_BITMAP *bitmap,int dim_x, int dim_y, int x, int y, bool ridisegna, int totalFrames)
     {
         bool continua=true;
+        al_draw_bitmap_region(bitmap,currFrame*dim_x,0,dim_x,dim_y,x,y,0);
         if(++frameCount>=frameDelay)  {
 				if(++currFrame>=totalFrames)  {
 					currFrame=0;
@@ -38,10 +39,10 @@ class Animation{
 				}
 				frameCount=0;
 			}
-        al_draw_bitmap_region(bitmap,currFrame*dim_x,0,dim_x,dim_y,x,y,0);
+        
         if(!ridisegna && currFrame>=totalFrames)
                 currFrame=0;
-        return continua;
+         return continua;
     }
 };
 #endif
