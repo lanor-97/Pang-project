@@ -3,12 +3,16 @@
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
+bool Menu(ALLEGRO_DISPLAY*, float[]);
+
 int main(int argc, char **argv)  { 
 
 	int 					vite = 3;
 	float 					res_x, res_y, res_monitor_x, res_monitor_y;
+	bool					play = true;
 	ALLEGRO_TRANSFORM 		redimencionamento;
 	ALLEGRO_MONITOR_INFO 	info;
+
 
 	//INIZIALIZZAZIONE FUNZIONI ALLEGRO E CO
 	if(!al_init())  {
@@ -32,8 +36,13 @@ int main(int argc, char **argv)  {
 		return -1;
 	}
 
+	if(!al_install_keyboard())  {
+		cerr <<"failed to install keyboard\n";
+		return -1;
+	}
+
 	//CREAZIONE DISPLAY
-	ALLEGRO_DISPLAY*	display = NULL;
+	ALLEGRO_DISPLAY*		display = NULL;
 
 	al_get_monitor_info(0,&info);
 	res_monitor_x = info.x2 - info.x1;
@@ -57,18 +66,107 @@ int main(int argc, char **argv)  {
    	player->posizionaArma();
 
    	//CREAZIONE LIVELLO
-   	Livello1 L(SCREEN_W, SCREEN_H, player);
+   	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player);
 
-   	while(vite > 0)  {
-   		if(!L.Esegui(display, vite, res_info))  {
-   			vite--;
-   			continue;
+   	play = Menu(display, res_info);
+   	while(play && vite > 0)  {
+
+	   	while(vite > 0)  {
+	   		if(!L1->Esegui(display, vite, res_info))  {
+	   			vite--;
+	   			continue;
+	   		}
+	   		cout << "hai vinto coglione\n";
    		}
-   		cout << "hai vinto coglione\n";
-   		break;
    	}
 
-   	al_destroy_display(display);
+   	delete L1;
    	delete player;
+   	al_destroy_display(display);
+
   	return 0;
+}
+
+
+bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
+
+	ALLEGRO_BITMAP*			menu_play=NULL;
+	ALLEGRO_BITMAP*			menu_exit=NULL;
+	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
+	ALLEGRO_TRANSFORM 		redimencionamento;
+
+	menu_play = al_load_bitmap("images/shrekMenu1.jpg");
+	menu_exit = al_load_bitmap("images/shrekMenu2.jpg");
+	bool play = true, fullscreen = false;
+
+
+	event_queue = al_create_event_queue();
+	al_register_event_source(event_queue, al_get_display_event_source(display));
+	al_install_keyboard();
+	al_register_event_source(event_queue,al_get_keyboard_event_source());
+
+	al_draw_bitmap(menu_play, 0, 0, 0);
+	al_flip_display();
+
+	while(true)  {
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
+				play = false;
+				break;
+			}
+
+			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE || ev.keyboard.keycode==ALLEGRO_KEY_ENTER)  {
+				break;
+			}
+
+			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
+				play = false;
+				al_draw_bitmap(menu_exit,0,0,0);
+				al_flip_display();
+			}
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT && !play)  {
+				play = true;
+				al_draw_bitmap(menu_play,0,0,0);
+				al_flip_display();
+			}
+			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
+				fullscreen = !fullscreen;
+
+				if(fullscreen)  {
+					res_info[0] = res_info[2] / res_info[4];
+					res_info[1] = res_info[3] / res_info[5];
+				}
+				else  {
+					res_info[0] = 1;
+					res_info[1] = 1;
+				}
+
+				al_identity_transform(&redimencionamento);
+				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
+				al_use_transform(&redimencionamento);
+				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
+
+				if(play)  {
+					al_draw_bitmap(menu_play,0,0,0);
+					al_flip_display();
+				}
+				else  {
+					al_draw_bitmap(menu_play,0,0,0);
+					al_flip_display();
+				}
+			}
+
+		}
+
+	}
+
+	al_destroy_bitmap(menu_play);
+	al_destroy_bitmap(menu_exit);
+	al_destroy_event_queue(event_queue);
+	return play;
+
+	return 0;
 }
