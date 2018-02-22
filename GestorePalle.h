@@ -87,6 +87,8 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 			}
 			Palla* p1 = new Palla(x, c, s);
 			Palla* p2 = new Palla(x, c, s);
+			p1->setY((*it)->getY());
+			p2->setY((*it)->getY());
 
 			p2->setBouncer(-(p1->getBouncer()));
 			balls.push_back(p1);
