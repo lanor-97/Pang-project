@@ -7,33 +7,52 @@
 #include <allegro5/allegro_ttf.h>
 class Livello1  {
 public:
-	Livello1(float, float, Giocatore*);
-	~Livello1()  { al_destroy_bitmap(sfondo); }
+	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
+	~Livello1();
 	bool Esegui(ALLEGRO_DISPLAY*, int, float[]);
 protected:
 	ALLEGRO_BITMAP* sfondo=NULL;
+	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
+	ALLEGRO_TIMER*			timer=NULL;
+	ALLEGRO_FONT*			font1=NULL;
+	ALLEGRO_FONT*			font2=NULL;
+	ALLEGRO_BITMAP*			vite_bmp=NULL;
 	Giocatore* player;
 	GestorePalle GP;
 	float SCREEN_W, SCREEN_H;
 };
 
 
-Livello1::Livello1(float SW, float SH, Giocatore* p): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
+Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
 	sfondo = al_load_bitmap("images/sfondo1.jpg");
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
+
+	font1=al_load_ttf_font("images/SHREK.TTF",30,0);
+	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
+	vite_bmp = al_load_bitmap("images/vita.png");
+	timer = al_create_timer(1.0 / 60);
+	event_queue = al_create_event_queue();
+
+	al_register_event_source(event_queue, al_get_display_event_source(display));
+	al_register_event_source(event_queue,al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+}
+
+Livello1::~Livello1()  {
+	al_destroy_bitmap(sfondo); 
+	al_destroy_font(font1);
+	al_destroy_font(font2);
+	al_destroy_bitmap(vite_bmp);
+	al_destroy_timer(timer);
+	al_destroy_event_queue(event_queue);
 }
 
 bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
-	ALLEGRO_FONT*			font1=NULL;
-	ALLEGRO_FONT*			font2=NULL;
-	ALLEGRO_BITMAP*			vite_bmp=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
-	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
-	ALLEGRO_TIMER*			timer=NULL;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
@@ -43,20 +62,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
-
-
-	//CARICAMENTO FONT
-	font1=al_load_ttf_font("images/SHREK.TTF",30,0);
-	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
-
-	//CARICAMENTO BITMAP VITE
-	vite_bmp = al_load_bitmap("images/vita.png");
-	timer = al_create_timer(1.0 / 60);
-	event_queue = al_create_event_queue();
-   	//FUNZIONI DRAW
-   	al_register_event_source(event_queue, al_get_display_event_source(display));
-	al_register_event_source(event_queue,al_get_keyboard_event_source());
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+   	
 
 	al_draw_bitmap(sfondo,0,0,0);
 	GP.Draw(drawExplosion);
@@ -216,12 +222,6 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDim_y());
 	GP.Clear();
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
-
-	al_destroy_font(font1);
-	al_destroy_font(font2);
-	al_destroy_bitmap(vite_bmp);
-	al_destroy_timer(timer);
-	al_destroy_event_queue(event_queue);
 
 	return !MatchOver;
 }

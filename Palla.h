@@ -20,7 +20,7 @@ private:
 			bouncer_h,
 			cont,			//pos h
 			h_max;		//coeff. altezza massima
-   SIZE size;
+   	SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 	Animation animazione;
 
@@ -78,6 +78,7 @@ Palla::Palla(float x, float c, SIZE s)  {
 }
 
 float Palla::calculateY(int SY)  { 
+	SY = SY - 120;
 	if(cont > 314)
 		cont = 1;
       

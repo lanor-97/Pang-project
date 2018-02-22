@@ -66,7 +66,7 @@ int main(int argc, char **argv)  {
    	player->posizionaArma();
 
    	//CREAZIONE LIVELLO
-   	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player);
+   	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display);
 
    	play = Menu(display, res_info);
    	while(play && vite > 0)  {
