@@ -20,7 +20,7 @@ class Transizione
         dimX=640;
         dimY=480;
         animazione.setFrameCount(0);
-        animazione.setFrameDelay(5);
+        animazione.setFrameDelay(0);
         animazione.setCurrFrame(0);
     }
     Transizione(Tipe tipo)
@@ -28,7 +28,7 @@ class Transizione
         dimX=640;
         dimY=480;
         animazione.setFrameCount(0);
-        animazione.setFrameDelay(5);
+        animazione.setFrameDelay(0);
         animazione.setCurrFrame(0);
         this->tipo=tipo;
         if(tipo==menuClose)
