@@ -70,7 +70,7 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 		
 		if(b1 && b2 && b3)  {
 			float x = (*it)->getX(), c = (*it)->getCont();
-			explosion.setSize((*it)->getSize());
+			explosion.setTipo((*it)->getSize());
 			explosion.setPosX((*it)->getX());
 			explosion.setPosY((*it)->getY());
 			SIZE s;
