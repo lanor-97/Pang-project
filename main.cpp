@@ -4,6 +4,7 @@ const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
 bool Menu(ALLEGRO_DISPLAY*, float[]);
+void Transition(ALLEGRO_BITMAP*, int);
 
 int main(int argc, char **argv)  { 
 
@@ -92,53 +93,34 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 
 	ALLEGRO_BITMAP*			menu_play=NULL;
 	ALLEGRO_BITMAP*			menu_exit=NULL;
-	ALLEGRO_TIMER*			timer=NULL;
 	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
-	Transizione             transizione;
 
 	menu_play = al_load_bitmap("images/shrekMenu1.jpg");
 	menu_exit = al_load_bitmap("images/shrekMenu2.jpg");
-	bool play = true, fullscreen = false;
-	bool drawTransition=false;
-	bool redraw=false;
+	bool play = true, fullscreen = false, drawTransition=false;
 
-	timer = al_create_timer(1.0 / 60);
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_install_keyboard();
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	
 	al_draw_bitmap(menu_play, 0, 0, 0);
 	al_flip_display();
-	al_start_timer(timer);
-	while(true)  {
+
+	while(!drawTransition)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
-		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-		if(drawTransition)
-		redraw=true;
-		else
-		redraw=false;
-		}
-
-		if(!drawTransition){
 
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
 				play = false;
 				break;
 			}
-
-			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE || ev.keyboard.keycode==ALLEGRO_KEY_ENTER)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER)  {
 				drawTransition=true;
 			}
-					
-				
-			
-			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
 				play = false;
 				al_draw_bitmap(menu_exit,0,0,0);
 				al_flip_display();
@@ -148,7 +130,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 				al_draw_bitmap(menu_play,0,0,0);
 				al_flip_display();
 			}
-			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
 				fullscreen = !fullscreen;
 
 				if(fullscreen)  {
@@ -160,13 +142,13 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					res_info[1] = 1;
 				}
 
-				
+					
 				al_identity_transform(&redimencionamento);
 				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
 				al_use_transform(&redimencionamento);
 				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
-				
-				if( play)  {
+					
+				if(play)  {
 					al_draw_bitmap(menu_play,0,0,0);
 					al_flip_display();
 				}
@@ -174,34 +156,49 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					al_draw_bitmap(menu_play,0,0,0);
 					al_flip_display();
 				}
-				
-
-
 			}
-			
-			
-		    }
 		}
-		if(drawTransition)
-				{
-					al_draw_bitmap(menu_play,0,0,0);
-					transizione.setTipo(0);
-					if(!transizione.Draw())
-					{
-						drawTransition=false;
-						break;
-					}
-					
-					al_flip_display();	
-				}	
-		
+
+		if(drawTransition)  {
+			if(play)
+				Transition(menu_play, 1);
+			else
+				Transition(menu_exit, 0);		
+		}
 	}
 	
 	al_destroy_bitmap(menu_play);
 	al_destroy_bitmap(menu_exit);
-	al_destroy_timer(timer);
 	al_destroy_event_queue(event_queue);
 	return play;
 
 	return 0;
+}
+
+void Transition(ALLEGRO_BITMAP* bmp, int x)  {
+	Transizione transizione;
+	ALLEGRO_TIMER* timer = NULL;
+	ALLEGRO_EVENT_QUEUE* event_queue=NULL;
+	timer = al_create_timer(1.0 / 60);
+	event_queue = al_create_event_queue();
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+
+	al_start_timer(timer);
+
+	while(true)  {
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if(ev.type == ALLEGRO_EVENT_TIMER)  {
+			al_draw_bitmap(bmp,0,0,0);
+			transizione.setTipo(x);
+			if(!transizione.Draw())  {
+				return;
+			}
+							
+			al_flip_display();
+		}
+	}
+
+	al_destroy_timer(timer);
 }
