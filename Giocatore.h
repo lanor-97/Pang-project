@@ -70,13 +70,13 @@ bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft,
   else if(drawShoot && toLeft && !caduto)
   {
     animazione.setFrameDelay(7);
-	  setFrames(2);
+	  setFrames(3);
     setBitmap(al_load_bitmap("images/shrekHookSinistra.png"));
   }
   else if(drawShoot && !toLeft && !caduto)
   {
     animazione.setFrameDelay(7);
-	  setFrames(2);
+	  setFrames(3);
     setBitmap(al_load_bitmap("images/shrekHookDestra.png"));
   }
   else if(caduto && toLeft)
