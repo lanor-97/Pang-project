@@ -40,7 +40,7 @@ class Animation{
 			}
         al_draw_bitmap_region(bitmap,currFrame*dim_x,0,dim_x,dim_y,x,y,0);
         if(!ridisegna && currFrame>=totalFrames)
-		    currFrame=0;
+                currFrame=0;
         return continua;
     }
 };
