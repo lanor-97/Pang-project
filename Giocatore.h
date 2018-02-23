@@ -35,6 +35,7 @@ public:
    	void setDim_y(int d)  { dim_y=d; }
    	void setFrames(int f) {frames=f;}
    	bool Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
+    void DrawVictory();
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
 
 };
@@ -106,6 +107,14 @@ bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft,
   }
   
   return animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), false,getFrames());
+}
+
+void Giocatore::DrawVictory()
+{
+  setFrames(6);
+  setBitmap(al_load_bitmap("images/shrekVictory.png"));
+  if(!animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), true,getFrames()))
+  return;
 }
 
 

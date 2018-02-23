@@ -213,6 +213,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
+					player->DrawVictory();
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 						Transition(3);
