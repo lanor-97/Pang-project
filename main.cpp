@@ -159,7 +159,9 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 		}
 
 		if(drawTransition && !play)
-			Transition(menu_exit);		
+			Transition(menu_exit);	
+		if(drawTransition && play)
+			Transition(menu_play);		
 	}
 	
 	al_destroy_bitmap(menu_play);
@@ -174,7 +176,7 @@ void Transition(ALLEGRO_BITMAP* bmp)  {
 	Transizione transizione;
 	ALLEGRO_TIMER* timer = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue=NULL;
-	timer = al_create_timer(1.0 / 60);
+	timer = al_create_timer(1.0 / 25);
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
