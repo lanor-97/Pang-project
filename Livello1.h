@@ -65,18 +65,14 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
 
-	if(!al_is_event_queue_empty(event_queue))
-		al_flush_event_queue(event_queue);
-
+	
 	al_start_timer(timer);
-
 	Transition(1);
-
 	al_set_timer_speed(timer, 1.0 / 60);
 
 	//IL GIOCO VERO E PROPRIO
 
-   	while(!MatchOver && !victory) {
+	while(!MatchOver && !victory) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -126,6 +122,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
+				MatchOver = true;
 				caduto=true;
 				colpito=true;
 			}
@@ -188,24 +185,19 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			if(vite>=3)
 				al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
 			if(vite<=0 || tempo<=0)
-				caduto=true;
+				MatchOver=true;
 
 			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
-			if(tempo/60>0)
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
 			
 
 			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto))
-			{		
-				if(caduto)	
 				{
 					caduto=false;
-					MatchOver=true;
-				}
-				drawShoot=false;
-			}		
+					drawShoot=false;
+				}	
 			
 			if(!GP.Draw(drawExplosion))
 			drawExplosion=false;
@@ -223,6 +215,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	if(victory)
 	{
 		Transition(2);
+		al_set_timer_speed(timer, 1.0 / 60);
 	}
 
 	//DISTRUGGO TUTTO
@@ -240,28 +233,24 @@ void Livello1::Transition(int x)
 	Transizione 	transizione;
 	bool trans=true;
 
-		transizione.setTipo(x);
-		al_start_timer(timer);
-		al_set_timer_speed(timer, 1.0 / 10);
-		while(trans)  {
-
+	al_flush_event_queue(event_queue);
+	transizione.setTipo(x);
+	al_set_timer_speed(timer, 1.0 / 5);
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	while(trans)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			if(x==1)
-			{
-				al_draw_bitmap(sfondo,0,0,0);
-				GP.Draw(false);
-				player->Draw(false,false,false,false, false);
-			}
-			if(!transizione.Draw())  {
+			al_draw_bitmap(sfondo,0,0,0);
+			GP.Draw(false);
+			player->Draw(false,false,false,false, false);
+			if(!transizione.Draw())
 				trans = false;
-			}
 							
 			al_flip_display();
 		}
-}
+	}
 }
 
 
