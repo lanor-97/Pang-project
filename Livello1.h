@@ -60,7 +60,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
-			drawExplosion=false, trans=true, victory=false;
+			drawExplosion=false, trans=true;
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
@@ -72,7 +72,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 	//IL GIOCO VERO E PROPRIO
 
-	while(!MatchOver && !victory) {
+	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -122,6 +122,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
+				MatchOver = true;
 				caduto=true;
 				colpito=true;
 			}
@@ -184,7 +185,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			if(vite>=3)
 				al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
 			if(vite<=0 || tempo<=0)
-				caduto=true;
+				MatchOver=true;
 
 			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
@@ -194,11 +195,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto))
 				{
-					if(caduto)
-					{
-						caduto=false;
-						MatchOver=true;
-					}	
+					caduto=false;
 					drawShoot=false;
 				}	
 			
@@ -209,16 +206,18 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			al_flip_display();
 			redraw = false;
 			if(GP.Empty())  {
-				victory=true;
+				Transition(2);
+				al_flush_event_queue(event_queue);
+				while(true)  {
+					al_wait_for_event(event_queue, &ev);
+					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+						Transition(3);
+						break;
+					}
+				}
 				break;
 			}
 		}
-	}
-
-	if(victory)
-	{
-		Transition(2);
-		al_set_timer_speed(timer, 1.0 / 60);
 	}
 
 	//DISTRUGGO TUTTO
@@ -248,8 +247,10 @@ void Livello1::Transition(int x)
 			al_draw_bitmap(sfondo,0,0,0);
 			GP.Draw(false);
 			player->Draw(false,false,false,false, false);
-			if(!transizione.Draw())
+			if(!transizione.Draw())  {
 				trans = false;
+				al_set_timer_speed(timer, 1.0 / 60);
+			}
 							
 			al_flip_display();
 		}
