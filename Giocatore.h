@@ -112,9 +112,9 @@ bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft,
 void Giocatore::DrawVictory()
 {
   setFrames(6);
+  animazione.setFrameDelay(7);
   setBitmap(al_load_bitmap("images/shrekVictory.png"));
-  if(!animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), true,getFrames()))
-  return;
+  animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), true,getFrames());
 }
 
 

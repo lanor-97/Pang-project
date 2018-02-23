@@ -216,7 +216,6 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
-					player->DrawVictory();
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 						Transition(3);
@@ -255,9 +254,16 @@ void Livello1::Transition(int x)
 		al_wait_for_event(event_queue, &ev);
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			al_draw_bitmap(sfondo,0,0,0);
-			GP.Draw(false);
-			player->Draw(false,false,false,false, false);
+			if(x==1)
+			{
+				al_draw_bitmap(sfondo,0,0,0);
+				GP.Draw(false);
+				player->Draw(false,false,false,false, false);
+			}
+			if(x==2 || x==3)
+			{
+				player->DrawVictory();
+			}	
 			if(!transizione.Draw())  {
 				trans = false;
 				al_set_timer_speed(timer, 1.0 / 60);
