@@ -72,7 +72,7 @@ int main(int argc, char **argv)  {
    	while(play && vite > 0)  {
 
 	   	while(vite > 0)  {
-	   		if(!L1->Esegui(display, vite, res_info))  {
+	   		if(L1->Esegui(display, vite, res_info))  {
 	   			vite--;
 	   			continue;
 	   		}

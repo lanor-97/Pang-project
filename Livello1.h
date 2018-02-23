@@ -11,6 +11,7 @@ public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
 	~Livello1();
 	bool Esegui(ALLEGRO_DISPLAY*, int, float[]);
+	void Transition(int);
 protected:
 	ALLEGRO_BITMAP* sfondo=NULL;
 	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
@@ -54,46 +55,28 @@ Livello1::~Livello1()  {
 bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
-	Transizione 			transizione;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
-			drawExplosion=false, trans=true;
+			drawExplosion=false, trans=true, victory=false;
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
 
-	transizione.setTipo(1);
 	if(!al_is_event_queue_empty(event_queue))
 		al_flush_event_queue(event_queue);
 
 	al_start_timer(timer);
-	al_set_timer_speed(timer, 1.0 / 10);
-			
-	while(trans)  {
-		ALLEGRO_EVENT ev;
-		al_wait_for_event(event_queue, &ev);
 
-		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			al_draw_bitmap(sfondo,0,0,0);
-			GP.Draw(drawExplosion);
-			player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto);
+	Transition(1);
 
-			//transizione.setTipo(1);
-			if(!transizione.Draw())  {
-				trans = false;
-			}
-							
-			al_flip_display();
-		}
-	}
-	
 	al_set_timer_speed(timer, 1.0 / 60);
 
 	//IL GIOCO VERO E PROPRIO
-   	while(!MatchOver) {
+
+   	while(!MatchOver && !victory) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 		if(shoot==false)  {
@@ -227,10 +210,15 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			al_flip_display();
 			redraw = false;
 			if(GP.Empty())  {
-				
+				victory=true;
 				break;
 			}
 		}
+	}
+
+	if(victory)
+	{
+		Transition(2);
 	}
 
 	//DISTRUGGO TUTTO
@@ -239,9 +227,38 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	GP.Clear();
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
 
-	return !MatchOver;
+	return MatchOver;
 }
 
+
+void Livello1::Transition(int x)
+{
+	Transizione 	transizione;
+	bool trans=true;
+
+		transizione.setTipo(x);
+		al_start_timer(timer);
+		al_set_timer_speed(timer, 1.0 / 10);
+		while(trans)  {
+
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if(ev.type == ALLEGRO_EVENT_TIMER)  {
+			if(x==1)
+			{
+				al_draw_bitmap(sfondo,0,0,0);
+				GP.Draw(false);
+				player->Draw(false,false,false,false, false);
+			}
+			if(!transizione.Draw())  {
+				trans = false;
+			}
+							
+			al_flip_display();
+		}
+}
+}
 
 
 #endif
