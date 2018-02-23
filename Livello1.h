@@ -10,7 +10,7 @@ class Livello1  {
 public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
 	~Livello1();
-	bool Esegui(ALLEGRO_DISPLAY*, int, float[]);
+	int Esegui(ALLEGRO_DISPLAY*, int, float[]);
 	void Transition(int);
 protected:
 	ALLEGRO_BITMAP* sfondo=NULL;
@@ -52,7 +52,7 @@ Livello1::~Livello1()  {
 	al_destroy_event_queue(event_queue);
 }
 
-bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
+int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -63,7 +63,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			drawExplosion=false, trans=true;
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
-			frameCount=0, frameDelay=5;
+			frameCount=0, frameDelay=5, return_value;
 
 	
 	al_start_timer(timer);
@@ -122,7 +122,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
-				
+				return_value = 0;
 				caduto=true;
 				colpito=true;
 			}
@@ -132,12 +132,15 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			redraw = true;
 		}
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			return_value = -1;
 			break;
 		}
 
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)
+			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
+				return_value = -1;
 				break;
+			}
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
@@ -204,7 +207,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 				}	
 			
 			if(!GP.Draw(drawExplosion))
-			drawExplosion=false;
+				drawExplosion=false;
 
 			tempo--;
 			al_flip_display();
@@ -221,8 +224,10 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 						break;
 					}
 				}
+				return_value = 1;
 				break;
 			}
+		
 		}
 	}
 
@@ -232,7 +237,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	GP.Clear();
 	GP.aggiungiPalla(SCREEN_W/2, 157, GRA) && GP.aggiungiPalla(0, 157, GRA);
 
-	return MatchOver;
+	return return_value;
 }
 
 
