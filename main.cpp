@@ -72,11 +72,18 @@ int main(int argc, char **argv)  {
    	while(play && vite > 0)  {
 
 	   	while(vite > 0)  {
-	   		if(L1->Esegui(display, vite, res_info))  {
+	   		int x = L1->Esegui(display, vite, res_info);
+	   		if(x < 0)
+	   			vite = 0;
+	   		else if(x == 0)  {
 	   			vite--;
 	   			continue;
 	   		}
-	   		cout << "hai vinto coglione\n";
+	   		else if(x == 1)  {
+	   			cerr << "MA BRAVO TANTI AUGURI";
+	   			break;
+	   		}
+	   		
    		}
    	}
 
