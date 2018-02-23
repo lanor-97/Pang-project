@@ -122,7 +122,6 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
-				MatchOver = true;
 				caduto=true;
 				colpito=true;
 			}
@@ -185,7 +184,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			if(vite>=3)
 				al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
 			if(vite<=0 || tempo<=0)
-				MatchOver=true;
+				caduto=true;
 
 			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
@@ -195,7 +194,11 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto))
 				{
-					caduto=false;
+					if(caduto)
+					{
+						caduto=false;
+						MatchOver=true;
+					}	
 					drawShoot=false;
 				}	
 			
