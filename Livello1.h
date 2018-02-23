@@ -5,6 +5,7 @@
 #include "Giocatore.h"
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "Transizione.h"
 class Livello1  {
 public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
@@ -53,22 +54,43 @@ Livello1::~Livello1()  {
 bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
+	Transizione 			transizione;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
-			drawExplosion=false;
+			drawExplosion=false, trans=true;
 
 	int 	punteggio=0, tempo=9000, currFrame=0, 
 			frameCount=0, frameDelay=5;
-   	
 
-	al_draw_bitmap(sfondo,0,0,0);
-	GP.Draw(drawExplosion);
-	player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto);
-	al_flip_display();
+	transizione.setTipo(1);
+	if(!al_is_event_queue_empty(event_queue))
+		al_flush_event_queue(event_queue);
+
 	al_start_timer(timer);
+	al_set_timer_speed(timer, 1.0 / 10);
+			
+	while(trans)  {
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if(ev.type == ALLEGRO_EVENT_TIMER)  {
+			al_draw_bitmap(sfondo,0,0,0);
+			GP.Draw(drawExplosion);
+			player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto);
+
+			//transizione.setTipo(1);
+			if(!transizione.Draw())  {
+				trans = false;
+			}
+							
+			al_flip_display();
+		}
+	}
+	
+	al_set_timer_speed(timer, 1.0 / 60);
 
 	//IL GIOCO VERO E PROPRIO
    	while(!MatchOver) {
@@ -81,13 +103,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 
 			GP.Bouncer();
-
 			bool hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);  //rampino colpisce palla
-
-			if(!bitmap_)  {
-				cerr << "failed to initialize some palla.png";
-				break;
-			}
 
 			if(hit && !presa)  {
 				punteggio+=200;

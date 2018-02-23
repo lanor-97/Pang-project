@@ -1,10 +1,9 @@
 #include "Livello1.h"
-#include "Transizione.h"
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 
 bool Menu(ALLEGRO_DISPLAY*, float[]);
-void Transition(ALLEGRO_BITMAP*, int);
+void Transition(ALLEGRO_BITMAP*);
 
 int main(int argc, char **argv)  { 
 
@@ -159,12 +158,8 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 			}
 		}
 
-		if(drawTransition)  {
-			if(play)
-				Transition(menu_play, 0);
-			else
-				Transition(menu_exit, 0);		
-		}
+		if(drawTransition && !play)
+			Transition(menu_exit);		
 	}
 	
 	al_destroy_bitmap(menu_play);
@@ -175,7 +170,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 	return 0;
 }
 
-void Transition(ALLEGRO_BITMAP* bmp, int x)  {
+void Transition(ALLEGRO_BITMAP* bmp)  {
 	Transizione transizione;
 	ALLEGRO_TIMER* timer = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue=NULL;
@@ -183,6 +178,7 @@ void Transition(ALLEGRO_BITMAP* bmp, int x)  {
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
+	transizione.setTipo(0);
 	al_start_timer(timer);
 
 	while(true)  {
@@ -191,7 +187,6 @@ void Transition(ALLEGRO_BITMAP* bmp, int x)  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			al_draw_bitmap(bmp,0,0,0);
-			transizione.setTipo(x);
 			if(!transizione.Draw())  {
 				return;
 			}
