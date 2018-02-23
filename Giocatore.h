@@ -34,7 +34,7 @@ public:
   	void setDim_x(int d)  { dim_x=d; }
    	void setDim_y(int d)  { dim_y=d; }
    	void setFrames(int f) {frames=f;}
-   	bool Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto);
+   	bool Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto, bool climbing);
     void DrawVictory();
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
 
@@ -53,8 +53,14 @@ Giocatore::Giocatore(int dx, int dy, int f)  {
   animazione.setCurrFrame(0);
 }
 
-bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto){
+bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing){
   arma->Draw();
+  if(climbing)
+  {
+    setFrames(6);
+    animazione.setFrameDelay(7);
+    setBitmap(al_load_bitmap("images/shrekClimbing.png"));
+  }
   if(keyLeft && !drawShoot && !caduto)
   {
     setFrames(6);

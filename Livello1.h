@@ -197,7 +197,7 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			
 
-			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto))
+			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))
 				{
 					if(caduto)
 					{
@@ -259,7 +259,7 @@ void Livello1::Transition(int x)
 			{
 				al_draw_bitmap(sfondo,0,0,0);
 				GP.Draw(false);
-				player->Draw(false,false,false,false, false);
+				player->Draw(false,false,false,false, false,false);
 			}
 			if(x==2 || x==3)
 			{
