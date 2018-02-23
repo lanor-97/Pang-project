@@ -216,6 +216,7 @@ bool Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 						Transition(3);
+						al_rest(2);
 						break;
 					}
 				}
@@ -241,7 +242,7 @@ void Livello1::Transition(int x)
 
 	al_flush_event_queue(event_queue);
 	transizione.setTipo(x);
-	al_set_timer_speed(timer, 1.0 / 5);
+	al_set_timer_speed(timer, 1.0 / 10);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	while(trans)  {
 		ALLEGRO_EVENT ev;
