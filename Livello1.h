@@ -6,7 +6,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include "Transizione.h"
-#include "Farquaad.h"
+#include "Blocco.h"
 class Livello1  {
 public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
