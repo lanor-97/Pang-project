@@ -220,7 +220,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keyLeft = false;
 				keyRight = false;
 				if(!Pausa(res_info))  {	
-					return_value = -1;
+					return_value = 2;
 					break;
 				}
 				al_start_timer(timer);

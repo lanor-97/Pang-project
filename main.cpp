@@ -83,8 +83,11 @@ int main(int argc, char **argv)  {
 	   			cerr << "MA BRAVO TANTI AUGURI";
 	   			break;
 	   		}
-	   		
-   		}
+	   		else if(x == 2)
+	   			break;
+	   	}
+	   	if(vite > 0)
+	   		play = Menu(display, res_info);
    	}
 
    	delete L1;
