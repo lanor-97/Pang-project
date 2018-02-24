@@ -123,7 +123,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 				play = false;
 				break;
 			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER || ev.keyboard.keycode==ALLEGRO_KEY_SPACE)  {
 				drawTransition=true;
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
@@ -159,7 +159,7 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					al_flip_display();
 				}
 				else  {
-					al_draw_bitmap(menu_play,0,0,0);
+					al_draw_bitmap(menu_exit,0,0,0);
 					al_flip_display();
 				}
 			}
