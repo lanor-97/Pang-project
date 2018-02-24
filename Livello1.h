@@ -69,23 +69,24 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 	
 	al_start_timer(timer);
 	Transition(1);
-	al_set_timer_speed(timer, 1.0 / 60);
+	al_set_timer_speed(timer, 1.0 / 20);
 
 	//IL GIOCO VERO E PROPRIO
 
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-		if(shoot==false)  {
-			player->posizionaArma();
-		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-
+			bool hit = false;
 			GP.Bouncer();
-			bool hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);  //rampino colpisce palla
+			if(shoot)
+				hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);
 
-			if(hit && !presa)  {
+			if(shoot==false)
+				player->posizionaArma();
+
+			if(hit && !presa)  {	//rampino colpisce palla
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -197,7 +198,8 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-			
+			if(shoot)
+				player->Draw_arma(H_arma);
 
 			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))  {
 				if(caduto)  {
@@ -206,8 +208,6 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 				}	
 				drawShoot=false;
 			}
-			if(shoot)
-				player->Draw_arma(H_arma);
 			
 			if(!GP.Draw(drawExplosion))
 				drawExplosion=false;

@@ -48,7 +48,7 @@ Giocatore::Giocatore(int dx, int dy, int f)  {
 	posX = 0;
 	posY = 0;
 	bitmap = al_load_bitmap("images/shrekFermoSinistra.png");
-	arma = new Arma(24, 0, 0);
+	arma = new Arma(12, 0, 0);
     animazione.setFrameCount(0);
     animazione.setFrameDelay(5);
     animazione.setCurrFrame(0);
