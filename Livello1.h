@@ -63,29 +63,30 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
 			drawExplosion=false, trans=true;
 
-	int 	punteggio=0, tempo=9000, currFrame=0, 
+	int 	punteggio=0, tempo=9000, currFrame=0, H_arma=0,
 			frameCount=0, frameDelay=5, return_value;
 
 	
 	al_start_timer(timer);
 	Transition(1);
-	al_set_timer_speed(timer, 1.0 / 60);
+	al_set_timer_speed(timer, 1.0 / 20);
 
 	//IL GIOCO VERO E PROPRIO
 
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-		if(shoot==false)  {
-			player->posizionaArma();
-		}
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-
+			bool hit = false;
 			GP.Bouncer();
-			bool hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);  //rampino colpisce palla
+			if(shoot)
+				hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);
 
-			if(hit && !presa)  {
+			if(shoot==false)
+				player->posizionaArma();
+
+			if(hit && !presa)  {	//rampino colpisce palla
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -176,9 +177,11 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			al_draw_bitmap(sfondo,0,0,0);
 			if(shoot && player->getY_arma()>0 && !presa)  {
-				player->setY_arma(player->getY_arma()-player->getDim_arma()/4);	//il /4 è per rallentarlo
+				player->setY_arma(player->getY_arma() - 6);
+				H_arma += 6;
 			}
 			else  {
+				H_arma = 0;
 				shoot=false;
 			}
 
@@ -195,17 +198,16 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-			
+			if(shoot)
+				player->Draw_arma(H_arma);
 
-			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))
-				{
-					if(caduto)
-					{
-						caduto=false;
-						MatchOver=true;
-					}	
-					drawShoot=false;
+			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))  {
+				if(caduto)  {
+					caduto=false;
+					MatchOver=true;
 				}	
+				drawShoot=false;
+			}
 			
 			if(!GP.Draw(drawExplosion))
 				drawExplosion=false;
