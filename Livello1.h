@@ -63,7 +63,7 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
 			drawExplosion=false, trans=true;
 
-	int 	punteggio=0, tempo=9000, currFrame=0, 
+	int 	punteggio=0, tempo=9000, currFrame=0, H_arma=0,
 			frameCount=0, frameDelay=5, return_value;
 
 	
@@ -176,9 +176,11 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			al_draw_bitmap(sfondo,0,0,0);
 			if(shoot && player->getY_arma()>0 && !presa)  {
-				player->setY_arma(player->getY_arma()-player->getDim_arma()/4);	//il /4 è per rallentarlo
+				player->setY_arma(player->getY_arma() - 6);
+				H_arma += 6;
 			}
 			else  {
+				H_arma = 0;
 				shoot=false;
 			}
 
@@ -197,15 +199,15 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 
 			
 
-			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))
-				{
-					if(caduto)
-					{
-						caduto=false;
-						MatchOver=true;
-					}	
-					drawShoot=false;
+			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))  {
+				if(caduto)  {
+					caduto=false;
+					MatchOver=true;
 				}	
+				drawShoot=false;
+			}
+			if(shoot)
+				player->Draw_arma(H_arma);
 			
 			if(!GP.Draw(drawExplosion))
 				drawExplosion=false;

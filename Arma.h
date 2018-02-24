@@ -21,7 +21,7 @@ public:
 	void setX(int x)  { posX=x; }
 	void setY(int y)  { posY=y; }
 	void setDim(float d)  { dim=d; }
-	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+	void Draw(int H)  { al_draw_bitmap_region(bitmap,0,0,24,H,posX,posY,0); }
 };
 
 Arma::Arma(float d, int x, int y)  {
