@@ -6,12 +6,13 @@
 class Giocatore  {
 private:
   	int 	dim_x,
-			dim_y,
+            dim_y,
 			posX,
-			posY;
+			posY,
+            frames;
+    bool    left, right,drawShoot, toLeft, caduto, climbing;    //per la funzione draw
   	ALLEGRO_BITMAP *bitmap;
     Animation animazione;
-   	int frames;
    	Arma* arma;
 
 public:
@@ -34,7 +35,8 @@ public:
   	void setDim_x(int d)  { dim_x=d; }
    	void setDim_y(int d)  { dim_y=d; }
    	void setFrames(int f) {frames=f;}
-   	bool Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto, bool climbing);
+    void setDraw(bool, bool, bool, bool, bool, bool);
+   	bool Draw();
     void DrawVictory();
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
     void Draw_arma(int H)  { arma->Draw(H); }
@@ -44,7 +46,7 @@ public:
 Giocatore::Giocatore(int dx, int dy, int f)  {
 	dim_x = dx;
 	dim_y = dy;
-  	frames=f;
+    frames=f;
 	posX = 0;
 	posY = 0;
 	bitmap = al_load_bitmap("images/shrekFermoSinistra.png");
@@ -54,19 +56,27 @@ Giocatore::Giocatore(int dx, int dy, int f)  {
     animazione.setCurrFrame(0);
 }
 
-bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing){
+void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing)  {
+    left = keyLeft;
+    right = keyRight;
+    this->drawShoot = drawShoot;
+    this->toLeft = toLeft;
+    this->caduto = caduto;
+    this->climbing = climbing;
+}
+bool Giocatore:: Draw(){
     if(climbing)  {
         setFrames(6);
         animazione.setFrameDelay(7);
         setBitmap(al_load_bitmap("images/shrekClimbing.png"));
     }
-    if(keyLeft && !drawShoot && !caduto)  {
+    if(left && !drawShoot && !caduto)  {
         setFrames(6);
         animazione.setFrameDelay(5);
         setBitmap(al_load_bitmap("images/shrekSinistra.png"));
     }
 
-    else if(keyRight && !drawShoot && !caduto)  {
+    else if(right && !drawShoot && !caduto)  {
         setFrames(6);
         animazione.setFrameDelay(5);
         setBitmap(al_load_bitmap("images/shrekDestra.png"));
@@ -102,14 +112,14 @@ bool Giocatore:: Draw( bool keyLeft, bool keyRight, bool drawShoot, bool toLeft,
         return true;
     }
   
-    return animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), false,getFrames());
+    return animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
 }
 
 void Giocatore::DrawVictory()  {
   setFrames(6);
   animazione.setFrameDelay(7);
   setBitmap(al_load_bitmap("images/shrekVictory.png"));
-  animazione.eseguiFrame(bitmap,getDim_x(),getDim_y(),getX(),getY(), true,getFrames());
+  animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
 }
 
 

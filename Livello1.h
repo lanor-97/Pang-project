@@ -56,8 +56,7 @@ Livello1::~Livello1()  {
 	al_destroy_event_queue(event_queue);
 }
 
-bool Livello1::Pausa(float res_info[])
-{
+bool Livello1::Pausa(float res_info[])  {
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
@@ -67,9 +66,6 @@ bool Livello1::Pausa(float res_info[])
 	bool play = true, fullscreen = false, pausa=true, inGame=true;
 	al_flush_event_queue(event_queue);
 	
-	al_draw_bitmap(pausa_play, 0, 0, 0);
-	al_flip_display();
-
 	while(pausa)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -91,13 +87,9 @@ bool Livello1::Pausa(float res_info[])
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play)  {
 				play = false;
-				al_draw_bitmap(pausa_exit,0,0,0);
-				al_flip_display();
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play)  {
 				play = true;
-				al_draw_bitmap(pausa_play,0,0,0);
-				al_flip_display();
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
 				fullscreen = !fullscreen;
@@ -119,12 +111,22 @@ bool Livello1::Pausa(float res_info[])
 				}	
 				
 			}
-				
-		
+			al_draw_bitmap(sfondo,0,0,0);
+			//al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
+			//al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
+			player->Draw();
+			GP.Draw(false);
+			if(!play)
+				al_draw_bitmap(pausa_exit,0,0,0);
+			else
+				al_draw_bitmap(pausa_play,0,0,0);
+
+			al_flip_display();
 	}
 	
 	al_destroy_bitmap(pausa_play);
 	al_destroy_bitmap(pausa_exit);
+	al_flush_event_queue(event_queue);
 	return inGame;
 }
 
@@ -215,11 +217,12 @@ int Livello1::Esegui(int vite, float res_info[])  {
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
 				al_stop_timer(timer);
+				keyLeft = false;
+				keyRight = false;
 				if(!Pausa(res_info))  {	
 					return_value = -1;
 					break;
 				}
-				al_flush_event_queue(event_queue);
 				al_start_timer(timer);
 			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
@@ -280,7 +283,8 @@ int Livello1::Esegui(int vite, float res_info[])  {
 			if(shoot)
 				player->Draw_arma(H_arma);
 
-			if(!player->Draw(keyLeft,keyRight,drawShoot,toLeft, caduto,false))  {
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
+			if(!player->Draw())  {
 				if(caduto)  {
 					caduto=false;
 					MatchOver=true;
@@ -329,6 +333,7 @@ void Livello1::Transition(int x)
 
 	al_flush_event_queue(event_queue);
 	transizione.setTipo(x);
+	player->setDraw(false,false,false,false, false,false);
 	al_set_timer_speed(timer, 1.0 / 10);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	while(trans)  {
@@ -340,7 +345,7 @@ void Livello1::Transition(int x)
 			{
 				al_draw_bitmap(sfondo,0,0,0);
 				GP.Draw(false);
-				player->Draw(false,false,false,false, false,false);
+				player->Draw();
 			}
 			if(x==2 || x==3)
 			{
