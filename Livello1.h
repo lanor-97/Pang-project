@@ -11,9 +11,9 @@ class Livello1  {
 public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*);
 	~Livello1();
-	int Esegui(ALLEGRO_DISPLAY*, int, float[]);
+	int Esegui(int, float[]);
 	void Transition(int);
-	bool Pausa(ALLEGRO_DISPLAY* display, float res_info[]);
+	bool Pausa(float res_info[]);
 protected:
 	ALLEGRO_BITMAP* sfondo=NULL;
 	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
@@ -21,13 +21,14 @@ protected:
 	ALLEGRO_FONT*			font1=NULL;
 	ALLEGRO_FONT*			font2=NULL;
 	ALLEGRO_BITMAP*			vite_bmp=NULL;
+	ALLEGRO_DISPLAY* 		display=NULL;
 	Giocatore* player;
 	GestorePalle GP;
 	float SCREEN_W, SCREEN_H;
 };
 
 
-Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
+Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
 	sfondo = al_load_bitmap("images/sfondo1.jpg");
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
@@ -39,6 +40,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display): 
 	vite_bmp = al_load_bitmap("images/vita.png");
 	timer = al_create_timer(1.0 / 60);
 	event_queue = al_create_event_queue();
+	display = display1;
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
@@ -54,21 +56,16 @@ Livello1::~Livello1()  {
 	al_destroy_event_queue(event_queue);
 }
 
-bool Livello1::Pausa(ALLEGRO_DISPLAY* display, float res_info[])
+bool Livello1::Pausa(float res_info[])
 {
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
-	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
 	pausa_play = al_load_bitmap("images/pausa1.png");
 	pausa_exit = al_load_bitmap("images/pausa2.png");
 	bool play = true, fullscreen = false, pausa=true, inGame=true;
-
-	event_queue = al_create_event_queue();
-	al_register_event_source(event_queue, al_get_display_event_source(display));
-	al_install_keyboard();
-	al_register_event_source(event_queue,al_get_keyboard_event_source());
+	al_flush_event_queue(event_queue);
 	
 	al_draw_bitmap(pausa_play, 0, 0, 0);
 	al_flip_display();
@@ -83,13 +80,11 @@ bool Livello1::Pausa(ALLEGRO_DISPLAY* display, float res_info[])
 				break;
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER || ev.keyboard.keycode==ALLEGRO_KEY_SPACE)  {
-				if(play)
-				{
+				if(play)  {
 					pausa=false;
 					break;
 				}
-				else
-				{
+				else  {
 					pausa=false;
 					inGame=false;
 				}	
@@ -130,11 +125,10 @@ bool Livello1::Pausa(ALLEGRO_DISPLAY* display, float res_info[])
 	
 	al_destroy_bitmap(pausa_play);
 	al_destroy_bitmap(pausa_exit);
-	al_destroy_event_queue(event_queue);
 	return inGame;
 }
 
-int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
+int Livello1::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -144,13 +138,11 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
 			drawExplosion=false, trans=true;
 
-	int 	punteggio=0, tempo=9000, currFrame=0, H_arma=0,
-			frameCount=0, frameDelay=5, return_value;
+	int 	punteggio=0, tempo=9000, H_arma=0, return_value;
 
 	
 	al_start_timer(timer);
 	Transition(1);
-	al_set_timer_speed(timer, 1.0 / 60);
 
 	//IL GIOCO VERO E PROPRIO
 
@@ -223,11 +215,11 @@ int Livello1::Esegui(ALLEGRO_DISPLAY* display, int vite, float res_info[])  {
 		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
 				al_stop_timer(timer);
-					if(!Pausa(display,res_info))
-					{	
-						return_value = -1;
-						break;
-					}
+				if(!Pausa(res_info))  {	
+					return_value = -1;
+					break;
+				}
+				al_flush_event_queue(event_queue);
 				al_start_timer(timer);
 			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
