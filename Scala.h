@@ -5,36 +5,48 @@
 
 class Scala  {
 private:
-	float 	dim;
-  	int 	posX,
+	float 	dim_x,
+			dim_y,
+			posX,
 			posY;
-  	ALLEGRO_BITMAP *bitmap;
-    int tipo;  
+	bool 	tipo;
+	//tipo0(0) dim_x = 46, dim_y = 135
+	//tipo1(1) dim_x = 45, dim_y = 166
+	ALLEGRO_BITMAP *bitmap;
 
 public:
-  	Scala(float, int, int,int);
+	Scala(): dim_x(0), dim_y(0), posX(0), posY(0), tipo(false)  { bitmap = NULL; }
+  	Scala(float, float, bool);				
   	~Scala()  { al_destroy_bitmap(bitmap); }
+  	float getDim_x() const  { return dim_x; }
+  	float getDim_y() const  { return dim_y; }
+	float getX() const  { return posX; }
+	float getY() const  { return posY; }
+    bool getTipo() const {return tipo;}
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
-	int getX() const  { return posX; }
-	int getY() const  { return posY; }
-    int getTipo() const {return tipo;}
-	float getDim() const  { return dim; }
-	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
-    void setTipo(int t){tipo=t;}
+	void setDim_x(float x)  { dim_x = x; }
+	void setDim_y(float y)  { dim_y = y; }
 	void setX(int x)  { posX=x; }
 	void setY(int y)  { posY=y; }
-	void setDim(float d)  { dim=d; }
+	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
 	void Draw(int H)  { al_draw_bitmap(bitmap,posX,posY,0); }
 };
 
-Scala::Scala(float d, int x, int y, int t)  {
-    tipo=t;
-	dim =d;
+Scala::Scala(float x, float y, bool t)  {
+    tipo = t;
 	posX = x;
 	posY = y;
-    if(tipo==1)
-	bitmap = al_load_bitmap("images/scala1.png");
-    if(tipo==2)
-    bitmap= al_load_bitmap("images/scala2.png");
+    if(tipo == 0)  {
+    	dim_x = 46;
+    	dim_y = 135;
+		bitmap = al_load_bitmap("images/scala1.png");
+    }
+    else  {
+    	dim_x = 45;
+    	dim_y = 166;
+    	bitmap= al_load_bitmap("images/scala2.png");
+    }
 }
+
+
 #endif
