@@ -1,50 +1,33 @@
-#ifndef LIVELLO1_H
-#define LIVELLO1_H
+#ifndef LIVELLO2_H
+#define LIVELLO2_H
 
-#include "Animation.h"
-#include "GestorePalle.h"
-#include "Giocatore.h"
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include "Transizione.h"
-#include "Blocco.h"
+#include "Livello1.h"
 
-
-class Livello1  {
+class Livello2: public Livello1  {
 public:
-	Livello1();
-	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
-	~Livello1();
-	int Esegui(int, float[]);
-	void Transition(int);
-	bool Pausa(float res_info[]);
+	Livello2()  { Livello1(); }
+	Livello2(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
+	Livello2(Livello1*, const int);
+	~Livello2();
 	void regolaPalle();
+	int Esegui(int, float[]);
 
-	//funzioni get
-	float getSW() const  { return SCREEN_W; }
-	float getSH() const  { return SCREEN_H; }
-	Giocatore* getPlayer() const  { return player; }
-	ALLEGRO_DISPLAY* getDisplay() const  { return display; }
 protected:
-	ALLEGRO_BITMAP* 		sfondo=NULL;
-	ALLEGRO_EVENT_QUEUE* 	event_queue=NULL;
-	ALLEGRO_TIMER*			timer=NULL;
-	ALLEGRO_FONT*			font1=NULL;
-	ALLEGRO_FONT*			font2=NULL;
-	ALLEGRO_BITMAP*			vite_bmp=NULL;
-	ALLEGRO_DISPLAY* 		display=NULL;
-	Giocatore* player;
-	GestorePalle GP;
-	float SCREEN_W, SCREEN_H;
+
 };
 
-Livello1::Livello1()  {
-	SCREEN_W = 0; 
-	SCREEN_H = 0;
-	player = NULL;
+
+Livello2::Livello2(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* d1, const int FPS)  {
+	Livello1(SW, SH, p, d1, FPS);
 }
-Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, const int FPS): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
-	sfondo = al_load_bitmap("images/sfondo1.jpg");
+
+Livello2::Livello2(Livello1* L1, const int FPS)  {
+	sfondo = al_load_bitmap("images/sfondo2.jpg");
+
+	player = L1->getPlayer();
+	SCREEN_W = L1->getSW();
+	SCREEN_H = L1->getSH();
+
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 
@@ -54,7 +37,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 
 	timer = al_create_timer(1.0 / FPS);
 	event_queue = al_create_event_queue();
-	display = display1;
+	display = L1->getDisplay();
 
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -62,12 +45,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 }
 
-void Livello1::regolaPalle()  {
-	GP.aggiungiPalla(SCREEN_W/2, 157, GRA);
-	GP.aggiungiPalla(0, 157, GRA);
-}
-
-Livello1::~Livello1()  {
+Livello2::~Livello2()  {
 	al_destroy_bitmap(sfondo); 
 	al_destroy_font(font1);
 	al_destroy_font(font2);
@@ -76,79 +54,12 @@ Livello1::~Livello1()  {
 	al_destroy_event_queue(event_queue);
 }
 
-bool Livello1::Pausa(float res_info[])  {
-	ALLEGRO_BITMAP*			pausa_play=NULL;
-	ALLEGRO_BITMAP*			pausa_exit=NULL;
-	ALLEGRO_TRANSFORM 		redimencionamento;
-
-	pausa_play = al_load_bitmap("images/pausa1.png");
-	pausa_exit = al_load_bitmap("images/pausa2.png");
-	bool play = true, fullscreen = false, pausa=true, inGame=true;
-	al_flush_event_queue(event_queue);
-	
-	while(pausa)  {
-		ALLEGRO_EVENT ev;
-		al_wait_for_event(event_queue, &ev);
-
-		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
-				pausa = false;
-				break;
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER || ev.keyboard.keycode==ALLEGRO_KEY_SPACE)  {
-				if(play)  {
-					pausa=false;
-					break;
-				}
-				else  {
-					pausa=false;
-					inGame=false;
-				}	
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play)  {
-				play = false;
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play)  {
-				play = true;
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
-				fullscreen = !fullscreen;
-
-				if(fullscreen)  {
-					res_info[0] = res_info[2] / res_info[4];
-					res_info[1] = res_info[3] / res_info[5];
-				}
-				else  {
-					res_info[0] = 1;
-					res_info[1] = 1;
-				}
-
-					
-				al_identity_transform(&redimencionamento);
-				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
-				al_use_transform(&redimencionamento);
-				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
-				}	
-				
-			}
-			al_draw_bitmap(sfondo,0,0,0);
-			player->Draw();
-			GP.Draw(false);
-			if(!play)
-				al_draw_bitmap(pausa_exit,0,0,0);
-			else
-				al_draw_bitmap(pausa_play,0,0,0);
-
-			al_flip_display();
-	}
-	
-	al_destroy_bitmap(pausa_play);
-	al_destroy_bitmap(pausa_exit);
-	al_flush_event_queue(event_queue);
-	return inGame;
+void Livello2::regolaPalle()  {
+	GP.aggiungiPalla(SCREEN_W/2, 157, GRA);
+	GP.aggiungiPalla(0, 157, GRA);
 }
 
-int Livello1::Esegui(int vite, float res_info[])  {
+int Livello2::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -341,42 +252,6 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	GP.Clear();
 
 	return return_value;
-}
-
-
-void Livello1::Transition(int x)
-{
-	Transizione 	transizione;
-	bool trans=true;
-
-	al_flush_event_queue(event_queue);
-	transizione.setTipo(x);
-	player->setDraw(false,false,false,false, false,false);
-	al_set_timer_speed(timer, 1.0 / 10);
-	al_register_event_source(event_queue, al_get_timer_event_source(timer));
-	while(trans)  {
-		ALLEGRO_EVENT ev;
-		al_wait_for_event(event_queue, &ev);
-
-		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			if(x==1)
-			{
-				al_draw_bitmap(sfondo,0,0,0);
-				GP.Draw(false);
-				player->Draw();
-			}
-			if(x==2 || x==3)
-			{
-				player->DrawVictory();
-			}	
-			if(!transizione.Draw())  {
-				trans = false;
-				al_set_timer_speed(timer, 1.0 / 60);
-			}
-							
-			al_flip_display();
-		}
-	}
 }
 
 

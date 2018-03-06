@@ -19,7 +19,7 @@ private:
 			bouncer,
 			bouncer_h,
 			cont,			//pos h
-			h_max;		//coeff. altezza massima
+			h_max;			//coeff. altezza massima
    	SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 	Animation animazione;
@@ -53,14 +53,14 @@ Palla::Palla(float x, float c, SIZE s)  {
 	size = s;
 	switch(s)  {
 		case PIC:		dim = 20;
-						h_max = 3;
+						h_max = 2;
 						bitmap = al_load_bitmap("images/palla_pic.png");
 						
 						bouncer_h = 3.3 + (rand()%100)*0.004;
 		break;
 		
 		case MED: 		dim = 40;
-						h_max = 2;
+						h_max = 1.8;
 						bitmap = al_load_bitmap("images/palla_med.png");
 					
 						bouncer_h = 2.35 + (rand()%100)*0.003;
