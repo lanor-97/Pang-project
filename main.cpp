@@ -85,7 +85,6 @@ int main(int argc, char **argv)  {
 	   			continue;
 	   		}
 	   		else if(x == 1)  {		//LIVELLO SUPERATO
-	   			cerr << "MA BRAVO TANTI AUGURI";
 	   			current_level = &(*L2);
 	   		}
 	   		else if(x == 2)

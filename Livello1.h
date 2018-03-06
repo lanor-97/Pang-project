@@ -348,11 +348,12 @@ void Livello1::Transition(int x)
 {
 	Transizione 	transizione;
 	bool trans=true;
+	double speed = al_get_timer_speed(timer);
 
 	al_flush_event_queue(event_queue);
 	transizione.setTipo(x);
 	player->setDraw(false,false,false,false, false,false);
-	al_set_timer_speed(timer, 1.0 / 10);
+	al_set_timer_speed(timer, 1.0 / 3.5);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	while(trans)  {
 		ALLEGRO_EVENT ev;
@@ -371,7 +372,7 @@ void Livello1::Transition(int x)
 			}	
 			if(!transizione.Draw())  {
 				trans = false;
-				al_set_timer_speed(timer, 1.0 / 60);
+				al_set_timer_speed(timer, speed);
 			}
 							
 			al_flip_display();
