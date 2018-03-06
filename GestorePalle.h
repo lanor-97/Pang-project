@@ -34,8 +34,7 @@ bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
 	Palla* p = new Palla(x, c, s);
 	if(!p->getBitmap())
 		return false;
-	float y = p->calculateY(SY);
-	p->setY(y);
+	p->calculateY(SY);
 	balls.push_back(p);
 	return true;
 }
@@ -57,7 +56,7 @@ void GestorePalle::Bouncer()  {
 			(*it)->setBouncer(-(*it)->getBouncer());
 		}
 		(*it)->setX((*it)->getX() + (*it)->getBouncer());
-		(*it)->setY((*it)->calculateY(SY));
+		(*it)->calculateY(SY);
 	}
 }
 	
@@ -91,6 +90,10 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 			p2->setY((*it)->getY());
 
 			p2->setBouncer(-(p1->getBouncer()));
+			if(p1->getCont() > 157 || p1->getCont() < -157)
+				p1->setBouncer_h(-p1->getBouncer_h());
+			if(p2->getCont() > 157 || p2->getCont() < -157)
+				p2->setBouncer_h(-p2->getBouncer_h());
 			balls.push_back(p1);
 			balls.push_back(p2);
 			balls.erase(it);
