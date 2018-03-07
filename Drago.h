@@ -4,8 +4,7 @@
 #include <iostream>
 using namespace std;
 
-class Drago
-{
+class Drago  {
     private:
     int 	dim_x,
 			dim_y,

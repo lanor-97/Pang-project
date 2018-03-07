@@ -12,7 +12,7 @@ private:
 
 public:
   	Arma(float, int, int);
-  	~Arma()  { al_destroy_bitmap(bitmap); }
+  	~Arma()  { if(bitmap) al_destroy_bitmap(bitmap); }
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
 	int getX() const  { return posX; }
 	int getY() const  { return posY; }

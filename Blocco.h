@@ -6,105 +6,68 @@
 #include <iostream>
 using namespace std;
 
-class Blocco
-{   
-    private:
-    int posX;
-    int posY;
-    int dimX;
-    int dimY;
+class Blocco  {   
+private:
+    float   dim_x,
+            dim_y,
+            posX,
+            posY;
     ALLEGRO_BITMAP *blocco;
     Esplosione esplosione;
     Tipo tipo; //tipi possibili: bloccoPietra, bloccoVetro1 (verticale), bloccoVetro2 (orizzontale)
 
-    public:
-    Blocco():posX(0),posY(0),dimX(0),dimY(0),tipo(bloccoPietra), blocco(NULL){}
-    Blocco(Tipo t,int posX,int posY)
-    {
-        srand(time(0));
-        int a=rand()%4;
-        tipo=t;
-        this->posX=posX;
-        this->posY=posY;
-        esplosione.setPosX(posX);
-        esplosione.setPosY(posY);
-        if(tipo==bloccoPietra)
-           {
-               dimX=56; dimY=24;
-               if(a==1)
-               blocco=al_load_bitmap("images/stoneBlock1.png");
-               if(a==2)
-               blocco=al_load_bitmap("images/stoneBlock2.png");
-               if(a==3)
-               blocco=al_load_bitmap("images/stoneBlock3.png");
-           } 
-        if(tipo==bloccoVetro1)
-           {
-               dimX=29; dimY=61;
-               blocco=al_load_bitmap("images/bloccoVetro.png");
-           } 
-        if(tipo==bloccoVetro2)
-           { 
-               dimX=41; dimY=24;
-               blocco=al_load_bitmap("images/bloccoVetro2.png");
-           } 
-
-        esplosione.setTipo(tipo);
-    }
-    ~Blocco(){al_destroy_bitmap(blocco);}
-
-     int getPosX(){return posX;}
-    int getPosY(){return posY;}
-    int getDimX(){return dimX;}
-    int getDimY(){return dimY;}
-    Tipo getTipo(){return tipo;}
-
-    ALLEGRO_BITMAP *getBlocco() const{return blocco;}
-    void setPosX(int x){posX=x;  esplosione.setPosX(posX);}
-    void setPosY(int y){posY=y; esplosione.setPosY(posY);}
-    void setBlocco(ALLEGRO_BITMAP *bitmap){blocco=bitmap;}
-    void setDimX(int size){this->dimX=size;}
-    void setDimY(int size){this->dimY=size;}
-    void setTipo(int t)
-    {
-        srand(time(0));
-        if(t==1)
-            tipo=bloccoPietra;
-        if(t==2)
-            tipo=bloccoVetro1;
-        if(t==3)
-            tipo=bloccoVetro2;
-        if(tipo==bloccoPietra)
-           {    
-               int a=rand()%4;
-               dimX=56; dimY=24;
-               if(a==1)
-               blocco=al_load_bitmap("images/stoneBlock1.png");
-               if(a==2)
-               blocco=al_load_bitmap("images/stoneBlock2.png");
-               if(a==3)
-               blocco=al_load_bitmap("images/stoneBlock3.png");
-           }
-        if(tipo==bloccoVetro1)
-           {
-               dimX=29; dimY=61;
-               blocco=al_load_bitmap("images/bloccoVetro.png");
-           } 
-        if(tipo==bloccoVetro2)
-           { 
-               dimX=41; dimY=24;
-               blocco=al_load_bitmap("images/bloccoVetro2.png");
-           }
-        esplosione.setTipo(tipo);        
-    }
-
-    void Draw(){al_draw_bitmap(blocco,posX,posY,0);}
-
-    bool DrawExplosion()
-    {
-        if(!esplosione.Draw())
-        return false;
-        return true;
-    }
+public:
+    Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
+    Blocco(Tipo, float, float);
+    ~Blocco(){ if(blocco)  al_destroy_bitmap(blocco); }
+    float getPosX() const  { return posX; }
+    float getPosY() const  { return posY; }
+    float getDim_x() const  { return dim_x; }
+    float getDim_y() const  { return dim_y; }
+    Tipo getTipo() const  { return tipo; }
+    ALLEGRO_BITMAP* getBlocco() const  { return blocco; }
+    void setPosX(float x)  { posX = x; esplosione.setPosX(posX); }
+    void setPosY(float y)  { posY = y; esplosione.setPosY(posY); }
+    void Draw()  { al_draw_bitmap(blocco,posX,posY,0); }
+    bool drawExplosion();
 };
+
+Blocco::Blocco(Tipo t,float posX, float posY)  {
+    srand(time(0));
+    int a = rand()%4;
+    tipo = t;
+    this->posX=posX;
+    this->posY=posY;
+    esplosione.setPosX(posX);
+    esplosione.setPosY(posY);
+    if(tipo == bloccoPietra)  {
+        dim_x = 56; dim_y = 24;
+        if(a==1)
+            blocco=al_load_bitmap("images/stoneBlock1.png");
+        else if(a==2)
+            blocco=al_load_bitmap("images/stoneBlock2.png");
+        else if(a==3)
+            blocco=al_load_bitmap("images/stoneBlock3.png");
+    } 
+    else if(tipo == bloccoVetro1)  {
+        dim_x = 29; dim_y = 61;
+        blocco = al_load_bitmap("images/bloccoVetro.png");
+    } 
+    else if(tipo == bloccoVetro2)  { 
+        dim_x=41; dim_y=24;
+        blocco=al_load_bitmap("images/bloccoVetro2.png");
+    } 
+    else
+        blocco=NULL;
+
+    esplosione.setTipo(tipo);
+}
+
+bool Blocco::drawExplosion()  {
+    if(!esplosione.Draw())
+        return false;
+    return true;
+}
+
+
 #endif

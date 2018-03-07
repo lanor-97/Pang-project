@@ -68,7 +68,7 @@ int main(int argc, char **argv)  {
 
    	//CREAZIONE LIVELLO
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
-   	Livello1* L2 = new Livello2(L1, FPS);
+   	Livello2* L2 = new Livello2(L1, FPS);
 
    	Livello1* current_level = &(*L1);
 
