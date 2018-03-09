@@ -23,7 +23,7 @@ public:
 	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
 	void setX(int x)  { posX=x; }
 	void setY(int y)  { posY=y; }
-	void Draw(int H)  { al_draw_bitmap(bitmap,posX,posY,0); }
+	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
 };
 
 Piattaforma::Piattaforma(float x, float y)  {

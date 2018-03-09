@@ -59,17 +59,17 @@ int main(int argc, char **argv)  {
 	al_use_transform(&redimencionamento);
 
 	//CREAZIONE GIOCATORE
-	Giocatore* player = new Giocatore(60,70,6);
+	Giocatore* player = new Giocatore(6);
 
    	player->setX(SCREEN_W/2 - player->getDim_x());
-   	player->setY(SCREEN_H/1.37 - player->getDim_y());
+   	player->setY(285);
    	player->posizionaArma();
 
    	//CREAZIONE LIVELLO
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
    	Livello2* L2 = new Livello2(L1, FPS);
 
-   	Livello1* current_level = L1;
+   	Livello1* current_level = L2;
 
 
    	play = Menu(display, res_info);

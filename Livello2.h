@@ -2,17 +2,21 @@
 #define LIVELLO2_H
 
 #include "Livello1.h"
+#include "Scala.h"
+#include "Piattaforma.h"
 
 class Livello2: public Livello1  {
 public:
 	Livello2()  { Livello1(); }
 	Livello2(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
 	Livello2(Livello1*, const int);
-	~Livello2();
-	void regolaPalle();
-	int Esegui(int, float[]);
+	virtual ~Livello2();
+	virtual void regolaPalle();
+	virtual int Esegui(int, float[]);
 
 protected:
+	Scala *scala1, *scala2;
+	Piattaforma *piat1, *piat2;
 
 };
 
@@ -31,13 +35,20 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 
-	font1=al_load_ttf_font("images/SHREK.TTF",30,0);
-	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
+	font1=al_load_ttf_font("fonts/SHREK.TTF",30,0);
+	font2=al_load_ttf_font("fonts/SHREK.TTF",25,0);
 	vite_bmp = al_load_bitmap("images/vita.png");
-
 	timer = al_create_timer(1.0 / FPS);
 	event_queue = al_create_event_queue();
 	display = L1->getDisplay();
+	pausa_play = al_load_bitmap("images/pausa1.png");
+	pausa_exit = al_load_bitmap("images/pausa2.png");
+
+	//liv 2 stuff
+	scala1 = new Scala(144, 218, 0);
+	scala2 = new Scala(450, 218, 0);
+	piat1 = new Piattaforma(120, 218);
+	piat2 = new Piattaforma(426, 218);
 
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -46,18 +57,22 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 }
 
 Livello2::~Livello2()  {
-	/*cerr << "\ndistruggo sfondo_bitmap Liv";
-	al_destroy_bitmap(sfondo);
-	cerr << "\ndistruggo font1 Liv";
-	al_destroy_font(font1);
-	cerr << "\ndistruggo font2 Liv";
-	al_destroy_font(font2);
-	cerr << "\ndistruggo vite_bitmap Liv";
-	al_destroy_bitmap(vite_bmp);
-	cerr << "\ndistruggo timer Liv";
-	al_destroy_timer(timer);
-	cerr << "\ndistruggo event_queue Liv";
-	al_destroy_event_queue(event_queue);*/
+	if(scala1)  {
+		cerr << "\ndeleto scala1";
+		delete scala1;
+	}
+	if(scala2)  {
+		cerr << "\ndeleto scala2";
+		delete scala2;
+	}
+	if(piat1)  {
+		cerr << "\ndeleto piat1";
+		delete piat1;
+	}
+	if(piat2)  {
+		cerr << "\ndeleto piat2";
+		delete piat2;
+	}
 }
 
 void Livello2::regolaPalle()  {
@@ -83,7 +98,6 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	Transition(1);
 
 	//IL GIOCO VERO E PROPRIO
-
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -102,6 +116,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				presa=true;
 				drawExplosion=true;
 			}
+
 			if(!hit)
 				presa=false;
 
@@ -202,7 +217,6 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				H_arma = 0;
 				shoot=false;
 			}
-
 			if(vite>=1)
 				al_draw_bitmap(vite_bmp, SCREEN_W/25, SCREEN_H/11, 0);
 			if(vite>=2)
@@ -212,13 +226,16 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			if(vite<=0 || tempo<=0)
 				caduto=true;
 
-			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
+			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
+			piat1->Draw();
+			piat2->Draw();
+			scala1->Draw();
+			scala2->Draw();
 			if(shoot)
 				player->Draw_arma(H_arma);
-
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
 			if(!player->Draw())  {
 				if(caduto)  {

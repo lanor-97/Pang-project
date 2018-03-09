@@ -14,11 +14,11 @@ class Livello1  {
 public:
 	Livello1();
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
-	~Livello1();
-	int Esegui(int, float[]);
+	virtual ~Livello1();
+	virtual int Esegui(int, float[]);
 	void Transition(int);
 	bool Pausa(float res_info[]);
-	void regolaPalle();
+	virtual void regolaPalle();
 
 	//funzioni get
 	float getSW() const  { return SCREEN_W; }
@@ -37,6 +37,7 @@ protected:
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	Giocatore* player;
 	GestorePalle GP;
+	Transizione transizione;
 	float SCREEN_W, SCREEN_H;
 };
 
@@ -370,7 +371,6 @@ int Livello1::Esegui(int vite, float res_info[])  {
 
 void Livello1::Transition(int x)
 {
-	Transizione 	transizione;
 	bool trans=true;
 	double speed = al_get_timer_speed(timer);
 

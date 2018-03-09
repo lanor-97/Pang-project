@@ -29,7 +29,7 @@ public:
 	void setX(int x)  { posX=x; }
 	void setY(int y)  { posY=y; }
 	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
-	void Draw(int H)  { al_draw_bitmap(bitmap,posX,posY,0); }
+	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
 };
 
 Scala::Scala(float x, float y, bool t)  {

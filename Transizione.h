@@ -22,6 +22,7 @@ class Transizione
         animazione.setFrameCount(0);
         animazione.setFrameDelay(0);
         animazione.setCurrFrame(0);
+        transition = NULL;
     }
     Transizione(Tipe tipo)
     {
@@ -32,17 +33,19 @@ class Transizione
         animazione.setCurrFrame(0);
         this->tipo=tipo;
         if(tipo==menuClose)
-        transition=al_load_bitmap("images/menuTransition.png");
-        if(tipo==levelStart)
-        transition=al_load_bitmap("images/levelStart.png");
-        if(tipo==stageClear)
-        transition=al_load_bitmap("images/stageClear.png");
-        if(tipo==stageClearClose)
-        transition=al_load_bitmap("images/stageClearClose.png");
-        if(tipo==victory)
-        transition=al_load_bitmap("images/victory.png");
-        if(tipo==victoryClose)
-        transition=al_load_bitmap("images/victoryClose.png");
+            transition=al_load_bitmap("images/menuTransition.png");
+        else if(tipo==levelStart)
+            transition=al_load_bitmap("images/levelStart.png");
+        else if(tipo==stageClear)
+            transition=al_load_bitmap("images/stageClear.png");
+        else if(tipo==stageClearClose)
+            transition=al_load_bitmap("images/stageClearClose.png");
+        else if(tipo==victory)
+            transition=al_load_bitmap("images/victory.png");
+        else if(tipo==victoryClose)
+            transition=al_load_bitmap("images/victoryClose.png");
+        else
+            transition=NULL;
 
     }
     ~Transizione()  {

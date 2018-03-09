@@ -21,7 +21,7 @@ private:
    	Arma* arma;
 
 public:
-   	Giocatore(int, int,int);
+   	Giocatore(int);
   	~Giocatore();
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	int getX() const  { return posX; }
@@ -48,9 +48,9 @@ public:
 
 };
 
-Giocatore::Giocatore(int dx, int dy, int f)  {
-	dim_x = dx;
-	dim_y = dy;
+Giocatore::Giocatore(int f)  {
+	dim_x = 60;
+	dim_y = 70;
     frames=f;
 	posX = 0;
 	posY = 0;
