@@ -11,14 +11,14 @@ private:
 	Esplosione explosion;
 public:
 	~GestorePalle();
-	bool aggiungiPalla(float, float, SIZE);
+	bool aggiungiPalla(float, float, SIZE, COLOR);
 	//void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
 	//const Palla& front() const  { return balls.front(); }
 	bool Draw(bool) ;
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
 	void Bouncer();
-	bool hitByHook(float, float, float, bool&);
+	bool hitByHook(float, float, float);
 	bool playerHit(float, float, float);
 	bool Empty() const  { return balls.empty(); }
 	void Clear();
@@ -31,10 +31,9 @@ GestorePalle::~GestorePalle()  {
 	}
 }
 
-bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
-	Palla* p = new Palla(x, c, s);
-	if(!p->getBitmap())
-		return false;
+bool GestorePalle::aggiungiPalla(float x, float c, SIZE s, COLOR co)  {
+	Palla* p = new Palla(x, c, s, co);
+
 	p->calculateY(SY);
 	balls.push_back(p);
 	return true;
@@ -61,7 +60,7 @@ void GestorePalle::Bouncer()  {
 	}
 }
 	
-bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
+bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= (*it)->getX()+(*it)->getDim(),
@@ -73,6 +72,8 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 			explosion.setTipo((*it)->getSize());
 			explosion.setPosX((*it)->getX());
 			explosion.setPosY((*it)->getY());
+			COLOR co = (*it)->getColor();
+			cerr << co;
 			SIZE s;
 			switch((*it)->getSize())  {
 				case GRA:	s = MED;
@@ -85,8 +86,8 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 							delete (*it);
 							return true;
 			}
-			Palla* p1 = new Palla(x, c, s);
-			Palla* p2 = new Palla(x, c, s);
+			Palla* p1 = new Palla(x, c, s, co);
+			Palla* p2 = new Palla(x, c, s, co);
 			p1->setY((*it)->getY());
 			p2->setY((*it)->getY());
 
@@ -120,10 +121,6 @@ bool GestorePalle::playerHit(float x, float y, float d)  {
 }
 
 void GestorePalle::Clear()  {
-	/*for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)
-		(*it)->destroyBitmap();
-	balls.clear();*/
-
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		cerr << "\ndeleto palla_x";
 		delete (*it);

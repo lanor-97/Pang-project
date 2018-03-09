@@ -9,8 +9,10 @@
 #include "time.h"
 using namespace std;
 
-enum SIZE  { PIC = 0, MED, GRA};  //piccola = 20px, media = 40px
+enum SIZE  { PIC = 0, MED, GRA };  //piccola = 20px, media = 40px
                                   //grande = 70px
+enum COLOR  { GREEN = 0, RED, BLUE };
+
 class Palla  {
 private:
 	int 	dim;
@@ -20,12 +22,13 @@ private:
 			bouncer_h,
 			cont,			//pos h
 			h_max;			//coeff. altezza massima
+	COLOR colore;
    	SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 	Animation animazione;
 
 public:
-  	Palla(float, float, SIZE);
+  	Palla(float, float, SIZE, COLOR);
   	~Palla();
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
@@ -35,6 +38,7 @@ public:
   	float getBouncer_h() const  { return bouncer_h; }
    	float getCont() const  { return cont; }
 	SIZE getSize() const  { return size; }
+	COLOR getColor() const  { return colore; }
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
@@ -47,27 +51,46 @@ public:
 };
 
 
-Palla::Palla(float x, float c, SIZE s)  {
+Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 	srand(time(0));	
 	size = s;
+	colore = col;
 	switch(s)  {
 		case PIC:		dim = 20;
 						h_max = 2;
-						bitmap = al_load_bitmap("images/palla_pic.png");
-						
+
+						if(col == GREEN)
+							bitmap = al_load_bitmap("images/palla_pic.png");
+						else if(col == RED)
+							bitmap = al_load_bitmap("images/palla_pic2.png");
+						else
+							bitmap = al_load_bitmap("images/palla_pic3.png");
+
 						bouncer_h = 3.3 + (rand()%100)*0.004;
 		break;
 		
 		case MED: 		dim = 40;
 						h_max = 1.8;
-						bitmap = al_load_bitmap("images/palla_med.png");
+
+						if(col == GREEN)
+							bitmap = al_load_bitmap("images/palla_med.png");
+						else if(col == RED)
+							bitmap = al_load_bitmap("images/palla_med2.png");
+						else
+							bitmap = al_load_bitmap("images/palla_med3.png");
 					
 						bouncer_h = 2.35 + (rand()%100)*0.003;
 		break;
 		
 		case GRA: 		dim = 70;
 						h_max = 1.5;
-						bitmap = al_load_bitmap("images/palla_gra.png");
+
+						if(col == GREEN)
+							bitmap = al_load_bitmap("images/palla_gra.png");
+						else if(col == RED)
+							bitmap = al_load_bitmap("images/palla_gra2.png");
+						else
+							bitmap = al_load_bitmap("images/palla_gra3.png");
 						
 						bouncer_h = 1.9 + (rand()%100)*0.002;
 		break;

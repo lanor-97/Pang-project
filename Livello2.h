@@ -76,8 +76,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP.aggiungiPalla(SCREEN_W/2, 157, GRA);
-	GP.aggiungiPalla(0, 157, GRA);
+	GP.aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
+	GP.aggiungiPalla(0, 157, GRA, RED);
 }
 
 int Livello2::Esegui(int vite, float res_info[])  {
@@ -106,7 +106,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			bool hit = false;
 			GP.Bouncer();
 			if(shoot)
-				hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma(), bitmap_);
+				hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma());
 
 			if(shoot==false)
 				player->posizionaArma();
