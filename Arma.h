@@ -12,8 +12,8 @@ private:
 
 public:
   	Arma(float, int, int);
-  	~Arma()  { cerr << "\ndistruggo arma_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); }
-	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
+  	~Arma();
+  	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
 	int getX() const  { return posX; }
 	int getY() const  { return posY; }
 	float getDim() const  { return dim; }
@@ -31,6 +31,12 @@ Arma::Arma(float d, int x, int y)  {
 	bitmap = al_load_bitmap("images/arpione1.png");
 }
 
+Arma::~Arma()  {
+	if(bitmap)  {
+		cerr << "\ndistruggo arma_bitmap";
+		al_destroy_bitmap(bitmap);
+	}
+}
 
 
 #endif

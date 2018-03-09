@@ -10,14 +10,19 @@ private:
 			posX,
 			posY,
             frames;
-    bool    left, right,drawShoot, toLeft, caduto, climbing;    //per la funzione draw
+    bool    left, 
+            right,
+            drawShoot, 
+            toLeft, 
+            caduto, 
+            climbing;    //per la funzione draw
   	ALLEGRO_BITMAP *bitmap;
     Animation animazione;
    	Arma* arma;
 
 public:
    	Giocatore(int, int,int);
-  	~Giocatore()  { cerr << "\ndistruggo giocatore_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); cerr << "\ndeleto arma";delete arma; }
+  	~Giocatore();
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	int getX() const  { return posX; }
   	int getY() const  { return posY; }
@@ -54,6 +59,15 @@ Giocatore::Giocatore(int dx, int dy, int f)  {
     animazione.setFrameCount(0);
     animazione.setFrameDelay(5);
     animazione.setCurrFrame(0);
+}
+
+Giocatore::~Giocatore()  {
+    if(bitmap)  {
+        cerr << "\ndistruggo giocatore_bitmap";
+        al_destroy_bitmap(bitmap); 
+    }
+
+    cerr << "\ndeleto arma";delete arma;
 }
 
 void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing)  {

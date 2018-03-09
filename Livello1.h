@@ -33,6 +33,8 @@ protected:
 	ALLEGRO_FONT*			font2=NULL;
 	ALLEGRO_BITMAP*			vite_bmp=NULL;
 	ALLEGRO_DISPLAY* 		display=NULL;
+	ALLEGRO_BITMAP*			pausa_play=NULL;
+	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	Giocatore* player;
 	GestorePalle GP;
 	float SCREEN_W, SCREEN_H;
@@ -48,9 +50,11 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 	GP.setSW(SCREEN_W);
 	GP.setSY(SCREEN_H);
 
-	font1=al_load_ttf_font("images/SHREK.TTF",30,0);
-	font2=al_load_ttf_font("images/SHREK.TTF",25,0);
+	font1=al_load_ttf_font("fonts/SHREK.TTF",30,0);
+	font2=al_load_ttf_font("fonts/SHREK.TTF",25,0);
 	vite_bmp = al_load_bitmap("images/vita.png");
+	pausa_play = al_load_bitmap("images/pausa1.png");
+	pausa_exit = al_load_bitmap("images/pausa2.png");
 
 	timer = al_create_timer(1.0 / FPS);
 	event_queue = al_create_event_queue();
@@ -68,27 +72,43 @@ void Livello1::regolaPalle()  {
 }
 
 Livello1::~Livello1()  {
-	cerr << "\ndistruggo sfondo_bitmap Liv";
-	al_destroy_bitmap(sfondo);
-	cerr << "\ndistruggo font1 Liv";
-	al_destroy_font(font1);
-	cerr << "\ndistruggo font2 Liv";
-	al_destroy_font(font2);
-	cerr << "\ndistruggo vite_bitmap Liv";
-	al_destroy_bitmap(vite_bmp);
-	cerr << "\ndistruggo timer Liv";
-	al_destroy_timer(timer);
-	cerr << "\ndistruggo event_queue Liv";
-	al_destroy_event_queue(event_queue);
+	if(sfondo)  {
+		cerr << "\ndistruggo sfondo_bitmap Liv";
+		al_destroy_bitmap(sfondo);
+	}
+	if(font1)  {
+		cerr << "\ndistruggo font1 Liv";
+		al_destroy_font(font1);
+	}
+	if(font2)  {
+		cerr << "\ndistruggo font2 Liv";
+		al_destroy_font(font2);
+	}
+	if(vite_bmp)  {
+		cerr << "\ndistruggo vite_bitmap Liv";
+		al_destroy_bitmap(vite_bmp);
+	}
+	if(timer)  {
+		cerr << "\ndistruggo timer Liv";
+		al_destroy_timer(timer);
+	}
+	if(event_queue)  {
+		cerr << "\ndistruggo event_queue Liv";
+		al_destroy_event_queue(event_queue);
+	}
+	if(pausa_play)  {
+		cerr << "\ndistruggo pausa_play_bitmap";
+		al_destroy_bitmap(pausa_play);
+	}
+	if(pausa_exit)  {
+		cerr << "\ndistruggo pausa_exit_bitmap";
+		al_destroy_bitmap(pausa_exit);
+	}
 }
 
 bool Livello1::Pausa(float res_info[])  {
-	ALLEGRO_BITMAP*			pausa_play=NULL;
-	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
-	pausa_play = al_load_bitmap("images/pausa1.png");
-	pausa_exit = al_load_bitmap("images/pausa2.png");
 	bool play = true, fullscreen = false, pausa=true, inGame=true;
 	al_flush_event_queue(event_queue);
 	
@@ -148,10 +168,6 @@ bool Livello1::Pausa(float res_info[])  {
 			al_flip_display();
 	}
 	
-	cerr << "\ndistruggo pausa_play_bitmap";
-	al_destroy_bitmap(pausa_play);
-	cerr << "\ndistruggo pausa_exit_bitmap";
-	al_destroy_bitmap(pausa_exit);
 	al_flush_event_queue(event_queue);
 	return inGame;
 }
@@ -303,7 +319,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 			if(vite<=0 || tempo<=0)
 				caduto=true;
 
-			//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
+			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 

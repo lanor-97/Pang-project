@@ -26,8 +26,7 @@ private:
 
 public:
   	Palla(float, float, SIZE);
-  	~Palla()  { cerr<<"\ndistruggo palla_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); }
-	void destroyBitmap()  { cerr<<"\ndistruggo palla_bitmap"; al_destroy_bitmap(bitmap); }
+  	~Palla();
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }
@@ -77,6 +76,13 @@ Palla::Palla(float x, float c, SIZE s)  {
 	posY = 0;
 	bouncer = 2;
 	cont = c;
+}
+
+Palla::~Palla()  {
+	if(bitmap)  {
+		cerr<<"\ndistruggo palla_bitmap";
+		al_destroy_bitmap(bitmap);
+	}
 }
 
 void Palla::calculateY(int SY)  { 

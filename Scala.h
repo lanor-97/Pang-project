@@ -17,7 +17,7 @@ private:
 public:
 	Scala(): dim_x(0), dim_y(0), posX(0), posY(0), tipo(false)  { bitmap = NULL; }
   	Scala(float, float, bool);				
-  	~Scala()  { cerr<<"\ndistruggo scala_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); }
+  	~Scala();
   	float getDim_x() const  { return dim_x; }
   	float getDim_y() const  { return dim_y; }
 	float getX() const  { return posX; }
@@ -46,6 +46,13 @@ Scala::Scala(float x, float y, bool t)  {
     	dim_y = 166;
     	bitmap= al_load_bitmap("images/scala2.png");
     }
+}
+
+Scala::~Scala()  {
+	if(bitmap)  {
+		cerr<<"\ndistruggo scala_bitmap"; 
+		al_destroy_bitmap(bitmap);
+	}
 }
 
 

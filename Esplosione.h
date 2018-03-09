@@ -66,7 +66,12 @@ class Esplosione{
         animazione.setFrameDelay(5);
         animazione.setCurrFrame(0);
     }
-	~Esplosione()  { cerr << "\ndistruggo explosion_bitmap"; if(explosion) al_destroy_bitmap(explosion); cerr << "\ndistruggo resto";}
+	~Esplosione()  { 
+        if(explosion)  {
+            cerr << "\ndistruggo explosion_bitmap"; 
+            al_destroy_bitmap(explosion);
+        }
+    }
     int getPosX(){return posX;}
     int getPosY(){return posY;}
     int getDimX(){return dimX;}

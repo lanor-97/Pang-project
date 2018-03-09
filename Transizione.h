@@ -45,7 +45,12 @@ class Transizione
         transition=al_load_bitmap("images/victoryClose.png");
 
     }
-    ~Transizione()  { cerr<<"\ndistruggo transizione_bitmap"; if(transition) al_destroy_bitmap(transition); }
+    ~Transizione()  {
+        if(transition)  { 
+            cerr<<"\ndistruggo transizione_bitmap"; 
+            al_destroy_bitmap(transition);
+        }
+    }
     int getDimX(){return dimX;}
     int getDimY(){return dimY;}
     

@@ -93,11 +93,23 @@ int main(int argc, char **argv)  {
 	   		play = Menu(display, res_info);
    	}
 
-   	delete L1;
-   	delete L2;
-   	delete player;
-   	al_destroy_display(display);
-
+   	if(L1)  {
+   		cerr << "\ndeleto L1";
+   		delete L1;
+   	}   	
+   	if(L2)  {
+   		cerr << "\ndeleto L2";
+   		delete L2;
+   	}
+   	if(player)  {
+   		cerr << "\ndeleto player";
+   		delete player;
+   	}
+   	if(display)  {
+   		cerr << "\ndistruggo display";
+   		al_destroy_display(display);
+   	}
+   	cerr << "\n";
   	return 0;
 }
 
@@ -177,13 +189,18 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 		if(drawTransition && play)
 			Transition(menu_play);		
 	}
-	
-	cerr << "\ndistruggo menu_play_bitmap";
-	al_destroy_bitmap(menu_play);
-	cerr << "\ndistruggo menu_exit_bitmap";
-	al_destroy_bitmap(menu_exit);
-	cerr << "\ndistruggo ev_queue_menu";
-	al_destroy_event_queue(event_queue);
+	if(menu_play)  {
+		cerr << "\ndistruggo menu_play_bitmap";
+		al_destroy_bitmap(menu_play);
+	}
+	if(menu_exit)  {
+		cerr << "\ndistruggo menu_exit_bitmap";
+		al_destroy_bitmap(menu_exit);
+	}
+	if(event_queue)  {
+		cerr << "\ndistruggo ev_queue_menu";
+		al_destroy_event_queue(event_queue);
+	}
 	return play;
 
 	return 0;
@@ -213,7 +230,8 @@ void Transition(ALLEGRO_BITMAP* bmp)  {
 			al_flip_display();
 		}
 	}
-
-	cerr << "\ndistruggo timer transition";
-	al_destroy_timer(timer);
+	if(timer)  {
+		cerr << "\ndistruggo timer transition";
+		al_destroy_timer(timer);
+	}
 }
