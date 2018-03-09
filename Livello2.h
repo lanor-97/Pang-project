@@ -17,6 +17,7 @@ public:
 protected:
 	Scala *scala1, *scala2;
 	Piattaforma *piat1, *piat2;
+	Blocco *blocco1, *blocco2, *blocco3;
 
 };
 
@@ -44,16 +45,18 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	pausa_play = al_load_bitmap("images/pausa1.png");
 	pausa_exit = al_load_bitmap("images/pausa2.png");
 
-	//liv 2 stuff
-	scala1 = new Scala(144, 218, 0);
-	scala2 = new Scala(450, 218, 0);
-	piat1 = new Piattaforma(120, 218);
-	piat2 = new Piattaforma(426, 218);
-
-
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+
+	//liv 2 stuff
+	scala1 = new Scala(160, 218, 0);
+	scala2 = new Scala(434, 218, 0);
+	piat1 = new Piattaforma(136, 204);
+	piat2 = new Piattaforma(410, 204);
+	blocco1 = new Blocco(150, 100, bloccoPietra);
+	blocco2 = new Blocco(292, 150, bloccoPietra);
+	blocco3 = new Blocco(434, 100, bloccoPietra);
 }
 
 Livello2::~Livello2()  {
@@ -72,6 +75,18 @@ Livello2::~Livello2()  {
 	if(piat2)  {
 		cerr << "\ndeleto piat2";
 		delete piat2;
+	}
+	if(blocco1)  {
+		cerr << "\ndeleto blocco1";
+		delete blocco1;
+	}
+	if(blocco2)  {
+		cerr << "\ndeleto blocco2";
+		delete blocco2;
+	}
+	if(blocco3)  {
+		cerr << "\ndeleto blocco3";
+		delete blocco3;
 	}
 }
 
@@ -230,6 +245,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
+			blocco1->Draw();
+			blocco2->Draw();
+			blocco3->Draw();
 			piat1->Draw();
 			piat2->Draw();
 			scala1->Draw();

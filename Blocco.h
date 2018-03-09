@@ -18,7 +18,7 @@ private:
 
 public:
     Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
-    Blocco(Tipo, float, float);
+    Blocco(float, float, Tipo);
     ~Blocco();
     float getPosX() const  { return posX; }
     float getPosY() const  { return posY; }
@@ -32,9 +32,9 @@ public:
     bool drawExplosion();
 };
 
-Blocco::Blocco(Tipo t,float posX, float posY)  {
+Blocco::Blocco(float posX, float posY, Tipo t)  {
     srand(time(0));
-    int a = rand()%4;
+    int a = rand()%3+1;
     tipo = t;
     this->posX=posX;
     this->posY=posY;
