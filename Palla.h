@@ -52,9 +52,10 @@ public:
 
 
 Palla::Palla(float x, float c, SIZE s, COLOR col)  {
-	srand(time(0));	
 	size = s;
 	colore = col;
+	float a = rand();
+	srand(time(0)*a);
 	switch(s)  {
 		case PIC:		dim = 20;
 						h_max = 2;
@@ -66,7 +67,7 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_pic3.png");
 
-						bouncer_h = 3.3 + (rand()%100)*0.004;
+						bouncer_h = 3.3 + (rand()%10+1)*0.06;
 		break;
 		
 		case MED: 		dim = 40;
@@ -79,7 +80,7 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_med3.png");
 					
-						bouncer_h = 2.35 + (rand()%100)*0.003;
+						bouncer_h = 2.35 + (rand()%10+1)*0.05;
 		break;
 		
 		case GRA: 		dim = 70;
@@ -92,7 +93,7 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_gra3.png");
 						
-						bouncer_h = 1.9 + (rand()%100)*0.002;
+						bouncer_h = 1.9 + (rand()%10 +1)*0.03;
 		break;
 	}
 	posX = x;
