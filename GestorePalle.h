@@ -26,8 +26,9 @@ public:
 
 GestorePalle::~GestorePalle()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
+		cerr << "deleto palla_x";
 		delete (*it);
-	}	
+	}
 }
 
 bool GestorePalle::aggiungiPalla(float x, float c, SIZE s)  {
@@ -44,9 +45,9 @@ bool GestorePalle::Draw(bool drawExplosion)   {
 		(*it)->Draw();
 	}
 	
-	if(drawExplosion)
+	/*if(drawExplosion)
 		if(!explosion.Draw())
-			return false;
+			return false;*/
 	return true;
 }
 
@@ -69,9 +70,9 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1, bool& b)  {
 		
 		if(b1 && b2 && b3)  {
 			float x = (*it)->getX(), c = (*it)->getCont();
-			explosion.setTipo((*it)->getSize());
-			explosion.setPosX((*it)->getX());
-			explosion.setPosY((*it)->getY());
+			//explosion.setTipo((*it)->getSize());
+			//explosion.setPosX((*it)->getX());
+			//explosion.setPosY((*it)->getY());
 			SIZE s;
 			switch((*it)->getSize())  {
 				case GRA:	s = MED;
@@ -121,6 +122,12 @@ void GestorePalle::Clear()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)
 		(*it)->destroyBitmap();
 	balls.clear();
+
+	/*for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
+		cerr << "\ndeleto palla_x";
+		delete (*it);
+	}*/
+	//balls.clear();
 }
 
 

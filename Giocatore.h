@@ -17,7 +17,7 @@ private:
 
 public:
    	Giocatore(int, int,int);
-  	~Giocatore()  { if(bitmap) al_destroy_bitmap(bitmap); delete arma; }
+  	~Giocatore()  { cerr << "\ndistruggo giocatore_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); cerr << "\ndeleto arma";delete arma; }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	int getX() const  { return posX; }
   	int getY() const  { return posY; }

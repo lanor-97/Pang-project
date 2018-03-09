@@ -68,11 +68,17 @@ void Livello1::regolaPalle()  {
 }
 
 Livello1::~Livello1()  {
-	al_destroy_bitmap(sfondo); 
+	cerr << "\ndistruggo sfondo_bitmap Liv";
+	al_destroy_bitmap(sfondo);
+	cerr << "\ndistruggo font1 Liv";
 	al_destroy_font(font1);
+	cerr << "\ndistruggo font2 Liv";
 	al_destroy_font(font2);
+	cerr << "\ndistruggo vite_bitmap Liv";
 	al_destroy_bitmap(vite_bmp);
+	cerr << "\ndistruggo timer Liv";
 	al_destroy_timer(timer);
+	cerr << "\ndistruggo event_queue Liv";
 	al_destroy_event_queue(event_queue);
 }
 
@@ -142,7 +148,9 @@ bool Livello1::Pausa(float res_info[])  {
 			al_flip_display();
 	}
 	
+	cerr << "\ndistruggo pausa_play_bitmap";
 	al_destroy_bitmap(pausa_play);
+	cerr << "\ndistruggo pausa_exit_bitmap";
 	al_destroy_bitmap(pausa_exit);
 	al_flush_event_queue(event_queue);
 	return inGame;

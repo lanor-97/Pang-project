@@ -19,7 +19,7 @@ private:
 public:
     Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
     Blocco(Tipo, float, float);
-    ~Blocco(){ if(blocco)  al_destroy_bitmap(blocco); }
+    ~Blocco(){ cerr << "\ndistruggo blocco_bitmap"; if(blocco)  al_destroy_bitmap(blocco); }
     float getPosX() const  { return posX; }
     float getPosY() const  { return posY; }
     float getDim_x() const  { return dim_x; }

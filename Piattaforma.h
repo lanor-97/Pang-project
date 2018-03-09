@@ -15,7 +15,7 @@ private:
 public:
 	Piattaforma(): dim_x(0), dim_y(0), posX(0), posY(0)  { bitmap=NULL; }
   	Piattaforma(float, float);
-  	~Piattaforma()  { if(bitmap) al_destroy_bitmap(bitmap); }
+  	~Piattaforma()  { cerr<<"\ndistruggo piattaforma_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); }
   	float getDim_x() const  { return dim_x; }
   	float getDim_y() const  { return dim_y; }
   	int getX() const  { return posX; }

@@ -26,8 +26,8 @@ private:
 
 public:
   	Palla(float, float, SIZE);
-  	~Palla()  { if(bitmap) al_destroy_bitmap(bitmap); }
-	void destroyBitmap()  { al_destroy_bitmap(bitmap); }
+  	~Palla()  { cerr<<"\ndistruggo palla_bitmap"; if(bitmap) al_destroy_bitmap(bitmap); }
+	void destroyBitmap()  { cerr<<"\ndistruggo palla_bitmap"; al_destroy_bitmap(bitmap); }
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }

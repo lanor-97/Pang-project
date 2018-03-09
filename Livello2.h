@@ -46,12 +46,18 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 }
 
 Livello2::~Livello2()  {
-	al_destroy_bitmap(sfondo); 
+	/*cerr << "\ndistruggo sfondo_bitmap Liv";
+	al_destroy_bitmap(sfondo);
+	cerr << "\ndistruggo font1 Liv";
 	al_destroy_font(font1);
+	cerr << "\ndistruggo font2 Liv";
 	al_destroy_font(font2);
+	cerr << "\ndistruggo vite_bitmap Liv";
 	al_destroy_bitmap(vite_bmp);
+	cerr << "\ndistruggo timer Liv";
 	al_destroy_timer(timer);
-	al_destroy_event_queue(event_queue);
+	cerr << "\ndistruggo event_queue Liv";
+	al_destroy_event_queue(event_queue);*/
 }
 
 void Livello2::regolaPalle()  {

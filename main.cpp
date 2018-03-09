@@ -58,7 +58,6 @@ int main(int argc, char **argv)  {
 	al_scale_transform(&redimencionamento,res_x, res_y);
 	al_use_transform(&redimencionamento);
 
-
 	//CREAZIONE GIOCATORE
 	Giocatore* player = new Giocatore(60,70,6);
 
@@ -70,7 +69,7 @@ int main(int argc, char **argv)  {
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
    	Livello2* L2 = new Livello2(L1, FPS);
 
-   	Livello1* current_level = &(*L1);
+   	Livello1* current_level = L1;
 
 
    	play = Menu(display, res_info);
@@ -85,7 +84,7 @@ int main(int argc, char **argv)  {
 	   			continue;
 	   		}
 	   		else if(x == 1)  {		//LIVELLO SUPERATO
-	   			current_level = &(*L2);
+	   			current_level = L2;
 	   		}
 	   		else if(x == 2)
 	   			break;
@@ -179,8 +178,11 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 			Transition(menu_play);		
 	}
 	
+	cerr << "\ndistruggo menu_play_bitmap";
 	al_destroy_bitmap(menu_play);
+	cerr << "\ndistruggo menu_exit_bitmap";
 	al_destroy_bitmap(menu_exit);
+	cerr << "\ndistruggo ev_queue_menu";
 	al_destroy_event_queue(event_queue);
 	return play;
 
@@ -212,5 +214,6 @@ void Transition(ALLEGRO_BITMAP* bmp)  {
 		}
 	}
 
+	cerr << "\ndistruggo timer transition";
 	al_destroy_timer(timer);
 }

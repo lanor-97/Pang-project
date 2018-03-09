@@ -24,6 +24,7 @@ class Esplosione{
     animazione.setFrameCount(0);
     animazione.setFrameDelay(5);
     animazione.setCurrFrame(0);
+    explosion=NULL;
     }
 
     Esplosione(int x,int y,Tipo tipo)
@@ -36,27 +37,27 @@ class Esplosione{
             dimX=20; dimY=20;
             setExplosion(al_load_bitmap("images/esplosionePic.png"));
         }    
-        if(tipo==pallaMed)
+        else if(tipo==pallaMed)
         {
             dimX=40; dimY=40;
             setExplosion(al_load_bitmap("images/esplosioneMed.png"));
         }    
-        if(tipo==pallaGra)
+        else if(tipo==pallaGra)
         {
             dimX=70; dimY=70;
             setExplosion(al_load_bitmap("images/esplosioneGra.png"));
         }    
-        if(tipo==bloccoPietra)
+        else if(tipo==bloccoPietra)
         {
             dimX=56; dimY=24;
             setExplosion(al_load_bitmap("images/stoneAnimation.png"));
         }    
-        if(tipo==bloccoVetro1)
+        else if(tipo==bloccoVetro1)
         {
             dimX=29; dimY=61;
             setExplosion(al_load_bitmap("images/animazioneVetro2.png"));
         }    
-        if(tipo==bloccoVetro2)
+        else if(tipo==bloccoVetro2)
         {
             dimX=41; dimY=24;
             setExplosion(al_load_bitmap("images/animazioneVetro1.png"));
@@ -65,7 +66,7 @@ class Esplosione{
         animazione.setFrameDelay(5);
         animazione.setCurrFrame(0);
     }
-	~Esplosione()  { if(explosion) al_destroy_bitmap(explosion);}
+	~Esplosione()  { cerr << "\ndistruggo explosion_bitmap"; if(explosion) al_destroy_bitmap(explosion); cerr << "\ndistruggo resto";}
     int getPosX(){return posX;}
     int getPosY(){return posY;}
     int getDimX(){return dimX;}
