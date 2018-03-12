@@ -91,8 +91,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP.aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
-	GP.aggiungiPalla(0, 157, GRA, RED);
+	/*GP.aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
+	GP.aggiungiPalla(0, 157, GRA, RED);*/
 }
 
 int Livello2::Esegui(int vite, float res_info[])  {
@@ -102,8 +102,8 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
-			drawExplosion=false, trans=true;
+			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false, climbing=false,
+			drawExplosion=false, trans=true, keyUp = false, keyDown = false, onlyLeftRight=false;
 
 	int 	punteggio=0, tempo=9000, H_arma=0, return_value;
 
@@ -135,24 +135,58 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			if(!hit)
 				presa=false;
 
-			if(keyRight && !caduto && !drawShoot)  {
+			//285 = altitudine player normale
+			//148 = altitudine player piattaforma (piat_pos_y+14-player_dim_y)
+			onlyLeftRight =  (player->getY() == 285) || (player->getY() == 148);
+			if(keyRight && !caduto && !drawShoot && onlyLeftRight)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
-				if(player->getX()+player->getDim_x()+5 <= SCREEN_W)
-					player->setX(player->getX()+5);
-
-				else
-					player->setX(SCREEN_W-player->getDim_x());
+				if(player->getY() == 285)  {	
+					if(player->getX()+player->getDim_x()+5 <= SCREEN_W)
+						player->setX(player->getX()+5);
+					else
+						player->setX(SCREEN_W-player->getDim_x());
+				}
+				else  {									//sopra piattaforma
+					if(player->getX() < SCREEN_W/2)  {	//piat1
+						if(player->getX()+player->getDim_x()+5 <= piat1->getX()+piat1->getDim_x())
+							player->setX(player->getX()+5);
+						else
+							player->setX(piat1->getX()+40);
+					}
+					else  {								//piat2
+						if(player->getX()+player->getDim_x()+5 <= piat2->getX()+piat2->getDim_x())
+							player->setX(player->getX()+5);
+						else
+							player->setX(piat2->getX()+40);
+					}
+				}
 			}
-			if(keyLeft && !caduto && !drawShoot)  {
+			if(keyLeft && !caduto && !drawShoot && onlyLeftRight)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
-				if(player->getX()-5 >= 0)
-					player->setX(player->getX()-5);
-				else
-					player->setX(0);
+				if(player->getY() == 285)  {
+					if(player->getX()-5 >= 0)
+						player->setX(player->getX()-5);
+					else
+						player->setX(0);
+				}
+				else  {									//sopra piattaforma
+					if(player->getX() < SCREEN_W/2)  {	//piat1
+						if(player->getX()-5 >= piat1->getX())
+							player->setX(player->getX()-5);
+						else
+							player->setX(piat1->getX());
+					}
+					else  {								//piat2
+						if(player->getX()-5 >= piat2->getX())
+							player->setX(player->getX()-5);
+						else
+							player->setX(piat2->getX());
+					}
+				}
 			}
 			if(keySpace && !caduto)  {
 				if(!shoot)
@@ -171,6 +205,24 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			}
 			if(!p_hit)
 				colpito=false;
+
+			if(keyUp && player->getY()+player->getDim_y() >= piat1->getY()+14 && (scala1->playerHere(player) || scala2->playerHere(player)))  {
+				if(player->getY()+player->getDim_y()-3 < piat1->getY()+14)
+					player->setY(piat1->getY()+14 - player->getDim_y());
+				else
+					player->setY(player->getY()-3);
+				climbing = true;
+			}
+			else if(keyDown && player->getY() <= 285 && (scala1->playerHere(player) || scala2->playerHere(player)))  {
+				if(player->getY()+3 > 285)
+					player->setY(285);
+				else
+					player->setY(player->getY()+3);
+				climbing = true;
+			}
+			else
+				climbing = false;
+
 
 			redraw = true;
 		}
@@ -193,10 +245,16 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
+			
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
 				keyRight=true;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
+
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
+				keyUp = true;
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
+				keyDown = true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
 				fullscreen = !fullscreen;
 
@@ -220,6 +278,11 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				keyRight=false;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
+
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
+				keyUp = false;
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
+				keyDown = false;
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
@@ -254,7 +317,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			scala2->Draw();
 			if(shoot)
 				player->Draw_arma(H_arma);
-			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing);
 			if(!player->Draw())  {
 				if(caduto)  {
 					caduto=false;
@@ -269,7 +332,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			tempo--;
 			al_flip_display();
 			redraw = false;
-			if(GP.Empty())  {
+			/*if(GP.Empty())  {
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -282,7 +345,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				}
 				return_value = 1;
 				break;
-			}
+			}*/
 		
 		}					
 	}

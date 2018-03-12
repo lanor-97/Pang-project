@@ -30,6 +30,7 @@ public:
 	void setY(int y)  { posY=y; }
 	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+	bool playerHere(Giocatore*);
 };
 
 Scala::Scala(float x, float y, bool t)  {
@@ -53,6 +54,15 @@ Scala::~Scala()  {
 		cerr<<"\ndistruggo scala_bitmap"; 
 		al_destroy_bitmap(bitmap);
 	}
+}
+
+bool Scala::playerHere(Giocatore* player)  {
+	if(player->getX() > posX + dim_x - 28)
+		return false;
+	if(player->getX()+player->getDim_x() < posX + 28)
+		return false;
+
+	return true;
 }
 
 
