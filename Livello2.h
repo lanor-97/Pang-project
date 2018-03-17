@@ -4,6 +4,7 @@
 #include "Livello1.h"
 #include "Scala.h"
 #include "Piattaforma.h"
+#include "Drago.h"
 
 class Livello2: public Livello1  {
 public:
@@ -15,10 +16,11 @@ public:
 	virtual int Esegui(int, float[]);
 
 protected:
+
 	Scala *scala1, *scala2;
 	Piattaforma *piat1, *piat2;
 	Blocco *blocco1, *blocco2, *blocco3;
-
+	Drago *drago;
 };
 
 
@@ -57,6 +59,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	blocco1 = new Blocco(150, 100, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(434, 100, bloccoPietra);
+	drago= new Drago(120,120,640,220); // posDrago 530,220
 }
 
 Livello2::~Livello2()  {
@@ -88,6 +91,10 @@ Livello2::~Livello2()  {
 		cerr << "\ndeleto blocco3";
 		delete blocco3;
 	}
+	if(drago)  	{
+		cerr << "\ndeleto drago";
+		delete drago;
+	}
 }
 
 void Livello2::regolaPalle()  {
@@ -103,9 +110,10 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false, climbing=false,
-			drawExplosion=false, trans=true, keyUp = false, keyDown = false, onlyLeftRight=false;
+			drawExplosion=false, trans=true, keyUp = false, keyDown = false, onlyLeftRight=false,
+			dragonArrive=true, spitting=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0, return_value;
+	int 	punteggio=0, tempo=9000, H_arma=0, return_value, fireCount=300; //fireCount timer per spitFire 300=5 sec
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -304,7 +312,6 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			if(vite<=0 || tempo<=0)
 				caduto=true;
 
-			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
@@ -315,6 +322,24 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			piat2->Draw();
 			scala1->Draw();
 			scala2->Draw();
+
+			if(tempo/60<=145) 
+			{
+				if(drago->getX()<=530)
+				{
+					dragonArrive=false;
+				}
+				if(fireCount==0 || player->getX()>=470)
+				{
+					spitting=true;
+					fireCount=300;
+				}	
+				if(!drago->Draw(dragonArrive,spitting))
+					spitting=false;
+				
+				fireCount--;
+			}	
+
 			if(shoot)
 				player->Draw_arma(H_arma);
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing);

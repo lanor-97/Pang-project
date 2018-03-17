@@ -71,27 +71,28 @@ class Drago  {
 };
 bool Drago::Draw(bool arrive,bool spitFire)
 {
-    if(arrive && !spitFire)
+    if(arrive)
     {
         setFrames(6);
-        drago=al_load_bitmap("dragonArriving.png");
-        animazione.setFrameDelay(5);
+        drago=al_load_bitmap("images/dragonArriving.png");
+        animazione.setFrameDelay(6);
+        posX--;
         if(!animazione.eseguiFrame(drago,getDim_x(),getDim_y(),getX(),getY(), true,getFrames()))
         return false;
     }
     else if(spitFire)
     {
         setFrames(6);
-        animazione.setFrameDelay(7);
-        drago=al_load_bitmap("dragonSpitting.png");
+        animazione.setFrameDelay(10);
+        drago=al_load_bitmap("images/dragonSpitting.png");
         if(!animazione.eseguiFrame(drago,getDim_x(),getDim_y(),getX(),getY(), false,getFrames()))
         return false;
     }
-    else
+    else if(!spitFire && !arrive)
     {
         setFrames(12);
-        drago=al_load_bitmap("dragonAnimation.png");
-        animazione.setFrameDelay(5);
+        drago=al_load_bitmap("images/dragonAnimation.png");
+        animazione.setFrameDelay(8);
         if(!animazione.eseguiFrame(drago,getDim_x(),getDim_y(),getX(),getY(), true,getFrames()))
         return false;
     }

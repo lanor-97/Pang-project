@@ -80,9 +80,10 @@ void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft
 }
 bool Giocatore:: Draw(){
     if(climbing)  {
-        setFrames(6);
+        setFrames(5);
         animazione.setFrameDelay(7);
         setBitmap(al_load_bitmap("images/shrekClimbing.png"));
+        return animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
     }
     if(left && !drawShoot && !caduto)  {
         setFrames(6);
