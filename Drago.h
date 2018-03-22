@@ -11,7 +11,9 @@ class Drago  {
 			posX,
 			posY,
             posFuocoX,
-            posFuocoY;
+            posFuocoY,
+            dimFuocoX,
+            dimFuocoY;
   	ALLEGRO_BITMAP *drago;
     ALLEGRO_BITMAP *fuoco;
     Animation animazione;
@@ -24,6 +26,8 @@ class Drago  {
         dim_y=120;
         posX=640;
         posY=480;
+        dimFuocoX=40;
+        dimFuocoY=30;
         posFuocoX=posX;
         posFuocoY=posY-(dim_y/2);
         drago=al_load_bitmap("images/dragonArriving.png");
@@ -39,8 +43,10 @@ class Drago  {
         dim_y=dimy;
         posX=x;
         posY=y;
-        posFuocoX=posX;
-        posFuocoY=posY-(dim_y/2);
+        dimFuocoX=40;
+        dimFuocoY=30;
+        posFuocoX=posX-dimx/2;
+        posFuocoY=posY+dimy/2;
         drago=al_load_bitmap("images/dragonArriving.png");
         fuoco=al_load_bitmap("images/fireBall.png");
         frames=6;
@@ -53,6 +59,8 @@ class Drago  {
   	int getY() const  { return posY; }
     int getFuocoX() const  { return posFuocoX; }
   	int getFuocoY() const  { return posFuocoY; }
+    int getDimFuocoX() const {return dimFuocoX;}
+    int getDimFuocoY() const {return dimFuocoY;}  
   	int getDim_x() const  { return dim_x; }
    	int getDim_y() const  { return dim_y; }
    	int getFrames() const {return frames;}
@@ -67,6 +75,7 @@ class Drago  {
    	void setFrames(int f) {frames=f;}
     bool Draw(bool,bool);
     bool DrawFire(bool,bool);
+    bool hitFire(int,int, int,int);
     
 };
 bool Drago::Draw(bool arrive,bool spitFire)
@@ -99,20 +108,37 @@ bool Drago::Draw(bool arrive,bool spitFire)
     return true;
 }
 
-bool Drago::DrawFire(bool colpitoFuoco, bool spitFire)
+bool Drago::DrawFire(bool colpitoFuoco, bool fire)
 {
-    if(spitFire)
+    if(fire && !colpitoFuoco)
     {
-        if(posFuocoX>=0 && !colpitoFuoco)
-            posFuocoX-=5;
+        if(posFuocoX>=-20)
+            posFuocoX-=4;
         else
             {
-                posFuocoX=640;  
+                posFuocoX=570;  
                 return false;
             }    
-        al_draw_bitmap(fuoco,posFuocoX,posFuocoY,0);
-        return true;      
+        al_draw_bitmap(fuoco,posFuocoX,posFuocoY,0);     
     }
-    return false;        
+    else if(colpitoFuoco)
+        {
+            posFuocoX=600;
+            return false; 
+        }    
+    return true;           
 }
+
+bool Drago::hitFire(int playerPosX, int playerPosY, int playerDimX, int playerDimY)
+{
+    bool b1 = playerPosX <= posFuocoX+dimFuocoX,
+	     b2 = playerPosX+playerDimX >= posFuocoX,
+		 b3 = playerPosY <= posFuocoY+dimFuocoY,
+         b4 = playerPosY+playerDimY>=posFuocoY;
+    if(b1 && b2 && b3 && b4)
+    return true;
+    else
+    return false;     
+}
+
 #endif

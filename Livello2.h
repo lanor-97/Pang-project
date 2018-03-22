@@ -30,7 +30,6 @@ Livello2::Livello2(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* d1, const 
 
 Livello2::Livello2(Livello1* L1, const int FPS)  {
 	sfondo = al_load_bitmap("images/sfondo2.jpg");
-
 	player = L1->getPlayer();
 	SCREEN_W = L1->getSW();
 	SCREEN_H = L1->getSH();
@@ -111,7 +110,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
 			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false, climbing=false,
 			drawExplosion=false, trans=true, keyUp = false, keyDown = false, onlyLeftRight=false,
-			dragonArrive=true, spitting=false;
+			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false;
 
 	int 	punteggio=0, tempo=9000, H_arma=0, return_value, fireCount=300; //fireCount timer per spitFire 300=5 sec
 
@@ -147,7 +146,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			//148 = altitudine player piattaforma (piat_pos_y+14-player_dim_y)
 			onlyLeftRight =  (player->getY() == 285) || (player->getY() == 148);
 			if(keyRight && !caduto && !drawShoot && onlyLeftRight)  {
-				player->setFrames(6);
+				//player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
 				if(player->getY() == 285)  {	
@@ -172,7 +171,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				}
 			}
 			if(keyLeft && !caduto && !drawShoot && onlyLeftRight)  {
-				player->setFrames(6);
+			//	player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
 				if(player->getY() == 285)  {
@@ -203,6 +202,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				keySpace=false;
 			}
 
+
 			bool p_hit = GP.playerHit(player->getX(), player->getY(), player->getDim_x());
 
 			if(p_hit && !colpito && !caduto)  {
@@ -211,8 +211,17 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				caduto=true;
 				colpito=true;
 			}
-			if(!p_hit)
+
+			bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDim_x(), player->getDim_y());
+
+			if(p_hitFire && !colpito && !caduto) 
+			{
+				caduto=true;  //fuoco colpisce player
+				colpito=true;
+			}
+			if(!p_hitFire && !p_hit)
 				colpito=false;
+			
 
 			if(keyUp && player->getY()+player->getDim_y() >= piat1->getY()+14 && (scala1->playerHere(player) || scala2->playerHere(player)))  {
 				if(player->getY()+player->getDim_y()-3 < piat1->getY()+14)
@@ -323,6 +332,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			scala1->Draw();
 			scala2->Draw();
 
+			if(!drago->DrawFire(colpito,fire))
+				fire=false;
+
 			if(tempo/60<=145) 
 			{
 				if(drago->getX()<=530)
@@ -338,7 +350,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 					spitting=false;
 				
 				fireCount--;
-			}	
+			}
+			if(spitting)
+			fire=true;
 
 			if(shoot)
 				player->Draw_arma(H_arma);

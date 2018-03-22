@@ -71,12 +71,15 @@ Giocatore::~Giocatore()  {
 }
 
 void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing)  {
+
     left = keyLeft;
     right = keyRight;
     this->drawShoot = drawShoot;
     this->toLeft = toLeft;
     this->caduto = caduto;
     this->climbing = climbing;
+
+
 }
 bool Giocatore:: Draw(){
     if(climbing)  {
