@@ -199,22 +199,30 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				colpito=false;*/
 			
 
-			if(keyUp && player->getY()+player->getDim_y() >= piat1->getY()+14 && (scala1->playerHere(player) || scala2->playerHere(player)))  {
-				if(player->getY()+player->getDim_y()-3 < piat1->getY()+14)
-					player->setY(piat1->getY()+14 - player->getDim_y());
-				else
-					player->setY(player->getY()-3);
+			if(keyUp && player->getY() > PLAYER_ALT_PIAT)  {
 				climbing = true;
-			}
-			else if(keyDown && player->getY() <= PLAYER_ALT_NORM && (scala1->playerHere(player) || scala2->playerHere(player)))  {
-				if(player->getY()+3 > PLAYER_ALT_NORM)
-					player->setY(PLAYER_ALT_NORM);
+				if(scala1->playerHere(player))
+					player->setX(scala1->getX());
+				else if(scala2->playerHere(player))
+					player->setX(scala2->getX());
 				else
-					player->setY(player->getY()+3);
-				climbing = true;
+					climbing = false;
+
+				if(climbing)
+					player->muoviUp(true, PLAYER_ALT_PIAT);
 			}
-			else
-				climbing = false;
+			else if(keyDown && player->getY() < PLAYER_ALT_NORM)  {
+				climbing = true;
+				if(scala1->playerHere(player))
+					player->setX(scala1->getX());
+				else if(scala2->playerHere(player))
+					player->setX(scala2->getX());
+				else
+					climbing = false;
+
+				if(climbing)
+					player->muoviUp(false, PLAYER_ALT_NORM);
+			}
 
 			if(shoot && player->getY_arma()>0 && !presa)  {
 				player->setY_arma(player->getY_arma() - 6);

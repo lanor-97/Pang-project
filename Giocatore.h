@@ -46,6 +46,7 @@ public:
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
     void Draw_arma(int H)  { arma->Draw(H); }
     void muoviSx(bool, float);
+    void muoviUp(bool, float);
 
 };
 
@@ -82,7 +83,7 @@ void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft
 
 
 }
-bool Giocatore:: Draw(){
+bool Giocatore::Draw(){
 
     if(climbing)  {
         setFrames(5);
@@ -91,7 +92,7 @@ bool Giocatore:: Draw(){
         bitmap = al_load_bitmap("images/shrekClimbing.png");
         return animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
     }
-    if(left && !drawShoot && !caduto)  {
+    else if(left && !drawShoot && !caduto)  {
         setFrames(6);
         animazione.setFrameDelay(5);
         al_destroy_bitmap(bitmap);
@@ -163,6 +164,21 @@ void Giocatore::muoviSx(bool sx, float max)  {
 			posX += 5;
 		else
 			posX = max - dim_x;
+	}
+}
+
+void Giocatore::muoviUp(bool up, float max)  {
+	if(up)  {
+		if(posY - 3 < max)
+			posY = max;
+		else
+			posY -= 3;
+	}
+	else  {
+		if(posY + 3 > max)
+			posY = max;
+		else
+			posY += 3;
 	}
 }
 
