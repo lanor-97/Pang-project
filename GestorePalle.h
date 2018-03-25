@@ -3,6 +3,8 @@
 #include "Palla.h"
 #include "list"
 #include "Esplosione.h"
+#include "Giocatore.h"
+
 class GestorePalle  {
 private:
 	list<Palla*> balls;
@@ -10,6 +12,8 @@ private:
 			SY;
 	Esplosione explosion;
 public:
+	GestorePalle()  {}
+	GestorePalle(float x, float y)  { SW = x; SY = y; }
 	~GestorePalle();
 	bool aggiungiPalla(float, float, SIZE, COLOR);
 	//void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
@@ -18,8 +22,8 @@ public:
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
 	void Bouncer();
-	bool hitByHook(float, float, float);
-	bool playerHit(float, float, float);
+	bool hitByHook(Giocatore*);
+	bool playerHit(Giocatore*);
 	bool Empty() const  { return balls.empty(); }
 	void Clear();
 };
@@ -60,7 +64,11 @@ void GestorePalle::Bouncer()  {
 	}
 }
 	
-bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
+bool GestorePalle::hitByHook(Giocatore* player)  {
+
+	float 	x1 = player->getX_arma(), 
+			y1 = player->getY_arma(),
+			d1 = player->getDim_arma();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= (*it)->getX()+(*it)->getDim(),
@@ -108,7 +116,11 @@ bool GestorePalle::hitByHook(float x1, float y1, float d1)  {
 }
 
 
-bool GestorePalle::playerHit(float x, float y, float d)  {
+bool GestorePalle::playerHit(Giocatore* player)  {
+	float 	x = player->getX(),
+			y = player->getY(),
+			d = player->getDim_x();
+
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = (*it)->getX()+(*it)->getDim() >= x,
 				b2 = (*it)->getX() <= x+d,

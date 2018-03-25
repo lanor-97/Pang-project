@@ -3,7 +3,6 @@
 
 #include "Animation.h"
 #include "GestorePalle.h"
-#include "Giocatore.h"
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include "Transizione.h"
@@ -19,6 +18,7 @@ public:
 	void Transition(int);
 	bool Pausa(float res_info[]);
 	virtual void regolaPalle();
+	virtual void Draw(int, int, int, int);
 
 	//funzioni get
 	float getSW() const  { return SCREEN_W; }
@@ -35,21 +35,20 @@ protected:
 	ALLEGRO_DISPLAY* 		display=NULL;
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
-	Giocatore* player;
-	GestorePalle GP;
+	Giocatore* player = NULL;
+	GestorePalle* GP = NULL;
 	Transizione transizione;
 	float SCREEN_W, SCREEN_H;
+	bool shoot, caduto, drawShoot, drawExplosion, MatchOver;
 };
 
 Livello1::Livello1()  {
 	SCREEN_W = 0; 
 	SCREEN_H = 0;
-	player = NULL;
 }
 Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, const int FPS): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
 	sfondo = al_load_bitmap("images/sfondo1.jpg");
-	GP.setSW(SCREEN_W);
-	GP.setSY(SCREEN_H);
+	GP = new GestorePalle(SW, SH);
 
 	font1=al_load_ttf_font("fonts/SHREK.TTF",30,0);
 	font2=al_load_ttf_font("fonts/SHREK.TTF",25,0);
@@ -68,14 +67,18 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 }
 
 void Livello1::regolaPalle()  {
-	GP.aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN);
-	GP.aggiungiPalla(0, 157, GRA, GREEN);
+	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN);
+	GP->aggiungiPalla(0, 157, GRA, GREEN);
 }
 
 Livello1::~Livello1()  {
 	if(sfondo)  {
 		cerr << "\ndistruggo sfondo_bitmap Liv";
 		al_destroy_bitmap(sfondo);
+	}
+	if(GP)  {
+		cerr << "\ndistruggo GestorePalle Liv";
+		delete GP;
 	}
 	if(font1)  {
 		cerr << "\ndistruggo font1 Liv";
@@ -160,7 +163,7 @@ bool Livello1::Pausa(float res_info[])  {
 			}
 			al_draw_bitmap(sfondo,0,0,0);
 			player->Draw();
-			GP.Draw(false);
+			GP->Draw(false);
 			if(!play)
 				al_draw_bitmap(pausa_exit,0,0,0);
 			else
@@ -178,10 +181,12 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
 	//DICHIARAZIONE ALTRE VARIABILI 
-	bool 	drawShoot=false, caduto=false, shoot=false, colpito=false, sfondo2=false, 
-			presa=false, redraw = true, keyRight=false, keyLeft=false, keySpace=false, 
-			toLeft=false, MatchOver=false, bitmap_ = true, fullscreen=false,
-			drawExplosion=false, trans=true;
+	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
+			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
+			bitmap_ = true, fullscreen=false, trans=true;
+
+	drawShoot=false; caduto=false; shoot=false; 
+	MatchOver=false; drawExplosion=false;
 
 	int 	punteggio=0, tempo=9000, H_arma=0, return_value;
 
@@ -198,9 +203,9 @@ int Livello1::Esegui(int vite, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			bool hit = false;
-			GP.Bouncer();
+			GP->Bouncer();
 			if(shoot)
-				hit = GP.hitByHook(player->getX_arma(), player->getY_arma(), player->getDim_arma());
+				hit = GP->hitByHook(player);
 
 			if(shoot==false)
 				player->posizionaArma();
@@ -239,7 +244,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keySpace=false;
 			}
 
-			bool p_hit = GP.playerHit(player->getX(), player->getY(), player->getDim_x());
+			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
 				//palla colpisce player
@@ -249,6 +254,15 @@ int Livello1::Esegui(int vite, float res_info[])  {
 			}
 			if(!p_hit)
 				colpito=false;
+
+			if(shoot && player->getY_arma()>0 && !presa)  {
+				player->setY_arma(player->getY_arma() - 6);
+				H_arma += 6;
+			}
+			else  {
+				H_arma = 0;
+				shoot=false;
+			}
 
 			redraw = true;
 		}
@@ -301,48 +315,14 @@ int Livello1::Esegui(int vite, float res_info[])  {
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			al_draw_bitmap(sfondo,0,0,0);
-			if(shoot && player->getY_arma()>0 && !presa)  {
-				player->setY_arma(player->getY_arma() - 6);
-				H_arma += 6;
-			}
-			else  {
-				H_arma = 0;
-				shoot=false;
-			}
-
-			if(vite>=1)
-				al_draw_bitmap(vite_bmp, SCREEN_W/25, SCREEN_H/11, 0);
-			if(vite>=2)
-				al_draw_bitmap(vite_bmp, SCREEN_W/11, SCREEN_H/11, 0);
-			if(vite>=3)
-				al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
-			if(vite<=0 || tempo<=0)
-				caduto=true;
-
-			al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
-			al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
-			al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
-
-			if(shoot)
-				player->Draw_arma(H_arma);
-
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
-			if(!player->Draw())  {
-				if(caduto)  {
-					caduto=false;
-					MatchOver=true;
-				}	
-				drawShoot=false;
-			}
-			
-			if(!GP.Draw(drawExplosion))
-				drawExplosion=false;
-
+			Draw(vite, punteggio, tempo, H_arma);
 			tempo--;
-			al_flip_display();
+
 			redraw = false;
-			if(GP.Empty())  {
+
+			//CONTROLLO VITTORIA
+			if(GP->Empty())  {
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -363,7 +343,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	//DISTRUGGO TUTTO
 	player->setX(SCREEN_W/2 - player->getDim_x());
    	player->setY(SCREEN_H/1.37 - player->getDim_y());
-	GP.Clear();
+	GP->Clear();
 
 	return return_value;
 }
@@ -387,7 +367,7 @@ void Livello1::Transition(int x)
 			if(x==1)
 			{
 				al_draw_bitmap(sfondo,0,0,0);
-				GP.Draw(false);
+				GP->Draw(false);
 				player->Draw();
 			}
 			if(x==2 || x==3)
@@ -402,6 +382,39 @@ void Livello1::Transition(int x)
 			al_flip_display();
 		}
 	}
+}
+
+void Livello1::Draw(int vite, int tempo, int punteggio, int H_arma)  {
+	al_draw_bitmap(sfondo,0,0,0);
+
+	if(vite>=1)
+		al_draw_bitmap(vite_bmp, SCREEN_W/25, SCREEN_H/11, 0);
+	if(vite>=2)
+		al_draw_bitmap(vite_bmp, SCREEN_W/11, SCREEN_H/11, 0);
+	if(vite>=3)
+		al_draw_bitmap(vite_bmp, SCREEN_W/7, SCREEN_H/11, 0);
+	if(vite<=0 || tempo<=0)
+		caduto=true;
+
+	al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
+	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
+	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
+
+	if(shoot)
+		player->Draw_arma(H_arma);
+
+	if(!player->Draw())  {
+		if(caduto)  {
+			caduto=false;
+			MatchOver=true;
+		}	
+		drawShoot=false;
+	}
+		
+	if(!GP->Draw(drawExplosion))
+		drawExplosion=false;
+
+	al_flip_display();
 }
 
 
