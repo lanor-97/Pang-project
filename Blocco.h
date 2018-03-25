@@ -1,6 +1,7 @@
 #ifndef BLOCCO_H
 #define BLOCCO_H
 #include "Esplosione.h"
+#include "Giocatore.h"
 #include "stdlib.h"
 #include "time.h"
 #include <iostream>
@@ -20,6 +21,7 @@ public:
     Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
     Blocco(float, float, Tipo);
     ~Blocco();
+    ALLEGRO_BITMAP* getBitmap() const  { return blocco; }
     float getPosX() const  { return posX; }
     float getPosY() const  { return posY; }
     float getDim_x() const  { return dim_x; }
@@ -30,6 +32,7 @@ public:
     void setPosY(float y)  { posY = y; esplosione.setPosY(posY); }
     void Draw()  { al_draw_bitmap(blocco,posX,posY,0); }
     bool drawExplosion();
+    bool hitByHook(Giocatore*);
 };
 
 Blocco::Blocco(float posX, float posY, Tipo t)  {
@@ -73,6 +76,18 @@ Blocco::~Blocco()  {
 bool Blocco::drawExplosion()  {
     if(!esplosione.Draw())
         return false;
+    return true;
+}
+
+bool Blocco::hitByHook(Giocatore* player)  {
+    float   x = player->getX_arma(),
+            y = player->getY_arma(),
+            d = player->getDim_arma();
+
+    if(x+d < posX)      return false;
+    if(x > posX+dim_x)  return false;
+    if(y > posY+dim_y)  return false;
+    
     return true;
 }
 

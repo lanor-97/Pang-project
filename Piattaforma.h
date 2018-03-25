@@ -1,5 +1,6 @@
 #ifndef PIATTAFORMA_H
 #define PIATTAFORMA_H
+#include "Giocatore.h"
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
 
@@ -25,6 +26,7 @@ public:
 	void setY(int y)  { posY=y; }
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
 	bool playerHere(Giocatore*);
+	bool hitByHook(Giocatore*);
 };
 
 Piattaforma::Piattaforma(float x, float y)  {
@@ -48,6 +50,17 @@ bool Piattaforma::playerHere(Giocatore* player)  {
 
 	if(px+dx < posX)	return false;
 	if(px > posX+dim_x)	return false;
+	return true;
+}
+
+bool Piattaforma::hitByHook(Giocatore* player)  {
+	float 	x = player->getX_arma(),
+			y = player->getY_arma(),
+			d = player->getDim_arma();
+
+	if(x+d < posX)		return false;
+	if(x > posX+dim_x)	return false;
+	if(y > posY+dim_y)	return false;
 	return true;
 }
 

@@ -172,7 +172,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				else if(piat2->playerHere(player))
 					player->muoviSx(true, piat2->getX());
 			}
-			if(keySpace && !caduto)  {
+			if(keySpace && !caduto && !climbing)  {
 				if(!shoot)
 					drawShoot=true;
 				shoot=true;
@@ -224,7 +224,12 @@ int Livello2::Esegui(int vite, float res_info[])  {
 					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
-			if(shoot && player->getY_arma()>0 && !presa)  {
+			bool hook_colp = piat1->hitByHook(player) || piat2->hitByHook(player);
+			hook_colp = hook_colp || blocco1->hitByHook(player);
+			hook_colp = hook_colp || blocco2->hitByHook(player);
+			hook_colp = hook_colp || blocco3->hitByHook(player);
+
+			if(shoot && player->getY_arma()>0 && !presa && !hook_colp)  {
 				player->setY_arma(player->getY_arma() - 6);
 				H_arma += 6;
 			}
