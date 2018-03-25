@@ -4,7 +4,7 @@
 #include "Livello1.h"
 #include "Scala.h"
 #include "Piattaforma.h"
-#include "Drago.h"
+//#include "Drago.h"
 
 class Livello2: public Livello1  {
 public:
@@ -21,7 +21,7 @@ protected:
 	Scala *scala1, *scala2;
 	Piattaforma *piat1, *piat2;
 	Blocco *blocco1, *blocco2, *blocco3;
-	Drago *drago;
+	//Drago *drago;
 	const int PLAYER_ALT_PIAT = 148;
 	const int PLAYER_ALT_NORM = 285;
 };
@@ -59,7 +59,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	blocco1 = new Blocco(150, 100, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(434, 100, bloccoPietra);
-	drago= new Drago(120,120,640,220); // posDrago 530,220
+	//drago= new Drago(120,120,640,220); // posDrago 530,220
 }
 
 Livello2::~Livello2()  {
@@ -91,15 +91,15 @@ Livello2::~Livello2()  {
 		cerr << "\ndeleto blocco3";
 		delete blocco3;
 	}
-	if(drago)  	{
+	/*if(drago)  	{
 		cerr << "\ndeleto drago";
 		delete drago;
-	}
+	}*/
 }
 
 void Livello2::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
-	GP->aggiungiPalla(0, 157, GRA, RED);
+	//GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
+	//GP->aggiungiPalla(0, 157, GRA, RED);
 }
 
 int Livello2::Esegui(int vite, float res_info[])  {
@@ -110,7 +110,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, climbing=false, trans=true, 
-			keyUp = false, keyDown = false, onlyLeftRight=false,
+			keyUp = false, keyDown = false, onlyLeftRight=false, hit=false,
 			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
@@ -130,15 +130,15 @@ int Livello2::Esegui(int vite, float res_info[])  {
 		al_wait_for_event(event_queue, &ev);
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			bool hit = false;
+			hit = false;
 			GP->Bouncer();
 			if(shoot)
 				hit = GP->hitByHook(player);
+			else
+				player->posizionaArma();	
 
-			if(shoot==false)
-				player->posizionaArma();
-
-			if(hit && !presa)  {	//rampino colpisce palla
+			//RAMPINO HA COLPITO PALLA
+			if(hit && !presa)  {	
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -147,56 +147,30 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			if(!hit)
 				presa=false;
 
-			onlyLeftRight =  (player->getY() == PLAYER_ALT_NORM) || (player->getY() == PLAYER_ALT_PIAT);
-			if(keyRight && !caduto && !drawShoot && onlyLeftRight)  {
-				//player->setFrames(6);
+			climbing =  player->getY() != PLAYER_ALT_NORM && player->getY() != PLAYER_ALT_PIAT;
+
+			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
+			if(keyRight && !caduto && !drawShoot && !climbing)  {
+				player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
-				if(player->getY() == PLAYER_ALT_NORM)  {	
-					if(player->getX()+player->getDim_x()+5 <= SCREEN_W)
-						player->setX(player->getX()+5);
-					else
-						player->setX(SCREEN_W-player->getDim_x());
-				}
-				else  {									//sopra piattaforma
-					if(player->getX() < SCREEN_W/2)  {	//piat1
-						if(player->getX()+player->getDim_x()+5 <= piat1->getX()+piat1->getDim_x())
-							player->setX(player->getX()+5);
-						else
-							player->setX(piat1->getX()+40);
-					}
-					else  {								//piat2
-						if(player->getX()+player->getDim_x()+5 <= piat2->getX()+piat2->getDim_x())
-							player->setX(player->getX()+5);
-						else
-							player->setX(piat2->getX()+40);
-					}
-				}
+				if(player->getY() == PLAYER_ALT_NORM)
+					player->muoviSx(false, SCREEN_W);
+				else if(piat1->playerHere(player))
+					player->muoviSx(false, piat1->getX()+piat1->getDim_x());
+				else if(piat2->playerHere(player))
+					player->muoviSx(false, piat2->getX()+piat2->getDim_x());
 			}
-			if(keyLeft && !caduto && !drawShoot && onlyLeftRight)  {
-			//	player->setFrames(6);
+			if(keyLeft && !caduto && !drawShoot && !climbing)  {
+				player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
-				if(player->getY() == PLAYER_ALT_NORM)  {
-					if(player->getX()-5 >= 0)
-						player->setX(player->getX()-5);
-					else
-						player->setX(0);
-				}
-				else  {									//sopra piattaforma
-					if(player->getX() < SCREEN_W/2)  {	//piat1
-						if(player->getX()-5 >= piat1->getX())
-							player->setX(player->getX()-5);
-						else
-							player->setX(piat1->getX());
-					}
-					else  {								//piat2
-						if(player->getX()-5 >= piat2->getX())
-							player->setX(player->getX()-5);
-						else
-							player->setX(piat2->getX());
-					}
-				}
+				if(player->getY() == PLAYER_ALT_NORM)
+					player->muoviSx(true, 0);
+				else if(piat1->playerHere(player))
+					player->muoviSx(true, piat1->getX());
+				else if(piat2->playerHere(player))
+					player->muoviSx(true, piat2->getX());
 			}
 			if(keySpace && !caduto)  {
 				if(!shoot)
@@ -206,10 +180,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			}
 
 
+			//IF PALLA COLPISCE PLAYER
 			bool p_hit = GP->playerHit(player);
-
 			if(p_hit && !colpito && !caduto)  {
-				//palla colpisce player
 				return_value = 0;
 				caduto=true;
 				colpito=true;
@@ -252,7 +225,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				shoot=false;
 			}
 
-			if(tempo/60<=145) 
+
+			//DA VEDERE DOPO
+			/*if(tempo/60<=145) 
 			{
 				if(drago->getX()<=530)
 				{
@@ -269,7 +244,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				fireCount--;
 			}
 			if(spitting)
-				fire=true;
+				fire=true;*/
 
 			redraw = true;
 		}

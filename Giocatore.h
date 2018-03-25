@@ -45,6 +45,7 @@ public:
     void DrawVictory();
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
     void Draw_arma(int H)  { arma->Draw(H); }
+    void muoviSx(bool, float);
 
 };
 
@@ -138,6 +139,21 @@ void Giocatore::DrawVictory()  {
   animazione.setFrameDelay(7);
   setBitmap(al_load_bitmap("images/shrekVictory.png"));
   animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
+}
+
+void Giocatore::muoviSx(bool sx, float max)  {
+	if(sx)  {
+		if(posX - 5 >= max)
+			posX -= 5;
+		else
+			posX = max;
+	}
+	else  {
+		if(posX + dim_x + 5 <= max)
+			posX += 5;
+		else
+			posX = max - dim_x;
+	}
 }
 
 

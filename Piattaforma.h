@@ -24,6 +24,7 @@ public:
 	void setX(int x)  { posX=x; }
 	void setY(int y)  { posY=y; }
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+	bool playerHere(Giocatore*);
 };
 
 Piattaforma::Piattaforma(float x, float y)  {
@@ -41,6 +42,13 @@ Piattaforma::~Piattaforma()  {
 	}
 }
 
+bool Piattaforma::playerHere(Giocatore* player)  {
+	float	px = player->getX(),
+			dx = player->getDim_x();
 
+	if(px+dx < posX)	return false;
+	if(px > posX+dim_x)	return false;
+	return true;
+}
 
 #endif

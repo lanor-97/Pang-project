@@ -183,7 +183,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
-			bitmap_ = true, fullscreen=false, trans=true;
+			bitmap_ = true, fullscreen=false, trans=true, hit=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
@@ -202,40 +202,36 @@ int Livello1::Esegui(int vite, float res_info[])  {
 		al_wait_for_event(event_queue, &ev);
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
-			bool hit = false;
+			hit = false;
 			GP->Bouncer();
+
 			if(shoot)
 				hit = GP->hitByHook(player);
-
-			if(shoot==false)
+			else
 				player->posizionaArma();
 
-			if(hit && !presa)  {	//rampino colpisce palla
+			//RAMPINO HA COLPITO PALLA
+			if(hit && !presa)  {	
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
 			}
+
 			if(!hit)
 				presa=false;
 
+			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
 			if(keyRight && !caduto && !drawShoot)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
-				if(player->getX()+player->getDim_x()+5 <= SCREEN_W)
-					player->setX(player->getX()+5);
-
-				else
-					player->setX(SCREEN_W-player->getDim_x());
+				player->muoviSx(false, SCREEN_W);
 			}
 			if(keyLeft && !caduto && !drawShoot)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
-				if(player->getX()-5 >= 0)
-					player->setX(player->getX()-5);
-				else
-					player->setX(0);
+				player->muoviSx(true, 0);
 			}
 			if(keySpace && !caduto)  {
 				if(!shoot)
@@ -244,10 +240,10 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keySpace=false;
 			}
 
+			//IF PALLA COLPISCE GIOCATORE
 			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
-				//palla colpisce player
 				return_value = 0;
 				caduto=true;
 				colpito=true;
@@ -316,7 +312,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
-			Draw(vite, punteggio, tempo, H_arma);
+			Draw(vite, tempo, punteggio, H_arma);
 			tempo--;
 
 			redraw = false;
