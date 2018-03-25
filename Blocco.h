@@ -87,7 +87,7 @@ bool Blocco::hitByHook(Giocatore* player)  {
     if(x+d < posX)      return false;
     if(x > posX+dim_x)  return false;
     if(y > posY+dim_y)  return false;
-    
+
     return true;
 }
 

@@ -18,9 +18,9 @@ public:
 
 protected:
 
-	Scala *scala1, *scala2;
-	Piattaforma *piat1, *piat2;
-	Blocco *blocco1, *blocco2, *blocco3;
+	Scala *scala1=NULL, *scala2=NULL;
+	Piattaforma *piat1=NULL, *piat2=NULL;
+	Blocco *blocco1=NULL, *blocco2=NULL, *blocco3=NULL;
 	//Drago *drago;
 	const int PLAYER_ALT_PIAT = 148;
 	const int PLAYER_ALT_NORM = 285;
@@ -56,9 +56,6 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	scala2 = new Scala(434, 218, 0);
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
-	blocco1 = new Blocco(150, 100, bloccoPietra);
-	blocco2 = new Blocco(292, 150, bloccoPietra);
-	blocco3 = new Blocco(434, 100, bloccoPietra);
 	//drago= new Drago(120,120,640,220); // posDrago 530,220
 }
 
@@ -78,18 +75,6 @@ Livello2::~Livello2()  {
 	if(piat2)  {
 		cerr << "\ndeleto piat2";
 		delete piat2;
-	}
-	if(blocco1)  {
-		cerr << "\ndeleto blocco1";
-		delete blocco1;
-	}
-	if(blocco2)  {
-		cerr << "\ndeleto blocco2";
-		delete blocco2;
-	}
-	if(blocco3)  {
-		cerr << "\ndeleto blocco3";
-		delete blocco3;
 	}
 	/*if(drago)  	{
 		cerr << "\ndeleto drago";
@@ -111,12 +96,18 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, climbing=false, trans=true, 
 			keyUp = false, keyDown = false, onlyLeftRight=false, hit=false,
-			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false;
+			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false,
+			hook_colp=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0, return_value, fireCount=300; //fireCount timer per spitFire 300=5 sec
+	int 	punteggio=0, tempo=9000, H_arma=0, return_value, 
+			fireCount=300; //fireCount timer per spitFire 300=5 sec
+
+	blocco1 = new Blocco(150, 100, bloccoPietra);
+	blocco2 = new Blocco(292, 150, bloccoPietra);
+	blocco3 = new Blocco(434, 100, bloccoPietra);
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -224,11 +215,31 @@ int Livello2::Esegui(int vite, float res_info[])  {
 					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
-			bool hook_colp = piat1->hitByHook(player) || piat2->hitByHook(player);
-			hook_colp = hook_colp || blocco1->hitByHook(player);
-			hook_colp = hook_colp || blocco2->hitByHook(player);
-			hook_colp = hook_colp || blocco3->hitByHook(player);
+			if(player->getY() == PLAYER_ALT_NORM)
+				hook_colp = piat1->hitByHook(player) || piat2->hitByHook(player);
 
+			if(blocco1)
+				if(blocco1->hitByHook(player))  {
+					hook_colp = true;
+					cerr << "\ndistruggo blocco1";
+					delete blocco1;
+					blocco1 = NULL;
+				}
+			if(blocco2)
+				if(blocco2->hitByHook(player))  {
+					hook_colp = true;
+					cerr << "\ndistruggo blocco2";
+					delete blocco2;
+					blocco2 = NULL;
+				}
+			if(blocco3)
+				if(blocco3->hitByHook(player))  {
+					hook_colp = true;
+					cerr << "\ndistruggo blocco3";
+					delete blocco3;
+					blocco3 = NULL;
+				}
+			
 			if(shoot && player->getY_arma()>0 && !presa && !hook_colp)  {
 				player->setY_arma(player->getY_arma() - 6);
 				H_arma += 6;
@@ -346,6 +357,18 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	}
 	
 	//DISTRUGGO TUTTO
+	if(blocco1)  {
+		cerr << "\ndeleto blocco1";
+		delete blocco1;
+	}
+	if(blocco2)  {
+		cerr << "\ndeleto blocco2";
+		delete blocco2;
+	}
+	if(blocco3)  {
+		cerr << "\ndeleto blocco3";
+		delete blocco3;
+	}
 	player->setX(SCREEN_W/2 - player->getDim_x());
    	player->setY(SCREEN_H/1.37 - player->getDim_y());
 	GP->Clear();
@@ -368,9 +391,9 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma)  {
 	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-	blocco1->Draw();
-	blocco2->Draw();
-	blocco3->Draw();
+	if(blocco1)	blocco1->Draw();
+	if(blocco2)	blocco2->Draw();
+	if(blocco3)	blocco3->Draw();
 	piat1->Draw();
 	piat2->Draw();
 	scala1->Draw();
