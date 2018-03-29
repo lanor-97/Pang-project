@@ -4,6 +4,7 @@
 #include "list"
 #include "Esplosione.h"
 #include "Giocatore.h"
+#include "Piattaforma.h"
 
 class GestorePalle  {
 private:
@@ -16,8 +17,6 @@ public:
 	GestorePalle(float x, float y)  { SW = x; SY = y; }
 	~GestorePalle();
 	bool aggiungiPalla(float, float, SIZE, COLOR, bool);
-	//void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
-	//const Palla& front() const  { return balls.front(); }
 	bool Draw(bool) ;
 	void setSW(float sw)  { SW = sw; }
 	void setSY(float sy)  { SY = sy; }
@@ -27,6 +26,7 @@ public:
 	bool Empty() const  { return balls.empty(); }
 	void Clear();
 	void clearProcess();
+	void bouncerPiattaforma(Piattaforma*);
 };
 
 GestorePalle::~GestorePalle()  {
@@ -67,7 +67,6 @@ void GestorePalle::Bouncer()  {
 }
 	
 bool GestorePalle::hitByHook(Giocatore* player)  {
-
 	float 	x1 = player->getX_arma(), 
 			y1 = player->getY_arma(),
 			d1 = player->getDim_arma();
@@ -145,6 +144,45 @@ void GestorePalle::Clear()  {
 void GestorePalle::clearProcess()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)
 		(*it)->clearProcess();
+}
+
+void GestorePalle::bouncerPiattaforma(Piattaforma* p)  {
+	float	piatX = p->getX(),
+			piatY = p->getY(),
+			piatDimX = p->getDim_x(),
+			piatDimY = p->getDim_y();
+
+	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
+		float	pallaX = (*it)->getX(),
+				pallaY = (*it)->getY(),
+				pallaDim = (*it)->getDim(),
+				pallaBouncerX = (*it)->getBouncerX(),
+				pallaBouncerY = (*it)->getBouncerY();
+
+		DIREZIONE 	d = (*it)->getDirezioneY();
+		bool 	altezzaOk = !(pallaY>piatY+piatDimY) && !(pallaY+pallaDim<piatY),
+				lunghezzaOk = !(pallaX>piatX+piatDimX) && !(pallaX+pallaDim<piatX);
+
+		bool 	versoDx = (pallaBouncerX > 0) && (pallaX+pallaDim >= piatX) && (pallaX+pallaDim-piatX <= 4),
+				versoSx = (pallaBouncerX < 0) && (piatX+piatDimX <= pallaX) && (pallaX-piatX-piatDimX <= 4);
+
+		if((versoDx || versoSx) && altezzaOk)
+			(*it)->toggleBouncerX();
+
+		bool 	versoUp = (d == UP) && (piatY+piatDimY >= pallaY) && (piatY+piatDimY-pallaY <= 7),
+				versoDown = (d == DOWN) && (pallaY+pallaDim >= piatY) && (pallaY+pallaDim-piatY <= 7);
+
+		if((*it)->canY > 0)  {
+			(*it)->canY -= 1;
+			continue;
+		}
+		if((versoUp || versoDown) && lunghezzaOk)  {
+			(*it)->setBouncerY(-pallaBouncerY);
+			(*it)->calculateY(SY);
+			(*it)->canY = 2;
+		}
+	}
+
 }
 
 

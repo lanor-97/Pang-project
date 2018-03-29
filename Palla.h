@@ -11,6 +11,7 @@ using namespace std;
 
 enum SIZE  { PIC = 0, MED, GRA };  	//piccola = 20px, media = 40px, grande = 70px
 enum COLOR  { GREEN = 0, RED, BLUE };
+enum DIREZIONE  { UP = 0, RIGHT, DOWN, LEFT };
 
 class Palla  {
 private:
@@ -20,13 +21,16 @@ private:
 			bouncerX,
 			bouncerY,
 			cont,			//pos h
-			h_max;			//coeff. altezza massima
+			h_max,			//coeff. altezza massima
+			lastPosY;
 	bool	processatoX,
 			processatoY;
 	COLOR colore;
    	SIZE size;
   	ALLEGRO_BITMAP *bitmap;
 	Animation animazione;
+	DIREZIONE 	direzioneX,
+				direzioneY;
 
 public:
   	Palla(float, float, SIZE, COLOR, bool);
@@ -40,10 +44,12 @@ public:
    	float getCont() const  { return cont; }
 	SIZE getSize() const  { return size; }
 	COLOR getColor() const  { return colore; }
+	DIREZIONE getDirezioneX() const  { return direzioneX; }
+	DIREZIONE getDirezioneY() const  { return direzioneY; }
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
-  	void toggleBouncerX()  { bouncerX = -bouncerX; }
+  	void toggleBouncerX()  { bouncerX = -bouncerX; toggleDirezioneX(); }
   	void setBouncerY(float y)  { bouncerY = y; }
   	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
 	void DrawExplosion();
@@ -52,6 +58,9 @@ public:
   	bool getProcessatoX() const  { return processatoX; }
   	bool getProcessatoY() const  { return processatoY; }
   	void clearProcess()  { processatoX = false; processatoY = false; }
+  	void toggleDirezioneX();
+  	void toggleDirezioneY();
+  	int canY;
 };
 
 
@@ -102,13 +111,20 @@ Palla::Palla(float x, float c, SIZE s, COLOR col, bool dir)  {
 	}
 	posX = x;
 	posY = 0;
-	if(dir)
+	if(dir)  {
 		bouncerX = 2;
-	else
+		direzioneX = RIGHT;
+	}
+	else  {
 		bouncerX = -2;
+		direzioneX = LEFT;
+	}
 	cont = c;
 	processatoX = false;
 	processatoY = false;
+	direzioneY = DOWN;
+	lastPosY = posY;
+	canY = 0;
 }
 
 Palla::~Palla()  {
@@ -124,9 +140,30 @@ void Palla::calculateY(int SY)  {
 		cont = 1;
 
 	float sen = sin(cont/100);
+	lastPosY = posY;
 	posY = SY - (120 + abs((sen*(SY/h_max))));
 	cont += bouncerY;
 	processatoY = true;
+
+	if(posY > lastPosY)
+		direzioneY = DOWN;
+	else
+		direzioneY = UP;
+
+}
+
+void Palla::toggleDirezioneX()  {
+	if(direzioneX == RIGHT)
+		direzioneX = LEFT;
+	else
+		direzioneX = RIGHT;
+}
+
+void Palla::toggleDirezioneY()  {
+	if(direzioneY == UP)
+		direzioneY = DOWN;
+	else
+		direzioneY = UP;
 }
 
 

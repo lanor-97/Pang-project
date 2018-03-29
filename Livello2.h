@@ -122,6 +122,8 @@ int Livello2::Esegui(int vite, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
+			GP->bouncerPiattaforma(piat1);
+			GP->bouncerPiattaforma(piat2);
 			GP->Bouncer();
 			if(shoot)
 				hit = GP->hitByHook(player);
