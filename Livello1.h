@@ -67,8 +67,8 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 }
 
 void Livello1::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN);
-	GP->aggiungiPalla(0, 157, GRA, GREEN);
+	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN, true);
+	GP->aggiungiPalla(50, 157, GRA, GREEN, false);
 }
 
 Livello1::~Livello1()  {
@@ -183,7 +183,8 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
-			bitmap_ = true, fullscreen=false, trans=true, hit=false;
+			bitmap_ = true, fullscreen=false, trans=true, hit=false,
+			next[4] = {false};
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
@@ -279,6 +280,20 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				}
 				al_start_timer(timer);
 			}	
+			if(ev.keyboard.keycode == ALLEGRO_KEY_N)
+				next[0] = true;
+			if(ev.keyboard.keycode == ALLEGRO_KEY_E)  {
+				if(next[0])
+					next[1] = true;
+			}
+			if(ev.keyboard.keycode == ALLEGRO_KEY_X)  {
+				if(next[0] && next[1])
+					next[2] = true;
+			}
+			if(ev.keyboard.keycode == ALLEGRO_KEY_T)  {
+				if(next[0] && next[1] && next[2])
+					next[3] = true;
+			}
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
@@ -308,6 +323,10 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keyRight=false;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
+		}
+		if(next[3] && next[2] && next[1] && next[0])  {
+			return_value = 1;
+			break;
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {

@@ -83,8 +83,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
-	//GP->aggiungiPalla(0, 157, GRA, RED);
+	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED, true);
+	//GP->aggiungiPalla(0, 157, GRA, RED, false);
 }
 
 int Livello2::Esegui(int vite, float res_info[])  {

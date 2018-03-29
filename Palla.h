@@ -9,8 +9,7 @@
 #include "time.h"
 using namespace std;
 
-enum SIZE  { PIC = 0, MED, GRA };  //piccola = 20px, media = 40px
-                                  //grande = 70px
+enum SIZE  { PIC = 0, MED, GRA };  	//piccola = 20px, media = 40px, grande = 70px
 enum COLOR  { GREEN = 0, RED, BLUE };
 
 class Palla  {
@@ -30,7 +29,7 @@ private:
 	Animation animazione;
 
 public:
-  	Palla(float, float, SIZE, COLOR);
+  	Palla(float, float, SIZE, COLOR, bool);
   	~Palla();
   	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
   	float getX() const  { return posX; }
@@ -44,7 +43,6 @@ public:
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
-  	void setDim(int d)  { dim=d; }
   	void toggleBouncerX()  { bouncerX = -bouncerX; }
   	void setBouncerY(float y)  { bouncerY = y; }
   	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
@@ -57,7 +55,7 @@ public:
 };
 
 
-Palla::Palla(float x, float c, SIZE s, COLOR col)  {
+Palla::Palla(float x, float c, SIZE s, COLOR col, bool dir)  {
 	size = s;
 	colore = col;
 	float a = rand();
@@ -104,7 +102,10 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 	}
 	posX = x;
 	posY = 0;
-	bouncerX = 2;
+	if(dir)
+		bouncerX = 2;
+	else
+		bouncerX = -2;
 	cont = c;
 	processatoX = false;
 	processatoY = false;

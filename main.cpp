@@ -69,7 +69,7 @@ int main(int argc, char **argv)  {
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
    	Livello2* L2 = new Livello2(L1, FPS);
 
-   	Livello1* current_level = L2;
+   	Livello1* current_level = L1;
 
 
    	play = Menu(display, res_info);

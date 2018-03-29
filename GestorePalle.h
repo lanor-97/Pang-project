@@ -15,7 +15,7 @@ public:
 	GestorePalle()  {}
 	GestorePalle(float x, float y)  { SW = x; SY = y; }
 	~GestorePalle();
-	bool aggiungiPalla(float, float, SIZE, COLOR);
+	bool aggiungiPalla(float, float, SIZE, COLOR, bool);
 	//void rimuoviPalla(list<Palla>::iterator it)  { balls.erase(it); }
 	//const Palla& front() const  { return balls.front(); }
 	bool Draw(bool) ;
@@ -36,8 +36,8 @@ GestorePalle::~GestorePalle()  {
 	}
 }
 
-bool GestorePalle::aggiungiPalla(float x, float c, SIZE s, COLOR co)  {
-	Palla* p = new Palla(x, c, s, co);
+bool GestorePalle::aggiungiPalla(float x, float c, SIZE s, COLOR co, bool dir)  {
+	Palla* p = new Palla(x, c, s, co, dir);
 
 	p->calculateY(SY);
 	balls.push_back(p);
@@ -61,7 +61,7 @@ void GestorePalle::Bouncer()  {
 			(*it)->toggleBouncerX();
 
 		if(!(*it)->getProcessatoX())	(*it)->calculateX();
-		if(!(*it)->getProcessatoY()) (*it)->calculateY(SY);
+		if(!(*it)->getProcessatoY()) 	(*it)->calculateY(SY);
 	}
 	clearProcess();
 }
@@ -96,12 +96,12 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 							delete (*it);
 							return true;
 			}
-			Palla* p1 = new Palla(x, c, s, co);
-			Palla* p2 = new Palla(x, c, s, co);
+			Palla* p1 = new Palla(x, c, s, co, true);
+			Palla* p2 = new Palla(x, c, s, co, false);
 			p1->setY((*it)->getY());
 			p2->setY((*it)->getY());
 
-			p2->toggleBouncerX();
+			//p2->toggleBouncerX();
 			if(p1->getCont() > 157 || p1->getCont() < -157)
 				p1->setBouncerY(-p1->getBouncerY());
 			if(p2->getCont() > 157 || p2->getCont() < -157)
