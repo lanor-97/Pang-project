@@ -26,6 +26,7 @@ public:
 	bool playerHit(Giocatore*);
 	bool Empty() const  { return balls.empty(); }
 	void Clear();
+	void clearProcess();
 };
 
 GestorePalle::~GestorePalle()  {
@@ -56,12 +57,13 @@ bool GestorePalle::Draw(bool drawExplosion)   {
 
 void GestorePalle::Bouncer()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
-		if((*it)->getX() < 0 || (*it)->getX() > SW - (*it)->getDim()) {
-			(*it)->setBouncer(-(*it)->getBouncer());
-		}
-		(*it)->setX((*it)->getX() + (*it)->getBouncer());
-		(*it)->calculateY(SY);
+		if((*it)->getX() < 0 || (*it)->getX() > SW - (*it)->getDim())
+			(*it)->toggleBouncerX();
+
+		if(!(*it)->getProcessatoX())	(*it)->calculateX();
+		if(!(*it)->getProcessatoY()) (*it)->calculateY(SY);
 	}
+	clearProcess();
 }
 	
 bool GestorePalle::hitByHook(Giocatore* player)  {
@@ -99,11 +101,11 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 			p1->setY((*it)->getY());
 			p2->setY((*it)->getY());
 
-			p2->setBouncer(-(p1->getBouncer()));
+			p2->toggleBouncerX();
 			if(p1->getCont() > 157 || p1->getCont() < -157)
-				p1->setBouncer_h(-p1->getBouncer_h());
+				p1->setBouncerY(-p1->getBouncerY());
 			if(p2->getCont() > 157 || p2->getCont() < -157)
-				p2->setBouncer_h(-p2->getBouncer_h());
+				p2->setBouncerY(-p2->getBouncerY());
 			balls.push_back(p1);
 			balls.push_back(p2);
 			balls.erase(it);
@@ -138,6 +140,11 @@ void GestorePalle::Clear()  {
 		delete (*it);
 	}
 	balls.clear();
+}
+
+void GestorePalle::clearProcess()  {
+	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)
+		(*it)->clearProcess();
 }
 
 

@@ -83,7 +83,7 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	//GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
+	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED);
 	//GP->aggiungiPalla(0, 157, GRA, RED);
 }
 

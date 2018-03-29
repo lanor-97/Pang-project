@@ -18,10 +18,12 @@ private:
 	int 	dim;
   	float	posX,
 			posY,
-			bouncer,
-			bouncer_h,
+			bouncerX,
+			bouncerY,
 			cont,			//pos h
 			h_max;			//coeff. altezza massima
+	bool	processatoX,
+			processatoY;
 	COLOR colore;
    	SIZE size;
   	ALLEGRO_BITMAP *bitmap;
@@ -34,8 +36,8 @@ public:
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }
   	int getDim() const  { return dim; }
-  	float getBouncer() const  { return bouncer; }
-  	float getBouncer_h() const  { return bouncer_h; }
+  	float getBouncerX() const  { return bouncerX; }
+  	float getBouncerY() const  { return bouncerY; }
    	float getCont() const  { return cont; }
 	SIZE getSize() const  { return size; }
 	COLOR getColor() const  { return colore; }
@@ -43,11 +45,15 @@ public:
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
   	void setDim(int d)  { dim=d; }
-  	void setBouncer(float x)  { bouncer=x; }
-  	void setBouncer_h(float h)  { bouncer_h = h; }
+  	void toggleBouncerX()  { bouncerX = -bouncerX; }
+  	void setBouncerY(float y)  { bouncerY = y; }
   	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
 	void DrawExplosion();
+	void calculateX()  { posX += bouncerX; processatoX = true; }
   	void calculateY(const int);
+  	bool getProcessatoX() const  { return processatoX; }
+  	bool getProcessatoY() const  { return processatoY; }
+  	void clearProcess()  { processatoX = false; processatoY = false; }
 };
 
 
@@ -67,7 +73,7 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_pic3.png");
 
-						bouncer_h = 3.3 + (rand()%5+1)*0.12;
+						bouncerY = 3.3 + (rand()%5+1)*0.12;
 		break;
 		
 		case MED: 		dim = 40;
@@ -80,7 +86,7 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_med3.png");
 					
-						bouncer_h = 2.35 + (rand()%5+1)*0.1;
+						bouncerY = 2.35 + (rand()%5+1)*0.1;
 		break;
 		
 		case GRA: 		dim = 70;
@@ -93,13 +99,15 @@ Palla::Palla(float x, float c, SIZE s, COLOR col)  {
 						else
 							bitmap = al_load_bitmap("images/palla_gra3.png");
 						
-						bouncer_h = 1.9 + (rand()%5 +1)*0.06;
+						bouncerY = 1.9 + (rand()%5 +1)*0.06;
 		break;
 	}
 	posX = x;
 	posY = 0;
-	bouncer = 2;
+	bouncerX = 2;
 	cont = c;
+	processatoX = false;
+	processatoY = false;
 }
 
 Palla::~Palla()  {
@@ -116,7 +124,8 @@ void Palla::calculateY(int SY)  {
 
 	float sen = sin(cont/100);
 	posY = SY - (120 + abs((sen*(SY/h_max))));
-	cont += bouncer_h;
+	cont += bouncerY;
+	processatoY = true;
 }
 
 
