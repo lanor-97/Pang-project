@@ -3,7 +3,6 @@
 
 #include "Livello1.h"
 #include "Scala.h"
-#include "Piattaforma.h"
 //#include "Drago.h"
 
 class Livello2: public Livello1  {
@@ -105,9 +104,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	int 	punteggio=0, tempo=9000, H_arma=0, return_value, 
 			fireCount=300; //fireCount timer per spitFire 300=5 sec
 
-	blocco1 = new Blocco(150, 100, bloccoPietra);
+	blocco1 = new Blocco(170, 120, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
-	blocco3 = new Blocco(434, 100, bloccoPietra);
+	blocco3 = new Blocco(414, 120, bloccoPietra);
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -122,6 +121,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
+			if(blocco1)	GP->bouncerBlocco(blocco1);
+			if(blocco2)	GP->bouncerBlocco(blocco2);
+			if(blocco3) GP->bouncerBlocco(blocco3);
 			GP->bouncerPiattaforma(piat1);
 			GP->bouncerPiattaforma(piat2);
 			GP->Bouncer();

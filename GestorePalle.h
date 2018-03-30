@@ -5,6 +5,7 @@
 #include "Esplosione.h"
 #include "Giocatore.h"
 #include "Piattaforma.h"
+#include "Blocco.h"
 
 class GestorePalle  {
 private:
@@ -27,6 +28,7 @@ public:
 	void Clear();
 	void clearProcess();
 	void bouncerPiattaforma(Piattaforma*);
+	void bouncerBlocco(Blocco*);
 };
 
 GestorePalle::~GestorePalle()  {
@@ -182,7 +184,44 @@ void GestorePalle::bouncerPiattaforma(Piattaforma* p)  {
 			(*it)->canY = 2;
 		}
 	}
+}
 
+void GestorePalle::bouncerBlocco(Blocco* b)  {
+	float	bloccoX = b->getX(),
+			bloccoY = b->getY(),
+			bloccoDimX = b->getDim_x(),
+			bloccoDimY = b->getDim_y();
+
+	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
+		float	pallaX = (*it)->getX(),
+				pallaY = (*it)->getY(),
+				pallaDim = (*it)->getDim(),
+				pallaBouncerX = (*it)->getBouncerX(),
+				pallaBouncerY = (*it)->getBouncerY();
+
+		DIREZIONE 	d = (*it)->getDirezioneY();
+		bool 	altezzaOk = !(pallaY>bloccoY+bloccoDimY) && !(pallaY+pallaDim<bloccoY),
+				lunghezzaOk = !(pallaX>bloccoX+bloccoDimX) && !(pallaX+pallaDim<bloccoX);
+
+		bool 	versoDx = (pallaBouncerX > 0) && (pallaX+pallaDim >= bloccoX) && (pallaX+pallaDim-bloccoX <= 4),
+				versoSx = (pallaBouncerX < 0) && (bloccoX+bloccoDimX <= pallaX) && (pallaX-bloccoX-bloccoDimX <= 4);
+
+		if((versoDx || versoSx) && altezzaOk)
+			(*it)->toggleBouncerX();
+
+		bool 	versoUp = (d == UP) && (bloccoY+bloccoDimY >= pallaY) && (bloccoY+bloccoDimY-pallaY <= 7),
+				versoDown = (d == DOWN) && (pallaY+pallaDim >= bloccoY) && (pallaY+pallaDim-bloccoY <= 7);
+
+		if((*it)->canY > 0)  {
+			(*it)->canY -= 1;
+			continue;
+		}
+		if((versoUp || versoDown) && lunghezzaOk)  {
+			(*it)->setBouncerY(-pallaBouncerY);
+			(*it)->calculateY(SY);
+			(*it)->canY = 5;
+		}
+	}
 }
 
 

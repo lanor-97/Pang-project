@@ -22,8 +22,8 @@ public:
     Blocco(float, float, Tipo);
     ~Blocco();
     ALLEGRO_BITMAP* getBitmap() const  { return blocco; }
-    float getPosX() const  { return posX; }
-    float getPosY() const  { return posY; }
+    float getX() const  { return posX; }
+    float getY() const  { return posY; }
     float getDim_x() const  { return dim_x; }
     float getDim_y() const  { return dim_y; }
     Tipo getTipo() const  { return tipo; }
