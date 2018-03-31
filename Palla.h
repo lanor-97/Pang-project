@@ -35,7 +35,7 @@ private:
 public:
   	Palla(float, float, SIZE, COLOR, bool);
   	~Palla();
-  	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
+  	
   	float getX() const  { return posX; }
   	float getY() const  { return posY; }
   	int getDim() const  { return dim; }
@@ -46,20 +46,24 @@ public:
 	COLOR getColor() const  { return colore; }
 	DIREZIONE getDirezioneX() const  { return direzioneX; }
 	DIREZIONE getDirezioneY() const  { return direzioneY; }
+	bool getProcessatoX() const  { return processatoX; }
+  	bool getProcessatoY() const  { return processatoY; }
+
   	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
   	void setX(float x)  { posX=x; }
   	void setY(float y)  { posY=y; }
   	void toggleBouncerX()  { bouncerX = -bouncerX; toggleDirezioneX(); }
   	void setBouncerY(float y)  { bouncerY = y; }
-  	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
-	void DrawExplosion();
-	void calculateX()  { posX += bouncerX; processatoX = true; }
-  	void calculateY(const int);
-  	bool getProcessatoX() const  { return processatoX; }
-  	bool getProcessatoY() const  { return processatoY; }
-  	void clearProcess()  { processatoX = false; processatoY = false; }
   	void toggleDirezioneX();
   	void toggleDirezioneY();
+
+  	void Draw() const  { al_draw_bitmap(bitmap,posX,posY,0); }
+	void DrawExplosion();
+
+	void calculateX()  { posX += bouncerX; processatoX = true; }
+  	void calculateY(const int);
+  	void clearProcess()  { processatoX = false; processatoY = false; }
+
   	int canY;
 };
 

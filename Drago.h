@@ -13,27 +13,25 @@ private:
             posFuocoX,
             posFuocoY,
             dimFuocoX,
-            dimFuocoY;
+            dimFuocoY,
+            frames;
   	ALLEGRO_BITMAP *drago;
     ALLEGRO_BITMAP *fuoco;
     Animation animazione;
-   	int frames;
    	
 public:
     Drago();
     Drago(int dimx,int dimy,int x,int y);
     ~Drago(){al_destroy_bitmap(drago); al_destroy_bitmap(fuoco);}
+
     int getX() const  { return posX; }
   	int getY() const  { return posY; }
     int getFuocoX() const  { return posFuocoX; }
   	int getFuocoY() const  { return posFuocoY; }
     int getDimFuocoX() const {return dimFuocoX;}
-    int getDimFuocoY() const {return dimFuocoY;}  
-  	int getDimX() const  { return dimX; }
-   	int getDimY() const  { return dimY; }
-   	int getFrames() const {return frames;}
-  	void setDrago(ALLEGRO_BITMAP *b_map)  { drago=b_map; }
-    void setFuoco(ALLEGRO_BITMAP *b_map)  { fuoco=b_map; }
+    int getDimFuocoY() const {return dimFuocoY;}
+	int getFrames() const {return frames;}
+
   	void setX(int x)  { posX=x; }
   	void setY(int y)  { posY=y; }
     void setFuocoX(int x)  { posFuocoX=x; }
@@ -41,8 +39,10 @@ public:
   	void setDimX(int d)  { dimX=d; }
    	void setDimY(int d)  { dimY=d; }
    	void setFrames(int f) {frames=f;}
+
     bool Draw(bool,bool);
     bool DrawFire(bool,bool);
+
     bool hitFire(int,int, int,int);
     
 };

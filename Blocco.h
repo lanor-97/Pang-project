@@ -9,7 +9,7 @@ using namespace std;
 
 class Blocco  {   
 private:
-    float   dim_x,
+    int     dim_x,
             dim_y,
             posX,
             posY;
@@ -19,23 +19,27 @@ private:
 
 public:
     Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
-    Blocco(float, float, Tipo);
+    Blocco(int,int, Tipo);
     ~Blocco();
-    ALLEGRO_BITMAP* getBitmap() const  { return blocco; }
-    float getX() const  { return posX; }
-    float getY() const  { return posY; }
-    float getDim_x() const  { return dim_x; }
-    float getDim_y() const  { return dim_y; }
+
+    //ALLEGRO_BITMAP* getBitmap() const  { return blocco; }
+    int getX() const  { return posX; }
+    int getY() const  { return posY; }
+    int getDim_x() const  { return dim_x; }
+    int getDim_y() const  { return dim_y; }
     Tipo getTipo() const  { return tipo; }
-    ALLEGRO_BITMAP* getBlocco() const  { return blocco; }
-    void setPosX(float x)  { posX = x; esplosione.setPosX(posX); }
-    void setPosY(float y)  { posY = y; esplosione.setPosY(posY); }
+    //ALLEGRO_BITMAP* getBlocco() const  { return blocco; }
+
+    void setPosX(int x)  { posX = x; esplosione.setPosX(posX); }
+    void setPosY(int y)  { posY = y; esplosione.setPosY(posY); }
+
     void Draw()  { al_draw_bitmap(blocco,posX,posY,0); }
     bool drawExplosion();
+
     bool hitByHook(Giocatore*);
 };
 
-Blocco::Blocco(float posX, float posY, Tipo t)  {
+Blocco::Blocco(int posX, int posY, Tipo t)  {
     srand(time(0));
     int a = rand()%3+1;
     tipo = t;

@@ -6,8 +6,8 @@
 
 class Scala  {
 private:
-	float 	dim_x,
-			dim_y,
+	int 	dimX,
+			dimY,
 			posX,
 			posY;
 	bool 	tipo;
@@ -16,36 +16,31 @@ private:
 	ALLEGRO_BITMAP *bitmap;
 
 public:
-	Scala(): dim_x(0), dim_y(0), posX(0), posY(0), tipo(false)  { bitmap = NULL; }
-  	Scala(float, float, bool);				
+	Scala(): dimX(0), dimY(0), posX(0), posY(0), tipo(false)  { bitmap = NULL; }
+  	Scala(int,int, bool);				
   	~Scala();
-  	float getDim_x() const  { return dim_x; }
-  	float getDim_y() const  { return dim_y; }
+
 	float getX() const  { return posX; }
 	float getY() const  { return posY; }
     bool getTipo() const {return tipo;}
-	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
-	void setDim_x(float x)  { dim_x = x; }
-	void setDim_y(float y)  { dim_y = y; }
-	void setX(int x)  { posX=x; }
-	void setY(int y)  { posY=y; }
-	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
+
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+
 	bool playerHere(Giocatore*);
 };
 
-Scala::Scala(float x, float y, bool t)  {
+Scala::Scala(int x, int y, bool t)  {
     tipo = t;
 	posX = x;
 	posY = y;
     if(tipo == 0)  {
-    	dim_x = 46;
-    	dim_y = 135;
+    	dimX = 46;
+    	dimY = 135;
 		bitmap = al_load_bitmap("images/scala1.png");
     }
     else  {
-    	dim_x = 45;
-    	dim_y = 166;
+    	dimX = 45;
+    	dimY = 166;
     	bitmap= al_load_bitmap("images/scala2.png");
     }
 }
@@ -58,7 +53,7 @@ Scala::~Scala()  {
 }
 
 bool Scala::playerHere(Giocatore* player)  {
-	if(player->getX() > posX + dim_x - 28)
+	if(player->getX() > posX + dimX - 28)
 		return false;
 	if(player->getX()+player->getDim_x() < posX + 28)
 		return false;
