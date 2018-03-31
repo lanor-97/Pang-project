@@ -3,7 +3,7 @@
 
 #include "Livello1.h"
 #include "Scala.h"
-//#include "Drago.h"
+#include "Drago.h"
 
 class Livello2: public Livello1  {
 public:
@@ -13,14 +13,14 @@ public:
 	virtual ~Livello2();
 	virtual void regolaPalle();
 	virtual int Esegui(int, float[]);
-	virtual void Draw(int, int, int, int);
+	virtual void Draw(int, int, int, int, bool, bool&);
 
 protected:
 
 	Scala *scala1=NULL, *scala2=NULL;
 	Piattaforma *piat1=NULL, *piat2=NULL;
 	Blocco *blocco1=NULL, *blocco2=NULL, *blocco3=NULL;
-	//Drago *drago;
+	Drago *drago;
 	const int PLAYER_ALT_PIAT = 148;
 	const int PLAYER_ALT_NORM = 285;
 };
@@ -55,7 +55,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	scala2 = new Scala(434, 218, 0);
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
-	//drago= new Drago(120,120,640,220); // posDrago 530,220
+	drago= new Drago(120,120,640,220); // posDrago 530,220
 }
 
 Livello2::~Livello2()  {
@@ -75,10 +75,10 @@ Livello2::~Livello2()  {
 		cerr << "\ndeleto piat2";
 		delete piat2;
 	}
-	/*if(drago)  	{
+	if(drago)  	{
 		cerr << "\ndeleto drago";
 		delete drago;
-	}*/
+	}
 }
 
 void Livello2::regolaPalle()  {
@@ -183,15 +183,16 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				colpito=true;
 			}
 
-			/*bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDim_x(), player->getDim_y());
+			//IF FUOCO COLPISCE PLAYER
+			bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDim_x(), player->getDim_y());
 
 			if(p_hitFire && !colpito && !caduto) 
 			{
-				caduto=true;  //fuoco colpisce player
+				caduto=true;
 				colpito=true;
 			}
 			if(!p_hitFire && !p_hit)
-				colpito=false;*/
+				colpito=false;
 			
 
 			if(keyUp && player->getY() > PLAYER_ALT_PIAT)  {
@@ -252,27 +253,6 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				H_arma = 0;
 				shoot=false;
 			}
-
-
-			//DA VEDERE DOPO
-			/*if(tempo/60<=145) 
-			{
-				if(drago->getX()<=530)
-				{
-					dragonArrive=false;
-				}
-				if(fireCount==0 || player->getX()>=470)
-				{
-					spitting=true;
-					fireCount=300;
-				}	
-				if(!drago->Draw(dragonArrive,spitting))
-					spitting=false;
-				
-				fireCount--;
-			}
-			if(spitting)
-				fire=true;*/
 
 			redraw = true;
 		}
@@ -337,12 +317,33 @@ int Livello2::Esegui(int vite, float res_info[])  {
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing);
-			Draw(vite, punteggio, tempo, H_arma);
+
+			//DA VEDERE DOPO
+			if(tempo/60<=145) 
+			{
+				if(drago->getX()<=530)
+				{
+					dragonArrive=false;
+				}
+				if(fireCount==0 || player->getX()>=470)
+				{
+					spitting=true;
+					fireCount=300;
+				}	
+				if(!drago->Draw(dragonArrive,spitting))
+					spitting=false;
+				
+				fireCount--;
+			}
+			if(spitting)
+				fire=true;
+			
+			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
 			tempo--;
 			redraw = false;
 
 			//CONTROLLO VITTORIA
-			/*if(GP->Empty())  {
+			if(GP->Empty())  {
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -355,7 +356,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				}
 				return_value = 1;
 				break;
-			}*/
+			}
 		
 		}					
 	}
@@ -380,7 +381,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	return return_value;
 }
 
-void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma)  {
+void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito, bool &fire)  {
 	al_draw_bitmap(sfondo,0,0,0);
 			
 	if(vite>=1)
@@ -403,8 +404,8 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma)  {
 	scala1->Draw();
 	scala2->Draw();
 
-	/*if(!drago->DrawFire(colpito,fire))
-		fire=false;*/
+	if(!drago->DrawFire(colpito,fire))
+		fire=false;
 
 	if(shoot)
 		player->Draw_arma(H_arma);
