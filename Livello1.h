@@ -17,9 +17,10 @@ public:
 	virtual ~Livello1();
 	virtual CASO Esegui(int, float[]);
 	void Transition(int);
-	bool Pausa(float res_info[]);
+	bool Pausa(bool&, float[]);
 	virtual void regolaPalle();
 	virtual void Draw(int, int, int, int);
+	void  toggleFullscreen(bool&, float[]);
 
 	//funzioni get
 	float getSW() const  { return SCREEN_W; }
@@ -36,6 +37,7 @@ protected:
 	ALLEGRO_DISPLAY* 		display=NULL;
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
+	ALLEGRO_TRANSFORM 		redimencionamento;
 	Giocatore* player = NULL;
 	GestorePalle* GP = NULL;
 	Transizione transizione;
@@ -111,10 +113,9 @@ Livello1::~Livello1()  {
 	}
 }
 
-bool Livello1::Pausa(float res_info[])  {
-	ALLEGRO_TRANSFORM 		redimencionamento;
-
-	bool play = true, fullscreen = false, pausa=true, inGame=true;
+bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
+	
+	bool play = true, pausa=true, inGame=true;
 	al_flush_event_queue(event_queue);
 	
 	while(pausa)  {
@@ -136,41 +137,23 @@ bool Livello1::Pausa(float res_info[])  {
 					inGame=false;
 				}	
 			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play)
 				play = false;
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play)  {
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play) 
 				play = true;
-			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
-				fullscreen = !fullscreen;
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)
+				toggleFullscreen(fullscreen, res_info);
+		}
 
-				if(fullscreen)  {
-					res_info[0] = res_info[2] / res_info[4];
-					res_info[1] = res_info[3] / res_info[5];
-				}
-				else  {
-					res_info[0] = 1;
-					res_info[1] = 1;
-				}
+		al_draw_bitmap(sfondo,0,0,0);
+		player->Draw();
+		GP->Draw(false);
+		if(!play)
+			al_draw_bitmap(pausa_exit,0,0,0);
+		else
+			al_draw_bitmap(pausa_play,0,0,0);
 
-					
-				al_identity_transform(&redimencionamento);
-				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
-				al_use_transform(&redimencionamento);
-				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
-				}	
-				
-			}
-			al_draw_bitmap(sfondo,0,0,0);
-			player->Draw();
-			GP->Draw(false);
-			if(!play)
-				al_draw_bitmap(pausa_exit,0,0,0);
-			else
-				al_draw_bitmap(pausa_play,0,0,0);
-
-			al_flip_display();
+		al_flip_display();
 	}
 	
 	al_flush_event_queue(event_queue);
@@ -178,9 +161,6 @@ bool Livello1::Pausa(float res_info[])  {
 }
 
 CASO Livello1::Esegui(int vite, float res_info[])  {
-	//DICHIARAZIONE VARIABILI ALLEGRO
-	ALLEGRO_TRANSFORM 		redimencionamento;
-
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
@@ -276,7 +256,7 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 				al_stop_timer(timer);
 				keyLeft = false;
 				keyRight = false;
-				if(!Pausa(res_info))  {	
+				if(!Pausa(fullscreen, res_info))  {	
 					return_value = MENU;
 					break;
 				}
@@ -302,23 +282,8 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 				keyRight=true;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
-			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
-				fullscreen = !fullscreen;
-
-				if(fullscreen)  {
-					res_info[0] = res_info[2] / res_info[4];
-					res_info[1] = res_info[3] / res_info[5];
-				}
-				else  {
-					res_info[0] = 1;
-					res_info[1] = 1;
-				}
-
-				al_identity_transform(&redimencionamento);
-				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
-				al_use_transform(&redimencionamento);
-				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
-			}
+			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
+				toggleFullscreen(fullscreen, res_info);
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
@@ -432,6 +397,24 @@ void Livello1::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 		drawExplosion=false;
 
 	al_flip_display();
+}
+
+void Livello1::toggleFullscreen(bool &fullscreen, float res_info[])  {
+	fullscreen = !fullscreen;
+
+	if(fullscreen)  {
+		res_info[0] = res_info[2] / res_info[4];
+		res_info[1] = res_info[3] / res_info[5];
+	}
+	else  {
+		res_info[0] = 1;
+		res_info[1] = 1;
+	}
+
+	al_identity_transform(&redimencionamento);
+	al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
+	al_use_transform(&redimencionamento);
+	al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
 }
 
 

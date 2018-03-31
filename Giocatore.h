@@ -23,7 +23,7 @@ private:
 public:
    	Giocatore(int);
   	~Giocatore();
-  	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
+
   	int getX() const  { return posX; }
   	int getY() const  { return posY; }
   	int getX_arma() const  { return arma->getX(); }
@@ -31,21 +31,20 @@ public:
   	int getDim_x() const  { return dim_x; }
    	int getDim_y() const  { return dim_y; }
    	int getDim_arma() const  { return arma->getDim(); }
-   	int getFrames() const {return frames;}
-  	void setBitmap(ALLEGRO_BITMAP *b_map)  { bitmap=b_map; }
+  	
   	void setX(int x)  { posX=x; }
   	void setY(int y)  { posY=y; }
   	void setX_arma(int x)  { arma->setX(x); }
   	void setY_arma(int y)  { arma->setY(y); }
-  	void setDim_x(int d)  { dim_x=d; }
-   	void setDim_y(int d)  { dim_y=d; }
-   	void setFrames(int f) {frames=f;}
+  	void setFrames(int f) {frames=f;}
     void setDraw(bool, bool, bool, bool, bool, bool);
+
    	bool Draw();
     void DrawVictory();
-   	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
     void Draw_arma(int H)  { arma->Draw(H); }
-    void muoviSx(bool, float);
+
+   	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
+	void muoviSx(bool, float);
     void muoviUp(bool, float);
 
 };

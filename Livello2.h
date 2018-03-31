@@ -16,7 +16,6 @@ public:
 	virtual void Draw(int, int, int, int, bool, bool&);
 
 protected:
-
 	Scala *scala1=NULL, *scala2=NULL;
 	Piattaforma *piat1=NULL, *piat2=NULL;
 	Blocco *blocco1=NULL, *blocco2=NULL, *blocco3=NULL;
@@ -268,7 +267,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				al_stop_timer(timer);
 				keyLeft = false;
 				keyRight = false;
-				if(!Pausa(res_info))  {	
+				if(!Pausa(fullscreen, res_info))  {	
 					return_value = MENU;
 					break;
 				}
@@ -286,23 +285,8 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				keyUp = true;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
 				keyDown = true;
-			if(ev.keyboard.keycode==ALLEGRO_KEY_F)  {
-				fullscreen = !fullscreen;
-
-				if(fullscreen)  {
-					res_info[0] = res_info[2] / res_info[4];
-					res_info[1] = res_info[3] / res_info[5];
-				}
-				else  {
-					res_info[0] = 1;
-					res_info[1] = 1;
-				}
-
-				al_identity_transform(&redimencionamento);
-				al_scale_transform(&redimencionamento,res_info[0], res_info[1]);
-				al_use_transform(&redimencionamento);
-				al_set_display_flag(display, ALLEGRO_FULLSCREEN_WINDOW, fullscreen);
-			}
+			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
+				toggleFullscreen(fullscreen, res_info);
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)

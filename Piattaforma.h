@@ -6,7 +6,7 @@
 
 class Piattaforma  {
 private:
-	float	dim_x,
+	short	dim_x,
 			dim_y,
 			posX,
 			posY;
@@ -17,14 +17,14 @@ public:
 	Piattaforma(): dim_x(0), dim_y(0), posX(0), posY(0)  { bitmap=NULL; }
   	Piattaforma(float, float);
   	~Piattaforma();
-  	float getDim_x() const  { return dim_x; }
-  	float getDim_y() const  { return dim_y; }
-  	int getX() const  { return posX; }
-	int getY() const  { return posY; }
-	ALLEGRO_BITMAP* getBitmap() const  { return bitmap; }
-	void setX(int x)  { posX=x; }
-	void setY(int y)  { posY=y; }
+
+  	short getDim_x() const  { return dim_x; }
+  	short getDim_y() const  { return dim_y; }
+  	short getX() const  { return posX; }
+	short getY() const  { return posY; }
+
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
+	
 	bool playerHere(Giocatore*);
 	bool hitByHook(Giocatore*);
 };
