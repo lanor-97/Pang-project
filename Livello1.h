@@ -8,13 +8,14 @@
 #include "Transizione.h"
 #include "Blocco.h"
 
+enum CASO  { EXIT = 0, LIVELLOSUP, VITAPERSA, MENU };
 
 class Livello1  {
 public:
 	Livello1();
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
 	virtual ~Livello1();
-	virtual int Esegui(int, float[]);
+	virtual CASO Esegui(int, float[]);
 	void Transition(int);
 	bool Pausa(float res_info[]);
 	virtual void regolaPalle();
@@ -176,7 +177,7 @@ bool Livello1::Pausa(float res_info[])  {
 	return inGame;
 }
 
-int Livello1::Esegui(int vite, float res_info[])  {
+CASO Livello1::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -189,7 +190,8 @@ int Livello1::Esegui(int vite, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0, return_value;
+	int 	punteggio=0, tempo=9000, H_arma=0;
+	CASO 	return_value = EXIT;
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -245,7 +247,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
-				return_value = 0;
+				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
 			}
@@ -265,7 +267,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 		}
 
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			return_value = -1;
+			return_value = EXIT;
 			break;
 		}
 
@@ -275,7 +277,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keyLeft = false;
 				keyRight = false;
 				if(!Pausa(res_info))  {	
-					return_value = 2;
+					return_value = MENU;
 					break;
 				}
 				al_start_timer(timer);
@@ -325,7 +327,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 				keyLeft=false;
 		}
 		if(next[3] && next[2] && next[1] && next[0])  {
-			return_value = 1;
+			return_value = LIVELLOSUP;
 			break;
 		}
 
@@ -348,7 +350,7 @@ int Livello1::Esegui(int vite, float res_info[])  {
 						break;
 					}
 				}
-				return_value = 1;
+				return_value = LIVELLOSUP;
 				break;
 			}
 		

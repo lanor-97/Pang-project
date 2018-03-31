@@ -12,7 +12,7 @@ public:
 	Livello2(Livello1*, const int);
 	virtual ~Livello2();
 	virtual void regolaPalle();
-	virtual int Esegui(int, float[]);
+	virtual CASO Esegui(int, float[]);
 	virtual void Draw(int, int, int, int, bool, bool&);
 
 protected:
@@ -86,7 +86,7 @@ void Livello2::regolaPalle()  {
 	//GP->aggiungiPalla(0, 157, GRA, RED, false);
 }
 
-int Livello2::Esegui(int vite, float res_info[])  {
+CASO Livello2::Esegui(int vite, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -101,8 +101,9 @@ int Livello2::Esegui(int vite, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0, return_value, 
-			fireCount=300; //fireCount timer per spitFire 300=5 sec
+	int 	punteggio=0, tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
+
+	CASO return_value = EXIT;
 
 	blocco1 = new Blocco(170, 120, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
@@ -178,7 +179,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 			//IF PALLA COLPISCE PLAYER
 			bool p_hit = GP->playerHit(player);
 			if(p_hit && !colpito && !caduto)  {
-				return_value = 0;
+				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
 			}
@@ -258,7 +259,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 		}
 
 		else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-			return_value = -1;
+			return_value = EXIT;
 			break;
 		}
 
@@ -268,7 +269,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 				keyLeft = false;
 				keyRight = false;
 				if(!Pausa(res_info))  {	
-					return_value = 2;
+					return_value = MENU;
 					break;
 				}
 				al_start_timer(timer);
@@ -354,7 +355,7 @@ int Livello2::Esegui(int vite, float res_info[])  {
 						break;
 					}
 				}
-				return_value = 1;
+				return_value = LIVELLOSUP;
 				break;
 			}
 		

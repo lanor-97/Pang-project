@@ -81,32 +81,29 @@ Drago::Drago(int dimx, int dimy, int x, int y)  {
     animazione.setCurrFrame(0);
 }
 
-bool Drago::Draw(bool arrive,bool spitFire)
-{
-    if(arrive)
-    {
+bool Drago::Draw(bool arrive,bool spitFire)  {
+	al_destroy_bitmap(drago);
+    if(arrive)  {
         setFrames(6);
         drago=al_load_bitmap("images/dragonArriving.png");
         animazione.setFrameDelay(6);
         posX--;
         if(!animazione.eseguiFrame(drago,dimX,dimY,posX,posY,true,frames))
-        return false;
+        	return false;
     }
-    else if(spitFire)
-    {
+    else if(spitFire)  {
         setFrames(6);
         animazione.setFrameDelay(10);
         drago=al_load_bitmap("images/dragonSpitting.png");
         if(!animazione.eseguiFrame(drago,dimX,dimY,posX,posY,false,frames))
-        return false;
+        	return false;
     }
-    else if(!spitFire && !arrive)
-    {
+    else  {
         setFrames(12);
         drago=al_load_bitmap("images/dragonAnimation.png");
         animazione.setFrameDelay(8);
         if(!animazione.eseguiFrame(drago,dimX,dimY,posX,posY,true,frames))
-        return false;
+        	return false;
     }
     return true;
 }

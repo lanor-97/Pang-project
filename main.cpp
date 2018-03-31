@@ -42,14 +42,14 @@ int main(int argc, char **argv)  {
 		return -1;
 	}
 
-	//CREAZIONE DISPLAY
+	//CREAZIONE DISPLAY + aggiustamento con transform
 	ALLEGRO_DISPLAY*		display = NULL;
 
 	al_get_monitor_info(0,&info);
 	res_monitor_x = info.x2 - info.x1;
 	res_monitor_y = info.y2 - info.y1;
-	res_x = 1;//res_monitor_x / (float) SCREEN_W;
-	res_y = 1;//res_monitor_y / (float) SCREEN_H;
+	res_x = 1;		//res_monitor_x / (float) SCREEN_W;
+	res_y = 1;		//res_monitor_y / (float) SCREEN_H;
 	float res_info[6] = {res_x, res_y, res_monitor_x, res_monitor_y, SCREEN_W, SCREEN_H };
 	al_set_new_display_flags(ALLEGRO_WINDOWED);
 	display = al_create_display(SCREEN_W, SCREEN_H);
@@ -65,28 +65,27 @@ int main(int argc, char **argv)  {
    	player->setY(285);
    	player->posizionaArma();
 
-   	//CREAZIONE LIVELLO
+   	//CREAZIONE LIVELLI
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
    	Livello2* L2 = new Livello2(L1, FPS);
 
    	Livello1* current_level = L1;
 
-
    	play = Menu(display, res_info);
    	while(play && vite > 0)  {
 
 	   	while(vite > 0)  {
-	   		int x = current_level->Esegui(vite, res_info);
-	   		if(x < 0)				//EXIT TUTTO
+	   		CASO c = current_level->Esegui(vite, res_info);
+	   		if(c == EXIT)
 	   			vite = 0;
-	   		else if(x == 0)  {		//PERDE UNA VITA
+	   		else if(c == VITAPERSA)  {
 	   			vite--;
 	   			continue;
 	   		}
-	   		else if(x == 1)  {		//LIVELLO SUPERATO
+	   		else if(c == LIVELLOSUP)  {	
 	   			current_level = L2;
 	   		}
-	   		else if(x == 2)
+	   		else if(c == MENU)
 	   			break;
 	   	}
 	   	if(vite > 0)
