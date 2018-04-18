@@ -15,7 +15,8 @@ private:
             drawShoot, 
             toLeft, 
             caduto, 
-            climbing;    //per la funzione draw
+            climbing,
+            keyUpDown;    //per la funzione draw
   	ALLEGRO_BITMAP *bitmap;
     Animation animazione;
    	Arma* arma;
@@ -37,7 +38,7 @@ public:
   	void setX_arma(int x)  { arma->setX(x); }
   	void setY_arma(int y)  { arma->setY(y); }
   	void setFrames(int f) {frames=f;}
-    void setDraw(bool, bool, bool, bool, bool, bool);
+    void setDraw(bool, bool, bool, bool, bool, bool,bool);
 
    	bool Draw();
     void DrawVictory();
@@ -71,7 +72,7 @@ Giocatore::~Giocatore()  {
     cerr << "\ndeleto arma";delete arma;
 }
 
-void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing)  {
+void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing, bool keyUpDown)  {
 
     left = keyLeft;
     right = keyRight;
@@ -79,12 +80,16 @@ void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft
     this->toLeft = toLeft;
     this->caduto = caduto;
     this->climbing = climbing;
+    this->keyUpDown= keyUpDown;
 
 
 }
 bool Giocatore::Draw(){
 
     if(climbing)  {
+        if(!keyUpDown)
+        setFrames(1);
+        else
         setFrames(5);
         animazione.setFrameDelay(7);
         al_destroy_bitmap(bitmap);

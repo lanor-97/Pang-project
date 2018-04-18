@@ -297,7 +297,7 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false, false);
 			Draw(vite, tempo, punteggio, H_arma);
 			tempo--;
 
@@ -338,7 +338,7 @@ void Livello1::Transition(int x)
 
 	al_flush_event_queue(event_queue);
 	transizione.setTipo(x);
-	player->setDraw(false,false,false,false, false,false);
+	player->setDraw(false,false,false,false, false,false, false);
 	al_set_timer_speed(timer, 1.0 / 10);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	while(trans)  {
