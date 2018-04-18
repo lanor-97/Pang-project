@@ -54,7 +54,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	scala2 = new Scala(434, 218, 0);
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
-	drago= new Drago(120,120,640,220); // posDrago 530,220
+	drago= new Drago(120,120,640,220); // posDrago finale 530,220
 }
 
 Livello2::~Livello2()  {
@@ -316,7 +316,11 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 					fireCount=300;
 				}	
 				if(!drago->Draw(dragonArrive,spitting))
-					spitting=false;
+						{
+							cout<<"drawa"<<endl;
+							spitting=false;
+						}	
+					
 				
 				fireCount--;
 			}
