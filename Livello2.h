@@ -302,7 +302,8 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing);
-
+			
+			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
 			//DA VEDERE DOPO
 			if(tempo/60<=145) 
 			{
@@ -326,9 +327,12 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			}
 			if(spitting)
 				fire=true;
-			
-			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
+
+			al_flip_display();
+
 			tempo--;
+
+
 			redraw = false;
 
 			//CONTROLLO VITTORIA
@@ -409,8 +413,6 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 			
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;
-
-	al_flip_display();
 }
 
 
