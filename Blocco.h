@@ -13,7 +13,6 @@ private:
             dim_y,
             posX,
             posY;
-    bool exploded;        
     ALLEGRO_BITMAP *blocco;
     Esplosione esplosione;
     Tipo tipo; //tipi possibili: bloccoPietra, bloccoVetro1 (verticale), bloccoVetro2 (orizzontale)
@@ -30,16 +29,17 @@ public:
     int getDim_y() const  { return dim_y; }
     Tipo getTipo() const  { return tipo; }
     //ALLEGRO_BITMAP* getBlocco() const  { return blocco; }
-    void setExploded(bool x)  { exploded=x; }
+
     void setPosX(int x)  { posX = x; esplosione.setPosX(posX); }
     void setPosY(int y)  { posY = y; esplosione.setPosY(posY); }
 
-    bool Draw();
+    void Draw()  { al_draw_bitmap(blocco,posX,posY,0); }
+    bool drawExplosion();
+
     bool hitByHook(Giocatore*);
 };
 
 Blocco::Blocco(int posX, int posY, Tipo t)  {
-    exploded=false;
     srand(time(0));
     int a = rand()%3+1;
     tipo = t;
@@ -77,18 +77,11 @@ Blocco::~Blocco()  {
     }
 }
 
-bool Blocco::Draw(){
-    if(exploded){
-        if(!esplosione.Draw())
-                return false;
-    }    
-    else
-        al_draw_bitmap(blocco,posX,posY,0);
-
-    return true;        
-
+bool Blocco::drawExplosion()  {
+    if(!esplosione.Draw())
+        return false;
+    return true;
 }
-
 
 bool Blocco::hitByHook(Giocatore* player)  {
     float   x = player->getX_arma(),
