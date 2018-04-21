@@ -1,6 +1,7 @@
 #ifndef DRAGO_H
 #define DRAGO_H
 #include "Animation.h"
+#include "Giocatore.h"
 #include <iostream>
 using namespace std;
 
@@ -43,7 +44,7 @@ public:
     bool Draw(bool,bool);
     bool DrawFire(bool,bool);
 
-    bool hitFire(int,int, int,int);
+    bool hitFire(Giocatore*);
     
 };
 
@@ -108,36 +109,36 @@ bool Drago::Draw(bool arrive,bool spitFire)  {
     return true;
 }
 
-bool Drago::DrawFire(bool colpitoFuoco, bool fire)
-{
-    if(fire && !colpitoFuoco)
-    {
+bool Drago::DrawFire(bool colpitoFuoco, bool fire)  {
+    if(fire && !colpitoFuoco)  {
         if(posFuocoX>=-20)
             posFuocoX-=4;
-        else
-            {
-                posFuocoX=570;  
-                return false;
-            }    
+        else  {
+            posFuocoX=570;  
+            return false;
+        }    
         al_draw_bitmap(fuoco,posFuocoX,posFuocoY,0);     
     }
-    else if(colpitoFuoco)
-        {
-            posFuocoX=605;
-            return false; 
-        }    
+    else if(colpitoFuoco)  {
+        posFuocoX=605;
+        return false; 
+    }    
     return true;           
 }
 
-bool Drago::hitFire(int playerPosX, int playerPosY, int playerDimX, int playerDimY)
-{
-    bool b1 = playerPosX <= posFuocoX+dimFuocoX,
-	     b2 = playerPosX+playerDimX >= posFuocoX,
-		 b3 = playerPosY <= posFuocoY+dimFuocoY,
-         b4 = playerPosY+playerDimY>=posFuocoY;
-    if(b1 && b2 && b3 && b4)
-    return true;
-    else
+bool Drago::hitFire(Giocatore* player)  {
+    int playerPosX = player->getX(),
+        playerPosY = player->getY(),
+        playerDimX = player->getDimX(),
+        playerDimY = player->getDimY();
+    
+    bool    b1 = posFuocoX > playerPosX+playerDimX,
+	        b2 = posFuocoX+dimFuocoX < playerPosX,
+		    b3 = posFuocoY > playerPosY+playerDimY,
+            b4 = posFuocoY+dimFuocoY < playerPosY;
+
+    if(!b1 && !b2 && !b3 && !b4)
+        return true;
     return false;     
 }
 

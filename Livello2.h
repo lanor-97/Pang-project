@@ -81,8 +81,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, RED, true);
-	//GP->aggiungiPalla(0, 157, GRA, RED, false);
+	GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
+	GP->aggiungiPalla(100, 157, MED, RED, false);
 }
 
 CASO Livello2::Esegui(int vite, float res_info[])  {
@@ -184,10 +184,10 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			}
 
 			//IF FUOCO COLPISCE PLAYER
-			bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDimX(), player->getDimY());
+			bool p_hitFire=drago->hitFire(player);
 
-			if(p_hitFire && !colpito && !caduto) 
-			{
+			if(p_hitFire && !colpito && !caduto)  {
+				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
 			}
@@ -299,11 +299,10 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 					keyUp = false;
 					keyUpDown=false;
 				}	
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				{
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)  {
 					keyDown = false;
 					keyUpDown= false;
-				}	
+			}	
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
@@ -311,34 +310,25 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			
 			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
 			//DA VEDERE DOPO
-			if(tempo/60<=145) 
-			{
-				if(drago->getX()<=530)
-				{
+			if(tempo/60<=145)  {
+				if(drago->getX()<=530)  {
 					dragonArrive=false;
 				}
-				if(fireCount==0 || player->getX()>=470)
-				{
+				if(fireCount==0 || player->getX()>=470)  {
 					spitting=true;
 					fireCount=300;
 				}	
-				if(!drago->Draw(dragonArrive,spitting))
-						{
-							cout<<"drawa"<<endl;
-							spitting=false;
-						}	
-					
-				
+				if(!drago->Draw(dragonArrive,spitting))  {
+					cout<<"drawa"<<endl;
+					spitting=false;
+				}	
 				fireCount--;
 			}
 			if(spitting)
 				fire=true;
 
 			al_flip_display();
-
 			tempo--;
-
-
 			redraw = false;
 
 			//CONTROLLO VITTORIA

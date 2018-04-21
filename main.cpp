@@ -135,8 +135,11 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 	while(!drawTransition)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
-		if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+		if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+			play = false;
+			break;
+		}
+		else if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_ESCAPE)  {
 				play = false;
 				break;

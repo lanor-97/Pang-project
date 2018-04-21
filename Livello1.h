@@ -71,7 +71,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 
 void Livello1::regolaPalle()  {
 	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN, true);
-	GP->aggiungiPalla(50, 157, GRA, GREEN, false);
+	GP->aggiungiPalla(50, 157, MED, GREEN, false);
 }
 
 Livello1::~Livello1()  {
