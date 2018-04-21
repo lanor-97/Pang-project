@@ -9,37 +9,37 @@ using namespace std;
 
 class Blocco  {   
 private:
-    int     dim_x,
-            dim_y,
+    int     dimX,
+            dimY,
             posX,
             posY;
+    bool exploded;        
     ALLEGRO_BITMAP *blocco;
     Esplosione esplosione;
     Tipo tipo; //tipi possibili: bloccoPietra, bloccoVetro1 (verticale), bloccoVetro2 (orizzontale)
 
 public:
-    Blocco(): posX(0), posY(0), dim_x(0), dim_y(0), tipo(bloccoPietra), blocco(NULL)  {}
+    Blocco(): posX(0), posY(0), dimX(0), dimY(0), tipo(bloccoPietra), blocco(NULL)  {}
     Blocco(int,int, Tipo);
     ~Blocco();
 
     //ALLEGRO_BITMAP* getBitmap() const  { return blocco; }
     int getX() const  { return posX; }
     int getY() const  { return posY; }
-    int getDim_x() const  { return dim_x; }
-    int getDim_y() const  { return dim_y; }
+    int getDimX() const  { return dimX; }
+    int getDimY() const  { return dimY; }
     Tipo getTipo() const  { return tipo; }
     //ALLEGRO_BITMAP* getBlocco() const  { return blocco; }
-
+    void setExploded(bool x)  { exploded=x; }
     void setPosX(int x)  { posX = x; esplosione.setPosX(posX); }
     void setPosY(int y)  { posY = y; esplosione.setPosY(posY); }
 
-    void Draw()  { al_draw_bitmap(blocco,posX,posY,0); }
-    bool drawExplosion();
-
+    bool Draw();
     bool hitByHook(Giocatore*);
 };
 
 Blocco::Blocco(int posX, int posY, Tipo t)  {
+    exploded=false;
     srand(time(0));
     int a = rand()%3+1;
     tipo = t;
@@ -48,7 +48,7 @@ Blocco::Blocco(int posX, int posY, Tipo t)  {
     esplosione.setPosX(posX);
     esplosione.setPosY(posY);
     if(tipo == bloccoPietra)  {
-        dim_x = 56; dim_y = 24;
+        dimX = 56; dimY = 24;
         if(a==1)
             blocco=al_load_bitmap("images/stoneBlock1.png");
         else if(a==2)
@@ -57,11 +57,11 @@ Blocco::Blocco(int posX, int posY, Tipo t)  {
             blocco=al_load_bitmap("images/stoneBlock3.png");
     } 
     else if(tipo == bloccoVetro1)  {
-        dim_x = 29; dim_y = 61;
+        dimX = 29; dimY = 61;
         blocco = al_load_bitmap("images/bloccoVetro.png");
     } 
     else if(tipo == bloccoVetro2)  { 
-        dim_x=41; dim_y=24;
+        dimX=41; dimY=24;
         blocco=al_load_bitmap("images/bloccoVetro2.png");
     } 
     else
@@ -77,20 +77,27 @@ Blocco::~Blocco()  {
     }
 }
 
-bool Blocco::drawExplosion()  {
-    if(!esplosione.Draw())
-        return false;
-    return true;
+bool Blocco::Draw(){
+    if(exploded){
+        if(!esplosione.Draw())
+                return false;
+    }    
+    else
+        al_draw_bitmap(blocco,posX,posY,0);
+
+    return true;        
+
 }
 
+
 bool Blocco::hitByHook(Giocatore* player)  {
-    float   x = player->getX_arma(),
-            y = player->getY_arma(),
-            d = player->getDim_arma();
+    float   x = player->getArmaX(),
+            y = player->getArmaY(),
+            d = player->getArmaDim();
 
     if(x+d < posX)      return false;
-    if(x > posX+dim_x)  return false;
-    if(y > posY+dim_y)  return false;
+    if(x > posX+dimX)   return false;
+    if(y > posY+dimY)   return false;
 
     return true;
 }

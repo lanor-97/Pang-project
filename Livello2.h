@@ -54,7 +54,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	scala2 = new Scala(434, 218, 0);
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
-	drago= new Drago(120,120,640,220); // posDrago 530,220
+	drago= new Drago(120,120,640,220); // posDrago finale 530,220
 }
 
 Livello2::~Livello2()  {
@@ -95,7 +95,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			bitmap_ = true, fullscreen=false, climbing=false, trans=true, 
 			keyUp = false, keyDown = false, onlyLeftRight=false, hit=false,
 			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false,
-			hook_colp=false;
+			hook_colp=false, keyUpDown=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
@@ -152,9 +152,9 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				if(player->getY() == PLAYER_ALT_NORM)
 					player->muoviSx(false, SCREEN_W);
 				else if(piat1->playerHere(player))
-					player->muoviSx(false, piat1->getX()+piat1->getDim_x());
+					player->muoviSx(false, piat1->getX()+piat1->getDimX());
 				else if(piat2->playerHere(player))
-					player->muoviSx(false, piat2->getX()+piat2->getDim_x());
+					player->muoviSx(false, piat2->getX()+piat2->getDimX());
 			}
 			if(keyLeft && !caduto && !drawShoot && !climbing)  {
 				player->setFrames(6);
@@ -184,7 +184,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			}
 
 			//IF FUOCO COLPISCE PLAYER
-			bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDim_x(), player->getDim_y());
+			bool p_hitFire=drago->hitFire(player->getX(), player->getY(), player->getDimX(), player->getDimY());
 
 			if(p_hitFire && !colpito && !caduto) 
 			{
@@ -226,27 +226,21 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			if(blocco1)
 				if(blocco1->hitByHook(player))  {
 					hook_colp = true;
-					cerr << "\ndistruggo blocco1";
-					delete blocco1;
-					blocco1 = NULL;
+					blocco1->setExploded(true);
 				}
 			if(blocco2)
 				if(blocco2->hitByHook(player))  {
 					hook_colp = true;
-					cerr << "\ndistruggo blocco2";
-					delete blocco2;
-					blocco2 = NULL;
+					blocco2->setExploded(true);	
 				}
 			if(blocco3)
 				if(blocco3->hitByHook(player))  {
 					hook_colp = true;
-					cerr << "\ndistruggo blocco3";
-					delete blocco3;
-					blocco3 = NULL;
+					blocco3->setExploded(true);	
 				}
 			
-			if(shoot && player->getY_arma()>0 && !presa && !hook_colp)  {
-				player->setY_arma(player->getY_arma() - 6);
+			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
+				player->setArmaY(player->getArmaY() - 6);
 				H_arma += 6;
 			}
 			else  {
@@ -282,9 +276,15 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				keyLeft=true;
 
 			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				keyUp = true;
+				{
+					keyUp = true;
+					keyUpDown=true;
+				}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				keyDown = true;
+				{
+					keyDown = true;
+					keyUpDown=true;
+				}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
 		}
@@ -295,13 +295,19 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				keyLeft=false;
 
 			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				keyUp = false;
+				{
+					keyUp = false;
+					keyUpDown=false;
+				}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				keyDown = false;
+				{
+					keyDown = false;
+					keyUpDown= false;
+				}	
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing);
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing,keyUpDown);
 			
 			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
 			//DA VEDERE DOPO
@@ -317,7 +323,11 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 					fireCount=300;
 				}	
 				if(!drago->Draw(dragonArrive,spitting))
-					spitting=false;
+						{
+							cout<<"drawa"<<endl;
+							spitting=false;
+						}	
+					
 				
 				fireCount--;
 			}
@@ -363,8 +373,8 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 		cerr << "\ndeleto blocco3";
 		delete blocco3;
 	}
-	player->setX(SCREEN_W/2 - player->getDim_x());
-   	player->setY(SCREEN_H/1.37 - player->getDim_y());
+	player->setX(SCREEN_W/2 - player->getDimX());
+   	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 
 	return return_value;
@@ -385,9 +395,34 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-	if(blocco1)	blocco1->Draw();
-	if(blocco2)	blocco2->Draw();
-	if(blocco3)	blocco3->Draw();
+	if(blocco1)
+	{
+		if(!blocco1->Draw())
+			{
+				delete blocco1;
+				blocco1=NULL;
+				cerr << "\ndistruggo blocco1";
+			}
+	}
+	if(blocco2)
+	{
+		if(!blocco2->Draw())
+			{
+				delete blocco2;
+				blocco2=NULL;
+				cerr << "\ndistruggo blocco2";
+			}	
+	}
+	if(blocco3)
+	{
+		if(!blocco3->Draw())
+			{
+				delete blocco3;
+				blocco3=NULL;
+				cerr << "\ndistruggo blocco3";
+			}	
+	}
+
 	piat1->Draw();
 	piat2->Draw();
 	scala1->Draw();
@@ -397,7 +432,7 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 		fire=false;
 
 	if(shoot)
-		player->Draw_arma(H_arma);
+		player->ArmaDraw(H_arma);
 
 	if(!player->Draw())  {
 		if(caduto)  {

@@ -234,8 +234,8 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 			if(!p_hit)
 				colpito=false;
 
-			if(shoot && player->getY_arma()>0 && !presa)  {
-				player->setY_arma(player->getY_arma() - 6);
+			if(shoot && player->getArmaY()>0 && !presa)  {
+				player->setArmaY(player->getArmaY() - 6);
 				H_arma += 6;
 			}
 			else  {
@@ -297,7 +297,7 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 		}
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false);
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false, false);
 			Draw(vite, tempo, punteggio, H_arma);
 			tempo--;
 
@@ -323,8 +323,8 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 	}
 	
 	//DISTRUGGO TUTTO
-	player->setX(SCREEN_W/2 - player->getDim_x());
-   	player->setY(SCREEN_H/1.37 - player->getDim_y());
+	player->setX(SCREEN_W/2 - player->getDimX());
+   	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 
 	return return_value;
@@ -338,7 +338,7 @@ void Livello1::Transition(int x)
 
 	al_flush_event_queue(event_queue);
 	transizione.setTipo(x);
-	player->setDraw(false,false,false,false, false,false);
+	player->setDraw(false,false,false,false, false,false, false);
 	al_set_timer_speed(timer, 1.0 / 10);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	while(trans)  {
@@ -378,12 +378,12 @@ void Livello1::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	if(vite<=0 || tempo<=0)
 		caduto=true;
 
-	al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
+	//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
 	if(shoot)
-		player->Draw_arma(H_arma);
+		player->ArmaDraw(H_arma);
 
 	if(!player->Draw())  {
 		if(caduto)  {

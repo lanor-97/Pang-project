@@ -5,8 +5,8 @@
 
 class Giocatore  {
 private:
-  	int 	dim_x,
-            dim_y,
+  	int 	dimX,
+            dimY,
 			posX,
 			posY,
             frames;
@@ -15,7 +15,8 @@ private:
             drawShoot, 
             toLeft, 
             caduto, 
-            climbing;    //per la funzione draw
+            climbing,
+            keyUpDown;    //per la funzione draw
   	ALLEGRO_BITMAP *bitmap;
     Animation animazione;
    	Arma* arma;
@@ -26,32 +27,32 @@ public:
 
   	int getX() const  { return posX; }
   	int getY() const  { return posY; }
-  	int getX_arma() const  { return arma->getX(); }
-  	int getY_arma() const  { return arma->getY(); }
-  	int getDim_x() const  { return dim_x; }
-   	int getDim_y() const  { return dim_y; }
-   	int getDim_arma() const  { return arma->getDim(); }
+  	int getArmaX() const  { return arma->getX(); }
+  	int getArmaY() const  { return arma->getY(); }
+  	int getDimX() const  { return dimX; }
+   	int getDimY() const  { return dimY; }
+   	int getArmaDim() const  { return arma->getDim(); }
   	
   	void setX(int x)  { posX=x; }
   	void setY(int y)  { posY=y; }
-  	void setX_arma(int x)  { arma->setX(x); }
-  	void setY_arma(int y)  { arma->setY(y); }
+  	void setArmaX(int x)  { arma->setX(x); }
+  	void setArmaY(int y)  { arma->setY(y); }
   	void setFrames(int f) {frames=f;}
-    void setDraw(bool, bool, bool, bool, bool, bool);
+    void setDraw(bool, bool, bool, bool, bool, bool,bool);
 
    	bool Draw();
     void DrawVictory();
-    void Draw_arma(int H)  { arma->Draw(H); }
+    void ArmaDraw(int H)  { arma->Draw(H); }
 
-   	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dim_y+2); }
+   	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dimY+2); }
 	void muoviSx(bool, float);
     void muoviUp(bool, float);
 
 };
 
 Giocatore::Giocatore(int f)  {
-	dim_x = 60;
-	dim_y = 70;
+	dimX = 60;
+	dimY = 70;
     frames=f;
 	posX = 0;
 	posY = 0;
@@ -71,25 +72,26 @@ Giocatore::~Giocatore()  {
     cerr << "\ndeleto arma";delete arma;
 }
 
-void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing)  {
-
+void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing, bool keyUpDown)  {
     left = keyLeft;
     right = keyRight;
     this->drawShoot = drawShoot;
     this->toLeft = toLeft;
     this->caduto = caduto;
     this->climbing = climbing;
-
-
+    this->keyUpDown= keyUpDown;
 }
-bool Giocatore::Draw(){
 
+bool Giocatore::Draw(){
     if(climbing)  {
-        setFrames(5);
+        if(!keyUpDown)
+            setFrames(1);
+        else
+            setFrames(5);
         animazione.setFrameDelay(7);
         al_destroy_bitmap(bitmap);
         bitmap = al_load_bitmap("images/shrekClimbing.png");
-        return animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
+        return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
     }
     else if(left && !drawShoot && !caduto)  {
         setFrames(6);
@@ -140,15 +142,14 @@ bool Giocatore::Draw(){
         al_draw_bitmap(bitmap,posX,posY,0);
         return true;
     }
-  
-    return animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
+    return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
 }
 
 void Giocatore::DrawVictory()  {
   setFrames(6);
   animazione.setFrameDelay(7);
   bitmap = al_load_bitmap("images/shrekVictory.png");
-  animazione.eseguiFrame(bitmap, dim_x, dim_y,posX,posY, false,frames);
+  animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
 }
 
 void Giocatore::muoviSx(bool sx, float max)  {
@@ -159,10 +160,10 @@ void Giocatore::muoviSx(bool sx, float max)  {
 			posX = max;
 	}
 	else  {
-		if(posX + dim_x + 5 <= max)
+		if(posX + dimX + 5 <= max)
 			posX += 5;
 		else
-			posX = max - dim_x;
+			posX = max - dimX;
 	}
 }
 

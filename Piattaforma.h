@@ -6,20 +6,20 @@
 
 class Piattaforma  {
 private:
-	short	dim_x,
-			dim_y,
+	short	dimX,
+			dimY,
 			posX,
 			posY;
 
   	ALLEGRO_BITMAP *bitmap;
 
 public:
-	Piattaforma(): dim_x(0), dim_y(0), posX(0), posY(0)  { bitmap=NULL; }
+	Piattaforma(): dimX(0), dimY(0), posX(0), posY(0)  { bitmap=NULL; }
   	Piattaforma(float, float);
   	~Piattaforma();
 
-  	short getDim_x() const  { return dim_x; }
-  	short getDim_y() const  { return dim_y; }
+  	short getDimX() const  { return dimX; }
+  	short getDimY() const  { return dimY; }
   	short getX() const  { return posX; }
 	short getY() const  { return posY; }
 
@@ -30,8 +30,8 @@ public:
 };
 
 Piattaforma::Piattaforma(float x, float y)  {
-	dim_x = 94;
-	dim_y = 49;
+	dimX = 94;
+	dimY = 49;
 	posX = x;
 	posY = y;
 	bitmap = al_load_bitmap("images/piattaforma.png");
@@ -46,21 +46,21 @@ Piattaforma::~Piattaforma()  {
 
 bool Piattaforma::playerHere(Giocatore* player)  {
 	float	px = player->getX(),
-			dx = player->getDim_x();
+			dx = player->getDimX();
 
 	if(px+dx < posX)	return false;
-	if(px > posX+dim_x)	return false;
+	if(px > posX+dimX)	return false;
 	return true;
 }
 
 bool Piattaforma::hitByHook(Giocatore* player)  {
-	float 	x = player->getX_arma(),
-			y = player->getY_arma(),
-			d = player->getDim_arma();
+	float 	x = player->getArmaX(),
+			y = player->getArmaY(),
+			d = player->getArmaDim();
 
 	if(x+d < posX)		return false;
-	if(x > posX+dim_x)	return false;
-	if(y > posY+dim_y)	return false;
+	if(x > posX+dimX)	return false;
+	if(y > posY+dimY)	return false;
 	return true;
 }
 

@@ -61,7 +61,7 @@ int main(int argc, char **argv)  {
 	//CREAZIONE GIOCATORE
 	Giocatore* player = new Giocatore(6);
 
-   	player->setX(SCREEN_W/2 - player->getDim_x());
+   	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(285);
    	player->posizionaArma();
 

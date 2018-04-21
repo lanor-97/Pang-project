@@ -55,7 +55,7 @@ Scala::~Scala()  {
 bool Scala::playerHere(Giocatore* player)  {
 	if(player->getX() > posX + dimX - 28)
 		return false;
-	if(player->getX()+player->getDim_x() < posX + 28)
+	if(player->getX()+player->getDimX() < posX + 28)
 		return false;
 
 	return true;

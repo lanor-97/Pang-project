@@ -74,9 +74,9 @@ void GestorePalle::Bouncer()  {
 }
 	
 bool GestorePalle::hitByHook(Giocatore* player)  {
-	float 	x1 = player->getX_arma(), 
-			y1 = player->getY_arma(),
-			d1 = player->getDim_arma();
+	float 	x1 = player->getArmaX(), 
+			y1 = player->getArmaY(),
+			d1 = player->getArmaDim();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= (*it)->getX()+(*it)->getDim(),
@@ -127,14 +127,23 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 bool GestorePalle::playerHit(Giocatore* player)  {
 	float 	x = player->getX(),
 			y = player->getY(),
-			d = player->getDim_x();
+			dx = player->getDimX(),
+			dy = player->getDimY();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
-		bool	b1 = (*it)->getX()+(*it)->getDim() >= x,
+		/*bool	b1 = (*it)->getX()+(*it)->getDim() >= x,
 				b2 = (*it)->getX() <= x+d,
-				b3 = y <= (*it)->getY()+ (*it)->getDim();
+				b3 = y <= (*it)->getY()+ (*it)->getDim();*/
 		
-		if(b1 && b2 && b3)
+		bool 	b1 = (*it)->getX() > x+dx,
+				b2 = (*it)->getX()+(*it)->getDim() < x,
+				b3 = (*it)->getY() > y+dy,
+				b4 = (*it)->getY()+(*it)->getDim() < y;
+
+
+		
+		
+		if(!b1 && !b2 && !b3 && !b4)
 			return true;
 	}
 	return false;
@@ -156,8 +165,8 @@ void GestorePalle::clearProcess()  {
 void GestorePalle::bouncerPiattaforma(Piattaforma* p)  {
 	float	piatX = p->getX(),
 			piatY = p->getY(),
-			piatDimX = p->getDim_x(),
-			piatDimY = p->getDim_y();
+			piatDimX = p->getDimX(),
+			piatDimY = p->getDimY();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		float	pallaX = (*it)->getX(),
@@ -194,8 +203,8 @@ void GestorePalle::bouncerPiattaforma(Piattaforma* p)  {
 void GestorePalle::bouncerBlocco(Blocco* b)  {
 	float	bloccoX = b->getX(),
 			bloccoY = b->getY(),
-			bloccoDimX = b->getDim_x(),
-			bloccoDimY = b->getDim_y();
+			bloccoDimX = b->getDimX(),
+			bloccoDimY = b->getDimY();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		float	pallaX = (*it)->getX(),
