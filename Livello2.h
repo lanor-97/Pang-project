@@ -81,8 +81,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
-	GP->aggiungiPalla(100, 157, MED, RED, false);
+	//GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
+	GP->aggiungiPalla(100, 157, PIC, RED, false);
 }
 
 CASO Livello2::Esegui(int vite, float res_info[])  {
@@ -186,14 +186,15 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 			//IF FUOCO COLPISCE PLAYER
 			bool p_hitFire=drago->hitFire(player);
 
-			if(p_hitFire && !colpito && !caduto)  {
-				return_value = VITAPERSA;
-				caduto=true;
-				colpito=true;
+			if(!dragonArrive){
+				if(p_hitFire && !colpito && !caduto)  {
+					return_value = VITAPERSA;
+					caduto=true;
+					colpito=true;
+				}
+				if(!p_hitFire && !p_hit)
+					colpito=false;
 			}
-			if(!p_hitFire && !p_hit)
-				colpito=false;
-			
 
 			if(keyUp && player->getY() > PLAYER_ALT_PIAT)  {
 				climbing = true;
@@ -314,16 +315,18 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				if(drago->getX()<=530)  {
 					dragonArrive=false;
 				}
-				if(fireCount==0 || player->getX()>=470)  {
+				if(!drago->Draw(dragonArrive,spitting))  {
+					spitting=false;
+				}
+			}
+			if(!dragonArrive){
+				if(fireCount==0 || (fireCount==150 && player->getX()>=470))  {
 					spitting=true;
 					fireCount=300;
 				}	
-				if(!drago->Draw(dragonArrive,spitting))  {
-					cout<<"drawa"<<endl;
-					spitting=false;
-				}	
 				fireCount--;
 			}
+
 			if(spitting)
 				fire=true;
 

@@ -72,7 +72,7 @@ Drago::Drago(int dimx, int dimy, int x, int y)  {
     posY=y;
     dimFuocoX=40;
     dimFuocoY=30;
-   	posFuocoX=posX-dimx/2;
+   	posFuocoX=posX-dimx/1.5;
   	posFuocoY=posY+dimy/2;
     drago=al_load_bitmap("images/dragonArriving.png");
     fuoco=al_load_bitmap("images/fireBall.png");
@@ -114,13 +114,13 @@ bool Drago::DrawFire(bool colpitoFuoco, bool fire)  {
         if(posFuocoX>=-20)
             posFuocoX-=4;
         else  {
-            posFuocoX=570;  
+            posFuocoX=posX+dimX/4;  
             return false;
         }    
         al_draw_bitmap(fuoco,posFuocoX,posFuocoY,0);     
     }
     else if(colpitoFuoco)  {
-        posFuocoX=605;
+        posFuocoX=posX+dimX/4;
         return false; 
     }    
     return true;           
