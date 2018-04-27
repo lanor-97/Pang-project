@@ -54,7 +54,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	scala2 = new Scala(434, 218, 0);
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
-	drago= new Drago(120,120,640,220); // posDrago finale 530,220
+	drago= new Drago(120,120,640,220,560); // posDrago finale 530,220
 }
 
 Livello2::~Livello2()  {
@@ -107,6 +107,8 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 	blocco1 = new Blocco(170, 120, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(414, 120, bloccoPietra);
+	drago->setFuocoX(560);
+	drago->setX(640);
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -185,7 +187,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 
 			//IF FUOCO COLPISCE PLAYER
 			bool p_hitFire=drago->hitFire(player);
-
+			
 			if(!dragonArrive){
 				if(p_hitFire && !colpito && !caduto)  {
 					return_value = VITAPERSA;
@@ -320,15 +322,17 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				}
 			}
 			if(!dragonArrive){
-				if(fireCount==0 || (fireCount==150 && player->getX()>=470))  {
+				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
 					spitting=true;
 					fireCount=300;
 				}	
 				fireCount--;
 			}
-
+			
 			if(spitting)
 				fire=true;
+			if(caduto)
+				fire=false;	
 
 			al_flip_display();
 			tempo--;
@@ -366,6 +370,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 		cerr << "\ndeleto blocco3";
 		delete blocco3;
 	}
+
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();

@@ -22,7 +22,7 @@ private:
    	
 public:
     Drago();
-    Drago(int dimx,int dimy,int x,int y);
+    Drago(int dimx,int dimy,int x,int y, int fireX);
     ~Drago(){al_destroy_bitmap(drago); al_destroy_bitmap(fuoco);}
 
     int getX() const  { return posX; }
@@ -65,14 +65,14 @@ Drago::Drago()  {
     animazione.setCurrFrame(0);
 }
 
-Drago::Drago(int dimx, int dimy, int x, int y)  {
+Drago::Drago(int dimx, int dimy, int x, int y, int fireX)  {
 	dimX=dimx;
 	dimY=dimy;
 	posX=x;
     posY=y;
     dimFuocoX=40;
     dimFuocoY=30;
-   	posFuocoX=posX-dimx/1.5;
+   	posFuocoX=fireX;
   	posFuocoY=posY+dimy/2;
     drago=al_load_bitmap("images/dragonArriving.png");
     fuoco=al_load_bitmap("images/fireBall.png");
