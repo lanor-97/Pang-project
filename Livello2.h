@@ -55,6 +55,8 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	piat1 = new Piattaforma(136, 204);
 	piat2 = new Piattaforma(410, 204);
 	drago= new Drago(120,120,640,220,560); // posDrago finale 530,220
+	drago->setFuocoX(560);
+	drago->setX(640);
 }
 
 Livello2::~Livello2()  {
@@ -81,8 +83,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	//GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
-	GP->aggiungiPalla(100, 157, PIC, RED, false);
+	GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
+	GP->aggiungiPalla(100, 157, MED, RED, false);
 }
 
 CASO Livello2::Esegui(int vite, float res_info[])  {
@@ -101,14 +103,12 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 	MatchOver=false; drawExplosion=false;
 
 	int 	punteggio=0, tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
-
 	CASO return_value = EXIT;
+	bool next[4] = { false };
 
-	blocco1 = new Blocco(170, 120, bloccoPietra);
+	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
-	blocco3 = new Blocco(414, 120, bloccoPietra);
-	drago->setFuocoX(560);
-	drago->setX(640);
+	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
@@ -251,6 +251,23 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				shoot=false;
 			}
 
+			if(next[3])  {
+				return_value = LIVELLOSUP;
+				break;
+			}
+			if(!dragonArrive){
+				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
+					spitting=true;
+					fireCount=300;
+				}	
+				fireCount--;
+			}
+			
+			if(spitting)
+				fire=true;
+			if(caduto)
+				fire=false;
+				
 			redraw = true;
 		}
 
@@ -269,7 +286,21 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 					break;
 				}
 				al_start_timer(timer);
-			}	
+			}
+			if(ev.keyboard.keycode == ALLEGRO_KEY_N)
+				next[0] = true;
+			if(ev.keyboard.keycode == ALLEGRO_KEY_E)  {
+				if(next[0])
+					next[1] = true;
+			}
+			if(ev.keyboard.keycode == ALLEGRO_KEY_X)  {
+				if(next[1])
+					next[2] = true;
+			}
+			if(ev.keyboard.keycode == ALLEGRO_KEY_T)  {
+				if(next[2])
+					next[3] = true;
+			}
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
 			
@@ -310,7 +341,6 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing,keyUpDown);
-			
 			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
 			//DA VEDERE DOPO
 			if(tempo/60<=145)  {
@@ -320,19 +350,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				if(!drago->Draw(dragonArrive,spitting))  {
 					spitting=false;
 				}
-			}
-			if(!dragonArrive){
-				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
-					spitting=true;
-					fireCount=300;
-				}	
-				fireCount--;
-			}
-			
-			if(spitting)
-				fire=true;
-			if(caduto)
-				fire=false;	
+			}	
 
 			al_flip_display();
 			tempo--;
@@ -393,32 +411,26 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
-	if(blocco1)
-	{
-		if(!blocco1->Draw())
-			{
-				delete blocco1;
-				blocco1=NULL;
-				cerr << "\ndistruggo blocco1";
-			}
+	if(blocco1)  {
+		if(!blocco1->Draw())  {
+			delete blocco1;
+			blocco1=NULL;
+			cerr << "\ndistruggo blocco1";
+		}
 	}
-	if(blocco2)
-	{
-		if(!blocco2->Draw())
-			{
-				delete blocco2;
-				blocco2=NULL;
-				cerr << "\ndistruggo blocco2";
-			}	
+	if(blocco2)  {
+		if(!blocco2->Draw())  {
+			delete blocco2;
+			blocco2=NULL;
+			cerr << "\ndistruggo blocco2";
+		}	
 	}
-	if(blocco3)
-	{
-		if(!blocco3->Draw())
-			{
-				delete blocco3;
-				blocco3=NULL;
-				cerr << "\ndistruggo blocco3";
-			}	
+	if(blocco3)  {
+		if(!blocco3->Draw())  {
+			delete blocco3;
+			blocco3=NULL;
+			cerr << "\ndistruggo blocco3";
+		}	
 	}
 
 	piat1->Draw();

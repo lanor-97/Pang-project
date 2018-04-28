@@ -269,11 +269,11 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 					next[1] = true;
 			}
 			if(ev.keyboard.keycode == ALLEGRO_KEY_X)  {
-				if(next[0] && next[1])
+				if(next[1])
 					next[2] = true;
 			}
 			if(ev.keyboard.keycode == ALLEGRO_KEY_T)  {
-				if(next[0] && next[1] && next[2])
+				if(next[2])
 					next[3] = true;
 			}
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
@@ -291,7 +291,7 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
 		}
-		if(next[3] && next[2] && next[1] && next[0])  {
+		if(next[3])  {
 			return_value = LIVELLOSUP;
 			break;
 		}
