@@ -24,11 +24,6 @@ protected:
 	const int PLAYER_ALT_NORM = 285;
 };
 
-
-Livello2::Livello2(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* d1, const int FPS)  {
-	Livello1(SW, SH, p, d1, FPS);
-}
-
 Livello2::Livello2(Livello1* L1, const int FPS)  {
 	sfondo = al_load_bitmap("images/sfondo2.jpg");
 	SCREEN_W = L1->getSW();
@@ -267,7 +262,7 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 				fire=true;
 			if(caduto)
 				fire=false;
-				
+
 			redraw = true;
 		}
 

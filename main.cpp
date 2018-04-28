@@ -1,4 +1,5 @@
-#include "Livello2.h"
+#include "Livello3.h"
+
 const int 		SCREEN_W = 640;
 const int 		SCREEN_H = 480;
 const int 		FPS = 60;
@@ -8,7 +9,7 @@ void Transition(ALLEGRO_BITMAP*);
 
 int main(int argc, char **argv)  { 
 
-	int 					vite = 3;
+	int 					vite = 3, livello = 1;
 	float 					res_x, res_y, res_monitor_x, res_monitor_y;
 	bool					play = true;
 	ALLEGRO_TRANSFORM 		redimencionamento;
@@ -68,6 +69,7 @@ int main(int argc, char **argv)  {
    	//CREAZIONE LIVELLI
    	Livello1* L1 = new Livello1(SCREEN_W, SCREEN_H, player, display, FPS);
    	Livello2* L2 = new Livello2(L1, FPS);
+	Livello3* L3 = new Livello3(L1, FPS);
 
    	Livello1* current_level = L1;
 
@@ -83,7 +85,12 @@ int main(int argc, char **argv)  {
 	   			continue;
 	   		}
 	   		else if(c == LIVELLOSUP)  {	
-	   			current_level = L2;
+	   			if(livello == 1)  {
+				   current_level = L2;
+				   livello++;
+				}
+				else if(livello == 2)
+					current_level = L3;
 	   		}
 	   		else if(c == MENU)
 	   			break;
