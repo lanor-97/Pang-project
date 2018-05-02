@@ -47,8 +47,8 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	//liv 2 stuff
 	scala1 = new Scala(160, 218, 0);
 	scala2 = new Scala(434, 218, 0);
-	piat1 = new Piattaforma(136, 204);
-	piat2 = new Piattaforma(410, 204);
+	piat1 = new Piattaforma(136, 204, false);
+	piat2 = new Piattaforma(410, 204, false);
 	drago= new Drago(120,120,640,220,560); // posDrago finale 530,220
 	drago->setFuocoX(560);
 	drago->setX(640);

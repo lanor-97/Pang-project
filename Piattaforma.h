@@ -15,7 +15,7 @@ private:
 
 public:
 	Piattaforma(): dimX(0), dimY(0), posX(0), posY(0)  { bitmap=NULL; }
-  	Piattaforma(float, float);
+  	Piattaforma(float, float, bool);
   	~Piattaforma();
 
   	short getDimX() const  { return dimX; }
@@ -29,12 +29,21 @@ public:
 	bool hitByHook(Giocatore*);
 };
 
-Piattaforma::Piattaforma(float x, float y)  {
-	dimX = 94;
-	dimY = 49;
+Piattaforma::Piattaforma(float x, float y, bool b)  {	//b = tipo, 0 = normale, 1 = estesa
+	
 	posX = x;
 	posY = y;
-	bitmap = al_load_bitmap("images/piattaforma.png");
+	if(!b)  {
+		bitmap = al_load_bitmap("images/piattaforma.png");
+		dimX = 94;
+		dimY = 49;
+	}
+	else  {
+		bitmap = al_load_bitmap("images/piattaformaEstesa.png");
+		dimX = 640;
+		dimY = 20; //?? forse
+	}
+	
 }
 
 Piattaforma::~Piattaforma()  {

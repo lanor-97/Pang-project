@@ -14,7 +14,7 @@ public:
 	virtual void Draw(int, int, int, int);
 
 protected:
-	
+	Piattaforma* piat = NULL;
 };
 
 Livello3::Livello3(Livello1* L1, const int FPS)  {
@@ -36,6 +36,9 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+
+	//Livello 3 stuff
+	piat = new Piattaforma(0, 160, true);
 }
 
 void Livello3::regolaPalle()  {
@@ -219,6 +222,7 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 		}	
 		drawShoot=false;
 	}
+	piat->Draw();
 		
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;
