@@ -41,7 +41,7 @@ Piattaforma::Piattaforma(float x, float y, bool b)  {	//b = tipo, 0 = normale, 1
 	else  {
 		bitmap = al_load_bitmap("images/piattaformaEstesa.png");
 		dimX = 640;
-		dimY = 20; //?? forse
+		dimY = 37;
 	}
 	
 }

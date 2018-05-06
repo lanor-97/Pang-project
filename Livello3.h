@@ -8,13 +8,17 @@ public:
 	Livello3()  { Livello1(); }
 	Livello3(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
 	Livello3(Livello1*, const int);
-	virtual ~Livello3()  {}
+	virtual ~Livello3();
 	virtual void regolaPalle();
 	virtual CASO Esegui(int, float[]);
 	virtual void Draw(int, int, int, int);
 
 protected:
+	Scala* scala1 = NULL;
+	Scala* scala2 = NULL;
 	Piattaforma* piat = NULL;
+	const int PLAYER_ALT_PIAT = 105;
+	const int PLAYER_ALT_NORM = 285;
 };
 
 Livello3::Livello3(Livello1* L1, const int FPS)  {
@@ -38,12 +42,20 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	//Livello 3 stuff
-	piat = new Piattaforma(0, 160, true);
+	piat = new Piattaforma(0, 156, true);
+	scala1 = new Scala(140, 190, 1);
+	scala2 = new Scala(500, 190, 1);
+}
+
+Livello3::~Livello3()  {
+	if(piat) delete piat;
+	if(scala1) delete scala1;
+	if(scala2) delete scala2;
 }
 
 void Livello3::regolaPalle()  {
 	GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
-	GP->aggiungiPalla(100, 157, MED, RED, false);
+	GP->aggiungiPalla(100, 157, PIC, RED, false);
 }
 
 CASO Livello3::Esegui(int vite, float res_info[])  {
@@ -62,6 +74,7 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 	al_flush_event_queue(event_queue);
 	al_start_timer(timer);
 	Transition(1);
+	player->setY(PLAYER_ALT_PIAT);
 
 	//IL GIOCO VERO E PROPRIO
 
@@ -71,6 +84,7 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
+			GP->bouncerPiattaforma(piat);
 			GP->Bouncer();
 
 			if(shoot)
@@ -119,7 +133,9 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 			if(!p_hit)
 				colpito=false;
 
-			if(shoot && player->getArmaY()>0 && !presa)  {
+			bool hook_colp = false;
+			if(player->getY() == PLAYER_ALT_NORM) piat->hitByHook(player);
+			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
 				player->setArmaY(player->getArmaY() - 6);
 				H_arma += 6;
 			}
@@ -214,6 +230,8 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 
 	if(shoot)
 		player->ArmaDraw(H_arma);
+	
+	piat->Draw();
 
 	if(!player->Draw())  {
 		if(caduto)  {
@@ -222,7 +240,8 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 		}	
 		drawShoot=false;
 	}
-	piat->Draw();
+	scala1->Draw();
+	scala2->Draw();
 		
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;
