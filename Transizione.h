@@ -66,8 +66,7 @@ Transizione::Transizione(Tipe tipo)  {
 }
 
 Transizione::~Transizione()  {
-    if(transition)  { 
-        cerr<<"\ndistruggo transizione_bitmap"; 
+    if(transition)  {  
         al_destroy_bitmap(transition);
     }
 }

@@ -35,7 +35,6 @@ Arma::Arma(int d, int x, int y)  {
 
 Arma::~Arma()  {
 	if(bitmap)  {
-		cerr << "\ndistruggo arma_bitmap";
 		al_destroy_bitmap(bitmap);
 	}
 }

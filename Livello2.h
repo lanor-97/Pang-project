@@ -12,7 +12,7 @@ public:
 	Livello2(Livello1*, const int);
 	virtual ~Livello2();
 	virtual void regolaPalle();
-	virtual CASO Esegui(int, float[]);
+	virtual CASO Esegui(int, int&, float[]);
 	virtual void Draw(int, int, int, int, bool, bool&);
 
 protected:
@@ -56,23 +56,18 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 
 Livello2::~Livello2()  {
 	if(scala1)  {
-		cerr << "\ndeleto scala1";
 		delete scala1;
 	}
 	if(scala2)  {
-		cerr << "\ndeleto scala2";
 		delete scala2;
 	}
 	if(piat1)  {
-		cerr << "\ndeleto piat1";
 		delete piat1;
 	}
 	if(piat2)  {
-		cerr << "\ndeleto piat2";
 		delete piat2;
 	}
 	if(drago)  	{
-		cerr << "\ndeleto drago";
 		delete drago;
 	}
 }
@@ -82,7 +77,7 @@ void Livello2::regolaPalle()  {
 	GP->aggiungiPalla(100, 157, MED, RED, false);
 }
 
-CASO Livello2::Esegui(int vite, float res_info[])  {
+CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE VARIABILI ALLEGRO
 	ALLEGRO_TRANSFORM 		redimencionamento;
 
@@ -97,9 +92,9 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
-	CASO return_value = EXIT;
-	bool next[4] = { false };
+	int 	tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
+	CASO 	return_value = EXIT;
+	bool 	next[4] = { false };
 
 	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
@@ -372,15 +367,12 @@ CASO Livello2::Esegui(int vite, float res_info[])  {
 	
 	//DISTRUGGO TUTTO
 	if(blocco1)  {
-		cerr << "\ndeleto blocco1";
 		delete blocco1;
 	}
 	if(blocco2)  {
-		cerr << "\ndeleto blocco2";
 		delete blocco2;
 	}
 	if(blocco3)  {
-		cerr << "\ndeleto blocco3";
 		delete blocco3;
 	}
 
@@ -410,21 +402,18 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 		if(!blocco1->Draw())  {
 			delete blocco1;
 			blocco1=NULL;
-			cerr << "\ndistruggo blocco1";
 		}
 	}
 	if(blocco2)  {
 		if(!blocco2->Draw())  {
 			delete blocco2;
 			blocco2=NULL;
-			cerr << "\ndistruggo blocco2";
 		}	
 	}
 	if(blocco3)  {
 		if(!blocco3->Draw())  {
 			delete blocco3;
 			blocco3=NULL;
-			cerr << "\ndistruggo blocco3";
 		}	
 	}
 

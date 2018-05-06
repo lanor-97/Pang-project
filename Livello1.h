@@ -15,7 +15,7 @@ public:
 	Livello1();
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
 	virtual ~Livello1();
-	virtual CASO Esegui(int, float[]);
+	virtual CASO Esegui(int, int&, float[]);
 	void Transition(int);
 	bool Pausa(bool&, float[]);
 	virtual void regolaPalle();
@@ -76,39 +76,30 @@ void Livello1::regolaPalle()  {
 
 Livello1::~Livello1()  {
 	if(sfondo)  {
-		cerr << "\ndistruggo sfondo_bitmap Liv";
 		al_destroy_bitmap(sfondo);
 	}
 	if(GP)  {
-		cerr << "\ndistruggo GestorePalle Liv";
 		delete GP;
 	}
 	if(font1)  {
-		cerr << "\ndistruggo font1 Liv";
 		al_destroy_font(font1);
 	}
 	if(font2)  {
-		cerr << "\ndistruggo font2 Liv";
 		al_destroy_font(font2);
 	}
 	if(vite_bmp)  {
-		cerr << "\ndistruggo vite_bitmap Liv";
 		al_destroy_bitmap(vite_bmp);
 	}
 	if(timer)  {
-		cerr << "\ndistruggo timer Liv";
 		al_destroy_timer(timer);
 	}
 	if(event_queue)  {
-		cerr << "\ndistruggo event_queue Liv";
 		al_destroy_event_queue(event_queue);
 	}
 	if(pausa_play)  {
-		cerr << "\ndistruggo pausa_play_bitmap";
 		al_destroy_bitmap(pausa_play);
 	}
 	if(pausa_exit)  {
-		cerr << "\ndistruggo pausa_exit_bitmap";
 		al_destroy_bitmap(pausa_exit);
 	}
 }
@@ -160,7 +151,7 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 	return inGame;
 }
 
-CASO Livello1::Esegui(int vite, float res_info[])  {
+CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
@@ -170,7 +161,7 @@ CASO Livello1::Esegui(int vite, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0;
+	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
 
 	regolaPalle();

@@ -9,7 +9,7 @@ void Transition(ALLEGRO_BITMAP*);
 
 int main(int argc, char **argv)  { 
 
-	int 					vite = 3, livello = 1;
+	int 					vite = 3, livello = 1, punteggio = 0;
 	float 					res_x, res_y, res_monitor_x, res_monitor_y;
 	bool					play = true;
 	ALLEGRO_TRANSFORM 		redimencionamento;
@@ -77,7 +77,7 @@ int main(int argc, char **argv)  {
    	while(play && vite > 0)  {
 
 	   	while(vite > 0)  {
-	   		CASO c = current_level->Esegui(vite, res_info);
+	   		CASO c = current_level->Esegui(vite, punteggio, res_info);
 	   		if(c == EXIT)
 	   			vite = 0;
 	   		else if(c == VITAPERSA)  {
@@ -85,6 +85,7 @@ int main(int argc, char **argv)  {
 	   			continue;
 	   		}
 	   		else if(c == LIVELLOSUP)  {	
+				cerr << punteggio << endl;
 	   			if(livello == 1)  {
 				   current_level = L2;
 				   livello++;
@@ -100,19 +101,15 @@ int main(int argc, char **argv)  {
    	}
 
    	if(L1)  {
-   		cerr << "\ndeleto L1";
    		delete L1;
    	}   	
    	if(L2)  {
-   		cerr << "\ndeleto L2";
    		delete L2;
    	}
    	if(player)  {
-   		cerr << "\ndeleto player";
    		delete player;
    	}
    	if(display)  {
-   		cerr << "\ndistruggo display";
    		al_destroy_display(display);
    	}
    	cerr << "\n";
@@ -199,15 +196,12 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 			Transition(menu_play);		
 	}
 	if(menu_play)  {
-		cerr << "\ndistruggo menu_play_bitmap";
 		al_destroy_bitmap(menu_play);
 	}
 	if(menu_exit)  {
-		cerr << "\ndistruggo menu_exit_bitmap";
 		al_destroy_bitmap(menu_exit);
 	}
 	if(event_queue)  {
-		cerr << "\ndistruggo ev_queue_menu";
 		al_destroy_event_queue(event_queue);
 	}
 	return play;
@@ -240,7 +234,6 @@ void Transition(ALLEGRO_BITMAP* bmp)  {
 		}
 	}
 	if(timer)  {
-		cerr << "\ndistruggo timer transition";
 		al_destroy_timer(timer);
 	}
 }

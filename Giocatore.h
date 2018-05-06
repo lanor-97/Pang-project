@@ -65,11 +65,9 @@ Giocatore::Giocatore(int f)  {
 
 Giocatore::~Giocatore()  {
     if(bitmap)  {
-        cerr << "\ndistruggo giocatore_bitmap";
         al_destroy_bitmap(bitmap); 
     }
-
-    cerr << "\ndeleto arma";delete arma;
+    delete arma;
 }
 
 void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft, bool caduto,bool climbing, bool keyUpDown)  {

@@ -72,7 +72,6 @@ Blocco::Blocco(int posX, int posY, Tipo t)  {
 
 Blocco::~Blocco()  {
     if(blocco)  {
-        cerr << "\ndistruggo blocco_bitmap";
         al_destroy_bitmap(blocco);
     }
 }

@@ -133,7 +133,6 @@ Palla::Palla(float x, float c, SIZE s, COLOR col, bool dir)  {
 
 Palla::~Palla()  {
 	if(bitmap)  {
-		cerr<<"\ndistruggo palla_bitmap";
 		al_destroy_bitmap(bitmap);
 	}
 }

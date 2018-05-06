@@ -48,7 +48,6 @@ Piattaforma::Piattaforma(float x, float y, bool b)  {	//b = tipo, 0 = normale, 1
 
 Piattaforma::~Piattaforma()  {
 	if(bitmap)  {
-		cerr<<"\ndistruggo piattaforma_bitmap"; 
 		al_destroy_bitmap(bitmap);
 	}
 }

@@ -38,7 +38,6 @@ public:
 
 GestorePalle::~GestorePalle()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
-		cerr << "deleto palla_x";
 		delete (*it);
 	}
 }
@@ -89,7 +88,6 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 			explosion.setPosX((*it)->getX());
 			explosion.setPosY((*it)->getY());
 			COLOR co = (*it)->getColor();
-			cerr << co;
 			SIZE s;
 			switch((*it)->getSize())  {
 				case GRA:	s = MED;
@@ -115,7 +113,6 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 			balls.push_back(p1);
 			balls.push_back(p2);
 			balls.erase(it);
-			cerr << "\ndeleto palla_x";
 			delete (*it);
 			return true;
 		}
@@ -151,7 +148,6 @@ bool GestorePalle::playerHit(Giocatore* player)  {
 
 void GestorePalle::Clear()  {
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
-		cerr << "\ndeleto palla_x";
 		delete (*it);
 	}
 	balls.clear();

@@ -10,7 +10,7 @@ public:
 	Livello3(Livello1*, const int);
 	virtual ~Livello3();
 	virtual void regolaPalle();
-	virtual CASO Esegui(int, float[]);
+	virtual CASO Esegui(int, int&, float[]);
 	virtual void Draw(int, int, int, int);
 
 protected:
@@ -58,23 +58,24 @@ void Livello3::regolaPalle()  {
 	GP->aggiungiPalla(100, 157, PIC, RED, false);
 }
 
-CASO Livello3::Esegui(int vite, float res_info[])  {
+CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
-			bitmap_ = true, fullscreen=false, trans=true, hit=false;
+			bitmap_ = true, fullscreen=false, trans=true, hit=false,
+			climbing = false, keyUp= false, keyDown=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	punteggio=0, tempo=9000, H_arma=0;
+	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
 
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	al_start_timer(timer);
 	Transition(1);
-	player->setY(PLAYER_ALT_PIAT);
+	player->setY(PLAYER_ALT_NORM);
 
 	//IL GIOCO VERO E PROPRIO
 
@@ -107,19 +108,43 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
-				player->muoviSx(false, SCREEN_W);
+				if(player->getY() == PLAYER_ALT_NORM || player->getY() == PLAYER_ALT_PIAT)
+					player->muoviSx(false, SCREEN_W);
 			}
 			if(keyLeft && !caduto && !drawShoot)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
-				player->muoviSx(true, 0);
+				if(player->getY() == PLAYER_ALT_NORM || player->getY() == PLAYER_ALT_PIAT)
+					player->muoviSx(true, 0);
 			}
 			if(keySpace && !caduto)  {
 				if(!shoot)
 					drawShoot=true;
 				shoot=true;
 				keySpace=false;
+			}
+			if(keyUp && player->getY() > PLAYER_ALT_PIAT)  {
+				climbing = true;
+				if(scala1->playerHere(player))
+					player->setX(scala1->getX());
+				else if(scala2->playerHere(player))
+					player->setX(scala2->getX());
+				else
+					climbing = false;
+				if(climbing)
+					player->muoviUp(true, PLAYER_ALT_PIAT);
+			}
+			else if(keyDown && player->getY() < PLAYER_ALT_NORM)  {
+				climbing = true;
+				if(scala1->playerHere(player))
+					player->setX(scala1->getX());
+				else if(scala2->playerHere(player))
+					player->setX(scala2->getX());
+				else
+					climbing = false;
+				if(climbing)
+					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
 			//IF PALLA COLPISCE GIOCATORE
@@ -134,7 +159,8 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 				colpito=false;
 
 			bool hook_colp = false;
-			if(player->getY() == PLAYER_ALT_NORM) piat->hitByHook(player);
+			if(player->getY() == PLAYER_ALT_NORM) 
+				hook_colp = piat->hitByHook(player);
 			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
 				player->setArmaY(player->getArmaY() - 6);
 				H_arma += 6;
@@ -171,12 +197,20 @@ CASO Livello3::Esegui(int vite, float res_info[])  {
 				keyLeft=true;
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
+				keyUp = true;
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
+				keyDown = true;
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
 				keyRight=false;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
+				keyUp = false;
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
+				keyDown = false;
 		}
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false, false);
@@ -232,7 +266,8 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 		player->ArmaDraw(H_arma);
 	
 	piat->Draw();
-
+	scala1->Draw();
+	scala2->Draw();
 	if(!player->Draw())  {
 		if(caduto)  {
 			caduto=false;
@@ -240,8 +275,6 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 		}	
 		drawShoot=false;
 	}
-	scala1->Draw();
-	scala2->Draw();
 		
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;

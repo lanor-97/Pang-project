@@ -47,7 +47,6 @@ Scala::Scala(int x, int y, bool t)  {
 
 Scala::~Scala()  {
 	if(bitmap)  {
-		cerr<<"\ndistruggo scala_bitmap"; 
 		al_destroy_bitmap(bitmap);
 	}
 }
