@@ -7,6 +7,7 @@
 #include <allegro5/allegro_ttf.h>
 #include "Transizione.h"
 #include "Blocco.h"
+#include "PowerUp.h"
 
 enum CASO  { EXIT = 0, LIVELLOSUP, VITAPERSA, MENU };
 
@@ -43,6 +44,7 @@ protected:
 	Transizione transizione;
 	float SCREEN_W, SCREEN_H;
 	bool shoot, caduto, drawShoot, drawExplosion, MatchOver;
+	PowerUp* powerup;
 };
 
 Livello1::Livello1()  {
@@ -52,6 +54,7 @@ Livello1::Livello1()  {
 Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, const int FPS): player(p), SCREEN_W(SW), SCREEN_H(SH)  {
 	sfondo = al_load_bitmap("images/sfondo1.jpg");
 	GP = new GestorePalle(SW, SH);
+	powerup = new PowerUp;
 
 	font1=al_load_ttf_font("fonts/SHREK.TTF",30,0);
 	font2=al_load_ttf_font("fonts/SHREK.TTF",25,0);
@@ -101,6 +104,9 @@ Livello1::~Livello1()  {
 	}
 	if(pausa_exit)  {
 		al_destroy_bitmap(pausa_exit);
+	}
+	if(powerup)  {
+		delete powerup;
 	}
 }
 
@@ -164,6 +170,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
 
+	PowerUp* powerUp = new PowerUp;
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	al_start_timer(timer);
@@ -193,6 +200,8 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			if(!hit)
 				presa=false;
+
+			powerup->Spawn(200, player->getY());
 
 			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
 			if(keyRight && !caduto && !drawShoot)  {
@@ -375,6 +384,8 @@ void Livello1::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 
 	if(shoot)
 		player->ArmaDraw(H_arma);
+
+	powerup->Draw();
 
 	if(!player->Draw())  {
 		if(caduto)  {
