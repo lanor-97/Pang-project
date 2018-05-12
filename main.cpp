@@ -1,3 +1,6 @@
+//to compile 
+//g++ *cpp -o main -lallegro -lallegro_main -lallegro_ttf -lallegro_image -lallegro_font  -std=c++11
+
 #include "Livello3.h"
 
 const int 		SCREEN_W = 640;

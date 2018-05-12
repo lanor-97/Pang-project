@@ -43,8 +43,8 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 
 	//Livello 3 stuff
 	piat = new Piattaforma(0, 156, true);
-	scala1 = new Scala(140, 190, 1);
-	scala2 = new Scala(500, 190, 1);
+	scala1 = new Scala(300, 190, 1);
+	scala2 = new Scala(300, 190, 1);
 }
 
 Livello3::~Livello3()  {
@@ -63,7 +63,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, trans=true, hit=false,
-			climbing = false, keyUp= false, keyDown=false;
+			climbing = false, keyUp= false, keyDown=false, keyUpDown=false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
@@ -103,22 +103,24 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(!hit)
 				presa=false;
 
+			climbing = player->getY() != PLAYER_ALT_NORM && player->getY() != PLAYER_ALT_PIAT;
+
 			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
-			if(keyRight && !caduto && !drawShoot)  {
+			if(keyRight && !caduto && !drawShoot && !climbing)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=false;
 				if(player->getY() == PLAYER_ALT_NORM || player->getY() == PLAYER_ALT_PIAT)
 					player->muoviSx(false, SCREEN_W);
 			}
-			if(keyLeft && !caduto && !drawShoot)  {
+			if(keyLeft && !caduto && !drawShoot && !climbing)  {
 				player->setFrames(6);
 				drawShoot=false;
 				toLeft=true;
 				if(player->getY() == PLAYER_ALT_NORM || player->getY() == PLAYER_ALT_PIAT)
 					player->muoviSx(true, 0);
 			}
-			if(keySpace && !caduto)  {
+			if(keySpace && !caduto && !climbing)  {
 				if(!shoot)
 					drawShoot=true;
 				shoot=true;
@@ -191,31 +193,46 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_SPACE)
 				keySpace=true;
+			
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
 				keyRight=true;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
+
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
+				{
+					keyUp = true;
+					keyUpDown=true;
+				}	
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
+				{
+					keyDown = true;
+					keyUpDown=true;
+				}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
-			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				keyUp = true;
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				keyDown = true;
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)
 				keyRight=false;
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
+
 			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				keyUp = false;
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				keyDown = false;
+				{
+					keyUp = false;
+					keyUpDown=false;
+				}	
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)  {
+					keyDown = false;
+					keyUpDown= false;
+			}	
 		}
 		if(redraw && al_is_event_queue_empty(event_queue)) {
-			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false, false);
+			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,climbing, keyUpDown);
 			Draw(vite, tempo, punteggio, H_arma);
 			tempo--;
+
 
 			redraw = false;
 
