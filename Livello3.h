@@ -47,7 +47,7 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 	piat = new Piattaforma(0, 156, true);
 	scala1 = new Scala(300, 190, 1);
 	scala2 = new Scala(300, 190, 1); //da rimuovere
-	farquaad= new Farquaad(SCREEN_W,PLAYER_ALT_PIAT);
+	farquaad= new Farquaad(SCREEN_W,PLAYER_ALT_PIAT-5);
 
 }
 
@@ -177,19 +177,22 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				H_arma = 0;
 				shoot=false;
 			}
-
+			
 			if(!farquaadArrive){
+
 				if(ballTimer==0 || 
 				(ballTimer==150 && (player->getX()>=farquaad->getX()-30 && player->getY()==farquaad->getY()) 
 				&& !caduto && escapeTimer!=0 && !farquaadEscape))  
 				{
 					throwBall=true;
-					ballTimer=500;
+					ballTimer=400;
 				}
-				else if(escapeTimer==0){
+
+				if(escapeTimer==0){
 					farquaadEscape=true;
 					escapeTimer=900;
 				}	
+
 				ballTimer--;
 
 				if(!farquaadEscape)
@@ -257,6 +260,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			Draw(vite, tempo, punteggio, H_arma);
 
 			if(tempo/60<=145)  {
+				
 				if(farquaad->getX()<=580)  {
 					farquaadArrive=false;
 				}
@@ -266,10 +270,11 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				if(farquaadEscape && farquaad->getX()==640)
 					{
 						farquaadEscape=false;
-						if(farquaad->getY()==PLAYER_ALT_NORM)
-							farquaad->setY(PLAYER_ALT_PIAT);
+						farquaadArrive=true;
+						if(farquaad->getY()==PLAYER_ALT_NORM-5)
+							farquaad->setY(PLAYER_ALT_PIAT-5);
 						else
-							farquaad->setY(PLAYER_ALT_NORM);
+							farquaad->setY(PLAYER_ALT_NORM-5);
 					}	
 			}	
 

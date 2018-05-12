@@ -42,7 +42,7 @@ public:
 
 Farquaad::Farquaad()  {
     dimX=60;
-    dimY=70;
+    dimY=75;
     posX=640;
     posY=130;
     farquaad=al_load_bitmap("images/farquaadArriving.png");
@@ -54,7 +54,7 @@ Farquaad::Farquaad()  {
 
 Farquaad::Farquaad(int x,int y)  {
     dimX=60;
-    dimY=70;
+    dimY=75;
     posX=x;
     posY=y;
     farquaad=al_load_bitmap("images/farquaadArriving.png");
@@ -75,7 +75,7 @@ bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
     if(ball && !scappa && !arrive)
     {
         setFrames(5);
-        animazione.setFrameDelay(8);
+        animazione.setFrameDelay(10);
         farquaad=al_load_bitmap("images/farquaadBall.png");
         if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), false,getFrames()))
         return false;
