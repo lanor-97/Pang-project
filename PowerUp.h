@@ -35,12 +35,12 @@ void PowerUp::Spawn(int x, int y)  {
         tipo = BOLLA;
         //dimX = boh
         //dimY = boh
-        bitmap = al_load_bitmap("images/palla_pic2.png");   //giusto per prova
+        bitmap = al_load_bitmap("images/bubblePowerUp.png");   //giusto per prova
     case 1:
         tipo = ALTRO;
         //dimX = boh
         //dimY = boh
-        bitmap = al_load_bitmap("images/palla_pic.png");    
+        bitmap = al_load_bitmap("images/freezePowerUp.png");    
     }
 }
 
