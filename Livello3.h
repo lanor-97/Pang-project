@@ -2,6 +2,7 @@
 #define LIVELLO3_H
 
 #include "Livello2.h"
+#include "Farquaad.h"
 
 class Livello3: public Livello1  {
 public:
@@ -19,6 +20,7 @@ protected:
 	Piattaforma* piat = NULL;
 	const int PLAYER_ALT_PIAT = 105;
 	const int PLAYER_ALT_NORM = 285;
+	Farquaad* farquaad= NULL;
 };
 
 Livello3::Livello3(Livello1* L1, const int FPS)  {
@@ -44,7 +46,9 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 	//Livello 3 stuff
 	piat = new Piattaforma(0, 156, true);
 	scala1 = new Scala(300, 190, 1);
-	scala2 = new Scala(300, 190, 1);
+	scala2 = new Scala(300, 190, 1); //da rimuovere
+	farquaad= new Farquaad(SCREEN_W,PLAYER_ALT_PIAT);
+
 }
 
 Livello3::~Livello3()  {
@@ -63,12 +67,14 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, trans=true, hit=false,
-			climbing = false, keyUp= false, keyDown=false, keyUpDown=false;
+			climbing = false, keyUp= false, keyDown=false, keyUpDown=false,
+			throwBall=false, farquaadArrive=true, farquaadEscape=false;
+
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	tempo=9000, H_arma=0;
+	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900;
 	CASO 	return_value = EXIT;
 
 	regolaPalle();
@@ -172,6 +178,24 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				shoot=false;
 			}
 
+			if(!farquaadArrive){
+				if(ballTimer==0 || 
+				(ballTimer==150 && (player->getX()>=farquaad->getX()-30 && player->getY()==farquaad->getY()) 
+				&& !caduto && escapeTimer!=0 && !farquaadEscape))  
+				{
+					throwBall=true;
+					ballTimer=500;
+				}
+				else if(escapeTimer==0){
+					farquaadEscape=true;
+					escapeTimer=900;
+				}	
+				ballTimer--;
+
+				if(!farquaadEscape)
+				escapeTimer--;
+			}
+
 			redraw = true;
 		}
 
@@ -231,9 +255,26 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,climbing, keyUpDown);
 			Draw(vite, tempo, punteggio, H_arma);
+
+			if(tempo/60<=145)  {
+				if(farquaad->getX()<=580)  {
+					farquaadArrive=false;
+				}
+				if(!farquaad->Draw(farquaadEscape,throwBall,farquaadArrive))  {
+					throwBall=false;
+				}
+				if(farquaadEscape && farquaad->getX()==640)
+					{
+						farquaadEscape=false;
+						if(farquaad->getY()==PLAYER_ALT_NORM)
+							farquaad->setY(PLAYER_ALT_PIAT);
+						else
+							farquaad->setY(PLAYER_ALT_NORM);
+					}	
+			}	
+
+			al_flip_display();
 			tempo--;
-
-
 			redraw = false;
 
 			//CONTROLLO VITTORIA
@@ -253,8 +294,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			}
 		
 		}					
-	}
-	
+	}	
 	//DISTRUGGO TUTTO
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
@@ -262,6 +302,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	return return_value;
 }
+	
 
 void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	al_draw_bitmap(sfondo,0,0,0);
@@ -275,7 +316,6 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	if(vite<=0 || tempo<=0)
 		caduto=true;
 
-	//al_draw_text(font1,al_map_rgb(0,255,0),320,0,ALLEGRO_ALIGN_CENTRE,"Shrek Pang");
 	al_draw_textf(font1,al_map_rgb(255,255,0),SCREEN_W/4.7,SCREEN_H/1.16,ALLEGRO_ALIGN_RIGHT,"%d",tempo/60);
 	al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
 
@@ -296,7 +336,6 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;
 
-	al_flip_display();
 }
 
 

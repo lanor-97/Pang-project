@@ -25,7 +25,7 @@ public:
     int getX() const  { return posX; }
   	int getY() const  { return posY; }
   	int getDimX() const  { return dimX; }
-   	int getdimY() const  { return dimY; }
+   	int getDimY() const  { return dimY; }
    	int getFrames() const {return frames;}
 
   	void setFarquaad(ALLEGRO_BITMAP *b_map)  { farquaad=b_map; }
@@ -41,10 +41,10 @@ public:
 };
 
 Farquaad::Farquaad()  {
-    dimX=50;
-    dimY=60;
+    dimX=60;
+    dimY=70;
     posX=640;
-    posY=480;
+    posY=130;
     farquaad=al_load_bitmap("images/farquaadArriving.png");
     frames=3;
     animazione.setFrameCount(0);
@@ -53,8 +53,8 @@ Farquaad::Farquaad()  {
 }
 
 Farquaad::Farquaad(int x,int y)  {
-    dimX=50;
-    dimY=60;
+    dimX=60;
+    dimY=70;
     posX=x;
     posY=y;
     farquaad=al_load_bitmap("images/farquaadArriving.png");
@@ -68,40 +68,42 @@ void Farquaad::DrawVictory()  {
     setFrames(2);
     animazione.setFrameDelay(7);
     farquaad=al_load_bitmap("images/farquaadDefeated.png");
-    animazione.eseguiFrame(farquaad,getDim_x(),getdimY(),getX(),getY(), true,getFrames());
+    animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames());
 }
 
 bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
     if(ball && !scappa && !arrive)
     {
         setFrames(5);
-        animazione.setFrameDelay(7);
+        animazione.setFrameDelay(8);
         farquaad=al_load_bitmap("images/farquaadBall.png");
-        if(!animazione.eseguiFrame(farquaad,getDim_x(),getdimY(),getX(),getY(), false,getFrames()))
+        if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), false,getFrames()))
         return false;
     }
     else if(arrive && !ball && !scappa)
     {
         setFrames(3);
-        animazione.setFrameDelay(5);
+        animazione.setFrameDelay(7);
+            posX--;
         farquaad=al_load_bitmap("images/farquaadArriving.png");
-        if(!animazione.eseguiFrame(farquaad,getDim_x(),getdimY(),getX(),getY(), true,getFrames()))
+        if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames()))
         return false;
     }
     else if(scappa && !arrive && !ball)
     {
         setFrames(3);
-        animazione.setFrameDelay(5);
+        animazione.setFrameDelay(7);
+            posX++;       
         farquaad=al_load_bitmap("images/farquaadScappa.png");
-        if(!animazione.eseguiFrame(farquaad,getDim_x(),getdimY(),getX(),getY(), true,getFrames()))
+        if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames()))
         return false;
     }
     else
     {
         setFrames(6);
-        animazione.setFrameDelay(5);
+        animazione.setFrameDelay(7);
         farquaad=al_load_bitmap("images/farquaadFermo.png");
-        if(!animazione.eseguiFrame(farquaad,getDim_x(),getdimY(),getX(),getY(), true,getFrames()))
+        if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames()))
         return false;
     }
     return true;

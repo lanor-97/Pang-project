@@ -10,5 +10,6 @@
         "string_view": "cpp",
         "utility": "cpp",
         "__locale": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
