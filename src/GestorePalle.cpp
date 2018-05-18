@@ -20,11 +20,10 @@ bool GestorePalle::Draw(bool drawExplosion)   {
 	}
 	
 	//FA CRASHARE NON SO PER QUALE MOTIVO LIV 3
-	/*if(drawExplosion)
+	if(drawExplosion)
 		if(!explosion.Draw())
 			return false;
-	return true;*/
-
+	return true;
 }
 
 void GestorePalle::Bouncer()  {

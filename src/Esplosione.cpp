@@ -49,6 +49,7 @@ Esplosione::Esplosione(int x, int y, Tipo tipo)  {
 }
 
 void Esplosione::setTipo(int t)  {
+    al_destroy_bitmap(explosion);
     switch(t)  {
         case 0:
             tipo=pallaPic;
