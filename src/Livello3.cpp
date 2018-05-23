@@ -45,13 +45,13 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
-			bitmap_ = true, fullscreen=false, trans=true, hit=false,
+			bitmap_ = true, fullscreen=false, trans=true, hit=false, hit2=false,
 			climbing = false, keyUp= false, keyDown=false, keyUpDown=false,
-			throwBall=false, farquaadArrive=true, farquaadEscape=false;
+			throwBall=false, farquaadArrive=true, farquaadEscape=false, GPturn=true;
 
 
 	drawShoot=false; caduto=false; shoot=false; 
-	MatchOver=false; drawExplosion=false;
+	MatchOver=false; drawExplosion=false; drawExplosion2=false;
 
 	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900;
 	CASO 	return_value = EXIT;
@@ -70,24 +70,35 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
-			GP->bouncerPiattaforma(piat);
+			hit2 = false;
+			if(GPturn)
+				GP->bouncerPiattaforma(piat);
 			GP2->bouncerPiattaforma(piat);
-			GP->Bouncer();
+			if(GPturn)  {
+				GP->Bouncer();
+				GPturn = false;
+			}
+			else  {
+				GPturn = true;
+			}
 			GP2->Bouncer();
 
 			if(shoot)  {
-				hit = GP->hitByHook(player) || GP2->hitByHook(player);
-				if(hit) ok = true;
+				hit = GP->hitByHook(player);
+				hit2 = GP2->hitByHook(player);
 			}
 			else  {
 				player->posizionaArma();
 			}
 
 			//RAMPINO HA COLPITO PALLA
-			if(hit && !presa)  {	
+			if((hit || hit2) && !presa)  {	
 				punteggio+=200;
 				presa=true;
-				drawExplosion=true;
+				if(hit)
+					drawExplosion = true;
+				else if(hit2)
+					drawExplosion2 = true;
 			}
 			else if(!hit)  {
 				presa=false;
@@ -323,6 +334,6 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	if(!GP->Draw(drawExplosion))
 		drawExplosion=false;
 	
-	if(!GP2->Draw(drawExplosion))
-		drawExplosion = false;
+	if(!GP2->Draw(drawExplosion2))
+		drawExplosion2 = false;
 }

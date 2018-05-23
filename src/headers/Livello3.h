@@ -15,7 +15,7 @@ public:
 	virtual void Draw(int, int, int, int);
 
 protected:
-	bool ok = false;
+	bool drawExplosion2 = false;
 	GestorePalle* GP2 = NULL;
 	Scala* scala1 = NULL;
 	Scala* scala2 = NULL;
