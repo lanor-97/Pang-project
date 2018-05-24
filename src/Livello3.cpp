@@ -43,7 +43,7 @@ void Livello3::regolaPalle()  {
 
 CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
-	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
+	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, hook_colp=false,
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, trans=true, hit=false, hit2=false,
 			climbing = false, keyUp= false, keyDown=false, keyUpDown=false,
@@ -162,9 +162,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(!p_hit)
 				colpito=false;
 
-			bool hook_colp = false;
-			if(player->getY() == PLAYER_ALT_NORM) 
-				hook_colp = piat->hitByHook(player);
+			hook_colp = piat->hitByHook(player);
 			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
 				player->setArmaY(player->getArmaY() - 3);
 				H_arma += 3;
