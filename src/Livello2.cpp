@@ -189,7 +189,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
-			//if(player->getY() == PLAYER_ALT_NORM)
+			if(player->getY() > piat1->getY())
 				hook_colp = piat1->hitByHook(player) || piat2->hitByHook(player);
 
 			if(blocco1)

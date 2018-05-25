@@ -161,8 +161,13 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			
 			if(!p_hit)
 				colpito=false;
-
-			hook_colp = piat->hitByHook(player);
+			if(player->getY()+50 > piat->getY())  {
+				hook_colp = piat->hitByHook(player);
+			}
+			else  {
+				hook_colp = false;
+			}
+				
 			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
 				player->setArmaY(player->getArmaY() - 3);
 				H_arma += 3;
@@ -279,7 +284,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-						Transition(3);
+						Transition(victory);
 						al_rest(2);
 						break;
 					}

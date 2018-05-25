@@ -19,7 +19,6 @@ bool GestorePalle::Draw(bool drawExplosion)   {
 		(*it)->Draw();
 	}
 	
-	//FA CRASHARE NON SO PER QUALE MOTIVO LIV 3
 	if(drawExplosion)
 		if(!explosion.Draw())
 			return false;
@@ -40,14 +39,16 @@ void GestorePalle::Bouncer()  {
 bool GestorePalle::hitByHook(Giocatore* player)  {
 	float 	x1 = player->getArmaX(), 
 			y1 = player->getArmaY(),
-			d1 = player->getArmaDim();
+			d1 = player->getArmaDim(),
+			y2 = player->getY()+player->getDimY();
 
 	for(list<Palla*>::iterator it = balls.begin(); it != balls.end(); it++)  {
 		bool	b1 = x1 <= (*it)->getX()+(*it)->getDim(),
 				b2 = x1+d1 >= (*it)->getX(),
-				b3 = y1 <= (*it)->getY()+(*it)->getDim();
+				b3 = y1 <= (*it)->getY()+(*it)->getDim(),
+				b4 = y2 > (*it)->getY();
 		
-		if(b1 && b2 && b3)  {
+		if(b1 && b2 && b3 && b4)  {
 			float x = (*it)->getX(), c = (*it)->getCont();
 			explosion.setTipo((*it)->getSize());
 			explosion.setPosX((*it)->getX());
