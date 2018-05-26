@@ -1,5 +1,5 @@
 //to compile (in src folder)
-//g++ *cpp -o main -lallegro -lallegro_main -lallegro_ttf -lallegro_image -lallegro_font  -std=c++11
+//g++ *cpp -o main -lallegro -lallegro_main -lallegro_ttf -lallegro_image -lallegro_font -lallegro_audio -lallegro_acodec  -std=c++11
 
 //capire perchè seg fault sempre
 
