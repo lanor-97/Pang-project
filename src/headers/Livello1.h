@@ -41,6 +41,7 @@ protected:
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
+	Music* musica;
 	Giocatore* player = NULL;
 	GestorePalle* GP = NULL;
 	Transizione transizione;

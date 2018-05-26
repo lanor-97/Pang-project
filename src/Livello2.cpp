@@ -6,7 +6,6 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	SCREEN_H = L1->getSH();
 	GP = new GestorePalle(SCREEN_W, SCREEN_H);
 	player = L1->getPlayer();
-
 	font1=al_load_ttf_font("../fonts/SHREK.TTF",30,0);
 	font2=al_load_ttf_font("../fonts/SHREK.TTF",25,0);
 	vite_bmp = al_load_bitmap("../images/vita.png");
@@ -75,9 +74,10 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
-
+	musica=new Music(2);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
+	musica->Play();
 	al_start_timer(timer);
 	Transition(1);
 	player->setY(PLAYER_ALT_NORM);
@@ -355,7 +355,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
-
+	delete musica;
 	return return_value;
 }
 

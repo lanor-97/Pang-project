@@ -4,13 +4,13 @@ Music::Music(int x){
     tipo=x;
     switch(tipo){
         case 1:
-            song=al_load_sample("audio/allStar.ogg");
+            song=al_load_sample("../audio/allStar.ogg");
             break;
         case 2:
-            song=al_load_sample("audio/megalovania.ogg");
+            song=al_load_sample("../audio/megalovania.ogg");
             break;
         case 3:
-            song=al_load_sample("audio/hopesAndDreams.ogg");
+            song=al_load_sample("../audio/hopesAndDreams.ogg");
             break;
         
     }

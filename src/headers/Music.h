@@ -12,7 +12,7 @@ class Music{
         ALLEGRO_SAMPLE_INSTANCE *instance;
     public:
         Music(): song(NULL), instance(NULL), tipo(0){};
-        ~Music(){al_destroy_sample(song); al_destroy_sample_instance(instance);}
+        ~Music(){al_destroy_sample_instance(instance);  al_destroy_sample(song);}
         Music(int x);
         void Play();
 };

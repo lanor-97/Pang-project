@@ -14,7 +14,6 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 	vite_bmp = al_load_bitmap("../images/vita.png");
 	pausa_play = al_load_bitmap("../images/pausa1.png");
 	pausa_exit = al_load_bitmap("../images/pausa2.png");
-
 	timer = al_create_timer(1.0 / FPS);
 	event_queue = al_create_event_queue();
 	display = display1;
@@ -122,10 +121,12 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
-
+	
+	musica=new Music(1);
 	PowerUp* powerUp = new PowerUp;
 	regolaPalle();
 	al_flush_event_queue(event_queue);
+	musica->Play();
 	al_start_timer(timer);
 	Transition(1);
 
@@ -279,7 +280,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
-
+	delete musica;
 	return return_value;
 }
 
