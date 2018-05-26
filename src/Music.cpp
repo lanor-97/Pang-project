@@ -1,19 +1,17 @@
 #include "headers/Music.h"
 Music::Music(int x){
-    al_reserve_samples(8);
-    al_install_audio();
-    al_init_acodec_addon();
+    al_reserve_samples(2);
     tipo=x;
-    switch(x){
+    switch(tipo){
         case 1:
-        //carico musica 1
-        break;
+            song=al_load_sample("audio/allStar.ogg");
+            break;
         case 2:
-        //carico musica 2
-        break;
+            song=al_load_sample("audio/megalovania.ogg");
+            break;
         case 3:
-        //carico musica 3
-        break;
+            song=al_load_sample("audio/hopesAndDreams.ogg");
+            break;
         
     }
     instance=al_create_sample_instance(song);

@@ -44,7 +44,16 @@ int main(int argc, char **argv)  {
 		cerr <<"failed to install keyboard\n";
 		return -1;
 	}
-
+	if(!al_install_audio()){
+		cerr <<"failed to install audio\n";
+		return -1;
+	}
+    if(!al_init_acodec_addon()){
+		cerr <<"failed to init codec addon\n";
+		return -1;
+	}
+	al_install_audio();
+	al_init_acodec_addon();
 	//CREAZIONE DISPLAY + aggiustamento con transform
 	ALLEGRO_DISPLAY*		display = NULL;
 

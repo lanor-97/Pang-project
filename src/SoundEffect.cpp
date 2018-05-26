@@ -17,11 +17,7 @@ SoundEffect::SoundEffect(){
     }
     */
 }
-void SoundEffect::Init(){
-    al_reserve_samples(2);
-    al_install_audio();
-    al_init_acodec_addon();
-}
+
 void SoundEffect::Play(Effect tipo){
     switch(tipo){
         case 0:

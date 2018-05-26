@@ -14,7 +14,6 @@ class SoundEffect{
         SoundEffect();
         ~SoundEffect(){al_destroy_sample(sound);}
         SoundEffect(Effect tipo);
-        void Init();
         void Play(Effect tipo);
 };
 #endif
