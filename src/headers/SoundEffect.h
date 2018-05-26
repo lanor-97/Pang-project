@@ -5,16 +5,16 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 using namespace std;
-enum Tipo{menu=0,ball,stageClear,bricks,dragon,farquaad,powerUp,victory};
+enum Effect{menu=0,ball,cleared,bricks,dragon,farquaad,powerUp,finish};
 class SoundEffect{
     private:
-        Tipo tipo;
+        Effect tipo;
         ALLEGRO_SAMPLE *sound;
     public:
         SoundEffect();
         ~SoundEffect(){al_destroy_sample(sound);}
-        SoundEffect(Tipo tipo);
+        SoundEffect(Effect tipo);
         void Init();
-        void Play(Tipo tipo);
+        void Play(Effect tipo);
 };
 #endif

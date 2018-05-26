@@ -5,6 +5,8 @@
 #include "GestorePalle.h"
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include "Music.h"
+#include "SoundEffect.h"
 #include "Transizione.h"
 #include "Blocco.h"
 #include "PowerUp.h"

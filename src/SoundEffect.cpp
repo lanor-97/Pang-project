@@ -22,7 +22,7 @@ void SoundEffect::Init(){
     al_install_audio();
     al_init_acodec_addon();
 }
-void SoundEffect::Play(Tipo tipo){
+void SoundEffect::Play(Effect tipo){
     switch(tipo){
         case 0:
         //carico souno 1
