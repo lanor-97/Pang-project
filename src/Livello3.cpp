@@ -36,8 +36,8 @@ Livello3::~Livello3()  {
 }
 
 void Livello3::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W - 100, 250, MED, RED, true);
-	GP2->aggiungiPalla(100, 100, PIC, RED, false);
+	GP->aggiungiPalla(SCREEN_W - 100, 250, MED, BLUE, true);
+	GP2->aggiungiPalla(100, 100, PIC, BLUE, false);
 }
 
 CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
@@ -182,10 +182,10 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				if(ballTimer==0 || (ballTimer==150 && (player->getX()>=farquaad->getX()-30 && 
 				player->getY()==farquaad->getY()) && !caduto && escapeTimer!=0 && !farquaadEscape))  {
 					if(farquaad->getY() > 200)  {
-						GP->aggiungiPalla(farquaad->getX(), farquaad->getY()+30, PIC, RED, false);
+						GP->aggiungiPalla(farquaad->getX(), farquaad->getY()+30, PIC, BLUE, false);
 					}
 					else  {
-						GP2->aggiungiPalla(farquaad->getX(), farquaad->getY()+30, PIC, RED, false);
+						GP2->aggiungiPalla(farquaad->getX(), farquaad->getY()+30, PIC, BLUE, false);
 					}
 					throwBall=true;
 					ballTimer=400;
