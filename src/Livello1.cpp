@@ -8,7 +8,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 	sfondo = al_load_bitmap("../images/sfondo1.jpg");
 	GP = new GestorePalle(SW, SH);
 	powerup = new PowerUp;
-
+	
 	font1=al_load_ttf_font("../fonts/SHREK.TTF",30,0);
 	font2=al_load_ttf_font("../fonts/SHREK.TTF",25,0);
 	vite_bmp = al_load_bitmap("../images/vita.png");
@@ -17,7 +17,6 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 	timer = al_create_timer(1.0 / FPS);
 	event_queue = al_create_event_queue();
 	display = display1;
-
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
@@ -66,7 +65,7 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 	
 	bool play = true, pausa=true, inGame=true;
 	al_flush_event_queue(event_queue);
-	
+	sound->Play("pause");
 	while(pausa)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -86,10 +85,14 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 					inGame=false;
 				}	
 			}
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play)
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play){
+				sound->Play("menu");
 				play = false;
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play) 
+			}	
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play){ 
 				play = true;
+				sound->Play("menu");
+			}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
 		}
@@ -104,7 +107,7 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 
 		al_flip_display();
 	}
-	
+	sound->Play("pause");
 	al_flush_event_queue(event_queue);
 	return inGame;
 }
@@ -121,21 +124,23 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
-	
+
+	sound =new SoundEffect();
 	musica=new Music(1);
+	
 	PowerUp* powerUp = new PowerUp;
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	musica->Play();
 	al_start_timer(timer);
+	sound->Play("swamp");
 	Transition(1);
 
+	
 	//IL GIOCO VERO E PROPRIO
-
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
 			GP->Bouncer();
@@ -146,7 +151,8 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				player->posizionaArma();
 
 			//RAMPINO HA COLPITO PALLA
-			if(hit && !presa)  {	
+			if(hit && !presa)  {
+				sound->Play("ball");	
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -280,6 +286,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
+	delete sound;
 	delete musica;
 	return return_value;
 }

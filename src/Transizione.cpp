@@ -28,7 +28,9 @@ Transizione::Transizione(Tipe tipo)  {
         transition=al_load_bitmap("../images/victory.png");
     else if(tipo==victoryClose)
         transition=al_load_bitmap("../images/victoryClose.png");
-    else
+    else if(tipo==gameOver)
+        transition=al_load_bitmap("../images/gameOver.png");
+    else    
         transition=NULL;
 }
 
@@ -71,7 +73,9 @@ void Transizione::setTipo(int t)  {
             tipo=victoryClose;
             transition=al_load_bitmap("../images/victoryClose.png");
         break;
-
+        case 6:
+            tipo=gameOver;
+            transition=al_load_bitmap("../images/gameOver.png");
         default:
             transition = NULL;
     }
@@ -82,7 +86,7 @@ bool Transizione::Draw()  {
         if(animazione.eseguiFrame(transition,dimX,dimY,0,0,false,15))
             return true;   
     }
-    else if(tipo==stageClear || tipo==victory)  {
+    else if(tipo==stageClear || tipo==victory || tipo==gameOver)  {
         if(animazione.eseguiFrame(transition,dimX,dimY,0,0,false,10))
             return true;
     }

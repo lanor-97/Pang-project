@@ -4,7 +4,7 @@
 #include <iostream>
 using namespace std;
 
-enum Tipe {menuClose=0, levelStart, stageClear, stageClearClose, victory, victoryClose};
+enum Tipe {menuClose=0, levelStart, stageClear, stageClearClose, victory, victoryClose, gameOver};
 class Transizione  {
 private:
     int dimX,

@@ -14,7 +14,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	display = L1->getDisplay();
 	pausa_play = al_load_bitmap("../images/pausa1.png");
 	pausa_exit = al_load_bitmap("../images/pausa2.png");
-
+	
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -71,17 +71,19 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	CASO 	return_value = EXIT;
 	bool 	next[4] = { false };
 
+	sound=new SoundEffect();
+	musica=new Music(2);
 	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
-	musica=new Music(2);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	musica->Play();
 	al_start_timer(timer);
+	sound->Play("showtime");
 	Transition(1);
 	player->setY(PLAYER_ALT_NORM);
-
+	
 	//IL GIOCO VERO E PROPRIO
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
@@ -356,6 +358,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	delete musica;
+	delete sound;
 	return return_value;
 }
 

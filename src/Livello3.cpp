@@ -54,17 +54,19 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900;
 	CASO 	return_value = EXIT;
-	
+
+	sound=new SoundEffect();
 	musica=new Music(3);
+
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	musica->Play();
 	al_start_timer(timer);
+	sound->Play("getReady");
 	Transition(1);
 	player->setY(PLAYER_ALT_NORM);
 
 	//IL GIOCO VERO E PROPRIO
-
 	while(!MatchOver) {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -302,6 +304,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	GP->Clear();
 	GP2->Clear();
 	delete musica;
+	delete sound;
 	return return_value;
 }
 	
