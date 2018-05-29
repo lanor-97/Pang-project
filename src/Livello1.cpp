@@ -124,7 +124,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
-
+	
 	sound =new SoundEffect();
 	musica=new Music(1);
 	
@@ -187,6 +187,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
+				sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
@@ -265,6 +266,8 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//CONTROLLO VITTORIA
 			if(GP->Empty())  {
+				sound->Play("excellent");
+				sound->Play("applause");
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {

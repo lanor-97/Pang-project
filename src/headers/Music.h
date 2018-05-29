@@ -14,6 +14,7 @@ class Music{
         Music(): song(NULL), instance(NULL), tipo(0){};
         ~Music(){al_destroy_sample_instance(instance);  al_destroy_sample(song);}
         Music(int x);
+        void Stop(){al_stop_sample_instance(instance);}
         void Play();
 };
 #endif

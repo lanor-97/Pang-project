@@ -23,6 +23,10 @@ class SoundEffect{
         ALLEGRO_SAMPLE *powerUp2;
         ALLEGRO_SAMPLE *showtime;
         ALLEGRO_SAMPLE *swamp;
+        ALLEGRO_SAMPLE *brick;
+        ALLEGRO_SAMPLE *gameOver;
+        ALLEGRO_SAMPLE *gameOverMusic;
+        ALLEGRO_SAMPLE *levelCleared;
     public:
         SoundEffect();
         ~SoundEffect();

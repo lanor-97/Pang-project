@@ -52,8 +52,11 @@ int main(int argc, char **argv)  {
 		cerr <<"failed to init codec addon\n";
 		return -1;
 	}
-	al_install_audio();
-	al_init_acodec_addon();
+	
+	if(!al_reserve_samples(100)){
+		cerr<<"failed to reserve samples\n";
+		return -1;
+	}
 	//CREAZIONE DISPLAY + aggiustamento con transform
 	ALLEGRO_DISPLAY*		display = NULL;
 

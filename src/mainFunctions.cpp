@@ -19,7 +19,6 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 	al_draw_bitmap(menu_play, 0, 0, 0);
 	al_flip_display();
 	
-    al_reserve_samples(2);
 	SoundEffect* sound=new SoundEffect();
 	Music* musica=new Music(1);
 
