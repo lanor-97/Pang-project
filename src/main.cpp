@@ -43,7 +43,7 @@ int main(int argc, char **argv)  {
 	if(!al_install_keyboard())  {
 		cerr <<"failed to install keyboard\n";
 		return -1;
-	}
+	}/*
 	if(!al_install_audio()){
 		cerr <<"failed to install audio\n";
 		return -1;
@@ -57,6 +57,7 @@ int main(int argc, char **argv)  {
 		cerr<<"failed to reserve samples\n";
 		return -1;
 	}
+	*/
 	//CREAZIONE DISPLAY + aggiustamento con transform
 	ALLEGRO_DISPLAY*		display = NULL;
 

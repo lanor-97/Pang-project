@@ -5,8 +5,6 @@
 #include "GestorePalle.h"
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
-#include "Music.h"
-#include "SoundEffect.h"
 #include "Transizione.h"
 #include "Blocco.h"
 #include "PowerUp.h"
@@ -41,14 +39,14 @@ protected:
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
-	SoundEffect* sound;
-	Music* musica;
+	//SoundEffect* sound=NULL;
+	//Music* musica=NULL;
 	Giocatore* player = NULL;
 	GestorePalle* GP = NULL;
 	Transizione transizione;
 	float SCREEN_W, SCREEN_H;
 	bool shoot, caduto, drawShoot, drawExplosion, MatchOver;
-	PowerUp* powerup;
+	PowerUp* powerup=NULL;
 };
 
 

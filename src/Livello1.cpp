@@ -58,14 +58,21 @@ Livello1::~Livello1()  {
 	}
 	if(powerup)  {
 		delete powerup;
+	}/*
+	if(musica)  {
+		delete musica;
 	}
+	if(sound)  {
+		delete sound;
+	}
+	*/
 }
 
 bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 	
 	bool play = true, pausa=true, inGame=true;
 	al_flush_event_queue(event_queue);
-	sound->Play("pause");
+	//sound->Play("pause");
 	while(pausa)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -86,12 +93,12 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 				}	
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN && play){
-				sound->Play("menu");
+				//sound->Play("menu");
 				play = false;
 			}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_UP && !play){ 
 				play = true;
-				sound->Play("menu");
+				//sound->Play("menu");
 			}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
@@ -107,7 +114,7 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 
 		al_flip_display();
 	}
-	sound->Play("pause");
+	//sound->Play("pause");
 	al_flush_event_queue(event_queue);
 	return inGame;
 }
@@ -125,15 +132,14 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	int 	tempo=9000, H_arma=0;
 	CASO 	return_value = EXIT;
 	
-	sound =new SoundEffect();
-	musica=new Music(1);
-	
-	PowerUp* powerUp = new PowerUp;
+	//sound =new SoundEffect();
+	//musica=new Music(1);
+
 	regolaPalle();
 	al_flush_event_queue(event_queue);
-	musica->Play();
+	//musica->Play();
 	al_start_timer(timer);
-	sound->Play("swamp");
+	//sound->Play("swamp");
 	Transition(1);
 
 	
@@ -152,7 +158,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//RAMPINO HA COLPITO PALLA
 			if(hit && !presa)  {
-				sound->Play("ball");	
+				//sound->Play("ball");	
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -187,7 +193,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
-				sound->Play("hit");
+				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
@@ -266,8 +272,8 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//CONTROLLO VITTORIA
 			if(GP->Empty())  {
-				sound->Play("excellent");
-				sound->Play("applause");
+				//sound->Play("excellent");
+				//sound->Play("applause");
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -289,8 +295,8 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
-	delete sound;
-	delete musica;
+	//delete sound;
+	//delete musica;
 	return return_value;
 }
 

@@ -71,17 +71,17 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	CASO 	return_value = EXIT;
 	bool 	next[4] = { false };
 	
-	sound=new SoundEffect();
-	musica=new Music(2);
-	al_reserve_samples(100);
+	//sound=new SoundEffect();
+	//musica=new Music(2);
+	//al_reserve_samples(100);
 	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
-	musica->Play();
+	//musica->Play();
 	al_start_timer(timer);
-	sound->Play("showtime");
+	//sound->Play("showtime");
 	Transition(1);
 	player->setY(PLAYER_ALT_NORM);
 	
@@ -105,7 +105,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//RAMPINO HA COLPITO PALLA
 			if(hit && !presa)  {
-				sound->Play("ball");	
+				//sound->Play("ball");	
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
@@ -150,7 +150,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			//IF PALLA COLPISCE PLAYER
 			bool p_hit = GP->playerHit(player);
 			if(p_hit && !colpito && !caduto)  {
-				sound->Play("hit");
+				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
@@ -161,7 +161,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			
 			if(!dragonArrive){
 				if(p_hitFire && !colpito && !caduto)  {
-					sound->Play("hit");
+					//sound->Play("hit");
 					return_value = VITAPERSA;
 					caduto=true;
 					colpito=true;
@@ -200,19 +200,19 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			if(blocco1)
 				if(blocco1->hitByHook(player))  {
-					sound->Play("brick");
+					//sound->Play("brick");
 					hook_colp = true;
 					blocco1->setExploded(true);
 				}
 			if(blocco2)
 				if(blocco2->hitByHook(player))  {
-					sound->Play("brick");
+					//sound->Play("brick");
 					hook_colp = true;
 					blocco2->setExploded(true);	
 				}
 			if(blocco3)
 				if(blocco3->hitByHook(player))  {
-					sound->Play("brick");
+					//sound->Play("brick");
 					hook_colp = true;
 					blocco3->setExploded(true);	
 				}
@@ -232,7 +232,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			}
 			if(!dragonArrive){
 				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
-					sound->Play("dragon1");
+					//sound->Play("dragon1");
 					spitting=true;
 					fireCount=300;
 				}	
@@ -322,7 +322,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(tempo/60<=145)  {
 				if(!dragonSound)
 					{
-						sound->Play("dragonloop");
+						//sound->Play("dragonloop");
 						dragonSound=true;
 					}	
 				if(drago->getX()<=530)  {
@@ -339,8 +339,8 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//CONTROLLO VITTORIA
 			if(GP->Empty())  {
-				sound->Play("excellent");
-				sound->Play("applause");
+				//sound->Play("excellent");
+				//sound->Play("applause");
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -372,8 +372,8 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
-	delete musica;
-	delete sound;
+	//delete musica;
+	//delete sound;
 	return return_value;
 }
 

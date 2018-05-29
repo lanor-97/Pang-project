@@ -11,6 +11,7 @@ enum powerUpTipo  { BOLLA = 0, ALTRO };
 class PowerUp  {
 public:
     PowerUp()  { srand(time(0)); }
+    ~PowerUp()  { if(bitmap) al_destroy_bitmap(bitmap); }
     int getX() const  { return posX; }
     int getY() const  { return posY; }
     int getDimX() const  { return dimX; }

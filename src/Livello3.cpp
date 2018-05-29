@@ -56,14 +56,14 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	CASO 	return_value = EXIT;
 
 	
-	sound=new SoundEffect();
-	musica=new Music(3);
-	al_reserve_samples(100);
+	//sound=new SoundEffect();
+	//musica=new Music(3);
+	//al_reserve_samples(100);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
-	musica->Play();
+	//musica->Play();
 	al_start_timer(timer);
-	sound->Play("getReady");
+	//sound->Play("getReady");
 	Transition(1);
 	player->setY(PLAYER_ALT_NORM);
 
@@ -97,7 +97,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//RAMPINO HA COLPITO PALLA
 			if((hit || hit2) && !presa)  {
-				sound->Play("ball");	
+				//sound->Play("ball");	
 				punteggio+=200;
 				presa=true;
 				if(hit)
@@ -159,7 +159,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			bool p_hit = GP->playerHit(player) || GP2->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
-				sound->Play("hit");
+				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
 				colpito=true;
@@ -186,7 +186,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(!farquaadArrive)  {
 				if(ballTimer==0 || (ballTimer==150 && (player->getX()>=farquaad->getX()-30 && 
 				player->getY()==farquaad->getY()) && !caduto && escapeTimer!=0 && !farquaadEscape))  {
-					sound->Play("hitlair");
+					//sound->Play("hitlair");
 					if(farquaad->getY() > 200)  {
 						GP->aggiungiPalla(farquaad->getX(), farquaad->getY()+30, PIC, BLUE, false);
 					}
@@ -273,7 +273,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 					throwBall=false;
 				}
 				if(farquaadEscape && farquaad->getX()==640)  {
-					sound->Play("farquaad");
+					//sound->Play("farquaad");
 					farquaadEscape=false;
 					farquaadArrive=true;
 					if(farquaad->getY()==PLAYER_ALT_NORM-5)
@@ -287,11 +287,11 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			redraw = false;
 
 			//CONTROLLO VITTORIA
-			if(GP->Empty() && GP2->Empty())  {
+			if(GP->Empty() && GP2->Empty())  {/*
 				musica->Stop();
 				sound->Play("excellent");
 				sound->Play("applause");
-				sound->Play("levelCleared");
+				sound->Play("levelCleared");*/
 				Transition(2);
 				al_flush_event_queue(event_queue);
 				while(true)  {
@@ -313,8 +313,8 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	GP2->Clear();
-	delete musica;
-	delete sound;
+	//delete musica;
+	//delete sound;
 	return return_value;
 }
 	
