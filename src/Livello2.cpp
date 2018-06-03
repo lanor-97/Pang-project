@@ -14,6 +14,7 @@ Livello2::Livello2(Livello1* L1, const int FPS)  {
 	display = L1->getDisplay();
 	pausa_play = al_load_bitmap("../images/pausa1.png");
 	pausa_exit = al_load_bitmap("../images/pausa2.png");
+	powerup = new PowerUp;
 	
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
@@ -68,6 +69,8 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	MatchOver=false; drawExplosion=false;
 
 	int 	tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
+	int 	spawnY, terrain = PLAYER_ALT_NORM+player->getDimY(),
+			platform = PLAYER_ALT_PIAT+player->getDimY();
 	CASO 	return_value = EXIT;
 	bool 	next[4] = { false };
 	
@@ -99,7 +102,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			GP->bouncerPiattaforma(piat2);
 			GP->Bouncer();
 			if(shoot)
-				hit = GP->hitByHook(player);
+				hit = GP->hitByHook(player, spawnY);
 			else
 				player->posizionaArma();	
 
@@ -109,6 +112,21 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
+				if(powerup->canSpawn())  {
+					powerup->Spawn(player->getArmaX(), spawnY);
+				}
+			}
+
+			if(powerup->Spawned())  {
+				if(piat1->powerUpHere(powerup) || piat2->powerUpHere(powerup))  {
+					if(powerup->notArrivedTerrain(platform))
+						powerup->Fall();
+				}
+				else if(powerup->notArrivedTerrain(terrain))
+					powerup->Fall();
+
+				if(powerup->Spawned())
+					powerup->playerTookIt(player);
 			}
 
 			if(!hit)
@@ -372,6 +390,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
+	powerup->Destroy();
 	//delete musica;
 	//delete sound;
 	return return_value;
@@ -421,6 +440,9 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 
 	if(shoot)
 		player->ArmaDraw(H_arma);
+
+	if(powerup->Spawned())
+		powerup->Draw();
 
 	if(!player->Draw())  {
 		if(caduto)  {

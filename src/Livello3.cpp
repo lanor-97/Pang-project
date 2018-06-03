@@ -15,6 +15,7 @@ Livello3::Livello3(Livello1* L1, const int FPS)  {
 	display = L1->getDisplay();
 	pausa_play = al_load_bitmap("../images/pausa1.png");
 	pausa_exit = al_load_bitmap("../images/pausa2.png");
+	powerup = new PowerUp;
 
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue,al_get_keyboard_event_source());
@@ -52,7 +53,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false; drawExplosion2=false;
 
-	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900;
+	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900, spawnY;
 	CASO 	return_value = EXIT;
 
 	
@@ -88,8 +89,8 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			GP2->Bouncer();
 
 			if(shoot)  {
-				hit = GP->hitByHook(player);
-				hit2 = GP2->hitByHook(player);
+				hit = GP->hitByHook(player, spawnY);
+				hit2 = GP2->hitByHook(player, spawnY);
 			}
 			else  {
 				player->posizionaArma();
@@ -104,10 +105,20 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 					drawExplosion = true;
 				else if(hit2)
 					drawExplosion2 = true;
+				
+				if(powerup->canSpawn())  {
+					powerup->Spawn(player->getArmaX(), spawnY);
+				}
 			}
 			else if(!hit)  {
 				presa=false;
 			}
+
+			if(powerup->Spawned() && powerup->notArrivedTerrain(player->getY()+player->getDimY()))
+				powerup->Fall();
+			
+			if(powerup->Spawned())
+				powerup->playerTookIt(player);
 
 			climbing = player->getY() != PLAYER_ALT_NORM && player->getY() != PLAYER_ALT_PIAT;
 
@@ -313,6 +324,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	GP2->Clear();
+	powerup->Destroy();
 	//delete musica;
 	//delete sound;
 	return return_value;
@@ -340,6 +352,10 @@ void Livello3::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	piat->Draw();
 	scala1->Draw();
 	scala2->Draw();
+
+	if(powerup->Spawned())
+		powerup->Draw();
+		
 	if(!player->Draw())  {
 		if(caduto)  {
 			caduto=false;

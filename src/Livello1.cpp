@@ -129,7 +129,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	tempo=9000, H_arma=0;
+	int 	tempo=9000, H_arma=0, spawnY;
 	CASO 	return_value = EXIT;
 	
 	//sound =new SoundEffect();
@@ -152,7 +152,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 			GP->Bouncer();
 
 			if(shoot)
-				hit = GP->hitByHook(player);
+				hit = GP->hitByHook(player, spawnY);
 			else
 				player->posizionaArma();
 
@@ -162,12 +162,19 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				punteggio+=200;
 				presa=true;
 				drawExplosion=true;
+				if(powerup->canSpawn())  {
+					powerup->Spawn(player->getArmaX(), spawnY);
+				}
 			}
 
+			if(powerup->Spawned() && powerup->notArrivedTerrain(player->getY()+player->getDimY()))
+				powerup->Fall();
+			
+			if(powerup->Spawned())
+				powerup->playerTookIt(player);
+			
 			if(!hit)
 				presa=false;
-
-			powerup->Spawn(200, player->getY());
 
 			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
 			if(keyRight && !caduto && !drawShoot)  {
@@ -295,6 +302,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
+	powerup->Destroy();
 	//delete sound;
 	//delete musica;
 	return return_value;
@@ -355,7 +363,8 @@ void Livello1::Draw(int vite, int tempo, int punteggio, int H_arma)  {
 	if(shoot)
 		player->ArmaDraw(H_arma);
 
-	powerup->Draw();
+	if(powerup->Spawned())
+		powerup->Draw();
 
 	if(!player->Draw())  {
 		if(caduto)  {

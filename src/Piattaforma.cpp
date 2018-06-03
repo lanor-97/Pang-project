@@ -42,3 +42,17 @@ bool Piattaforma::hitByHook(Giocatore* player)  {
 	if(y > posY+dimY)	return false;
 	return true;
 }
+
+bool Piattaforma::powerUpHere(PowerUp* powerup)  {
+	int powerX = powerup->getX(),
+		powerDimX = powerup->getDimX(),
+		powerY = powerup->getY(),
+		powerDimY = powerup->getDimY();
+
+	bool 	b1 = powerX+powerDimX > posX,
+			b2 = powerX < posX+dimX,
+			b3 = powerY+powerDimY > posY,
+			b4 = powerY < posY+dimY;
+	
+	return !b1 || !b2 || !b3 || !b4;
+}

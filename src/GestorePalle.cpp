@@ -36,7 +36,7 @@ void GestorePalle::Bouncer()  {
 	clearProcess();
 }
 	
-bool GestorePalle::hitByHook(Giocatore* player)  {
+bool GestorePalle::hitByHook(Giocatore* player, int& powerY)  {
 	float 	x1 = player->getArmaX(), 
 			y1 = player->getArmaY(),
 			d1 = player->getArmaDim(),
@@ -50,6 +50,7 @@ bool GestorePalle::hitByHook(Giocatore* player)  {
 		
 		if(b1 && b2 && b3 && b4)  {
 			float x = (*it)->getX(), c = (*it)->getCont();
+			powerY = (*it)->getY();
 			explosion.setTipo((*it)->getSize());
 			explosion.setPosX((*it)->getX());
 			explosion.setPosY((*it)->getY());

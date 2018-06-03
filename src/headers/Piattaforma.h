@@ -1,6 +1,7 @@
 #ifndef PIATTAFORMA_H
 #define PIATTAFORMA_H
 #include "Giocatore.h"
+#include "PowerUp.h"
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_image.h"
 
@@ -26,6 +27,7 @@ public:
 	void Draw()  { al_draw_bitmap(bitmap,posX,posY,0); }
 	
 	bool playerHere(Giocatore*);
+	bool powerUpHere(PowerUp*);
 	bool hitByHook(Giocatore*);
 };
 
