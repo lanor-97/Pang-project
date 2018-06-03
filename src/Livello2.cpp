@@ -63,14 +63,15 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			bitmap_ = true, fullscreen=false, climbing=false, trans=true, 
 			keyUp = false, keyDown = false, onlyLeftRight=false, hit=false,
 			dragonArrive=true, spitting=false, fire=false, colpitoFuoco=false,
-			hook_colp=false, keyUpDown=false, dragonSound=false;
+			hook_colp=false, keyUpDown=false, dragonSound=false,p_hit=false,
+			p_hitFire = false;
 
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
 	int 	tempo=9000, H_arma=0, fireCount=300; //fireCount timer per spitFire 300=5 sec
 	int 	spawnY, terrain = PLAYER_ALT_NORM+player->getDimY(),
-			platform = PLAYER_ALT_PIAT+player->getDimY();
+			platform = PLAYER_ALT_PIAT+player->getDimY(), timeEffect = 0;
 	CASO 	return_value = EXIT;
 	bool 	next[4] = { false };
 	
@@ -95,12 +96,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
-			if(blocco1)	GP->bouncerBlocco(blocco1);
-			if(blocco2)	GP->bouncerBlocco(blocco2);
-			if(blocco3) GP->bouncerBlocco(blocco3);
-			GP->bouncerPiattaforma(piat1);
-			GP->bouncerPiattaforma(piat2);
-			GP->Bouncer();
+	
 			if(shoot)
 				hit = GP->hitByHook(player, spawnY);
 			else
@@ -125,8 +121,22 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				else if(powerup->notArrivedTerrain(terrain))
 					powerup->Fall();
 
-				if(powerup->Spawned())
-					powerup->playerTookIt(player);
+				if(powerup->playerTookIt(player) == 1)
+					timeEffect = 300;
+			}
+
+			if(timeEffect <= 0)  {
+				if(blocco1)	GP->bouncerBlocco(blocco1);
+				if(blocco2)	GP->bouncerBlocco(blocco2);
+				if(blocco3) GP->bouncerBlocco(blocco3);
+				GP->bouncerPiattaforma(piat1);
+				GP->bouncerPiattaforma(piat2);
+				GP->Bouncer();
+
+				//IF PALLA COLPISCE PLAYER
+				p_hit = GP->playerHit(player);
+				//IF FUOCO COLPISCE PLAYER
+				p_hitFire=drago->hitFire(player);
 			}
 
 			if(!hit)
@@ -164,9 +174,6 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				keySpace=false;
 			}
 
-
-			//IF PALLA COLPISCE PLAYER
-			bool p_hit = GP->playerHit(player);
 			if(p_hit && !colpito && !caduto)  {
 				//sound->Play("hit");
 				return_value = VITAPERSA;
@@ -174,9 +181,6 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				colpito=true;
 			}
 
-			//IF FUOCO COLPISCE PLAYER
-			bool p_hitFire=drago->hitFire(player);
-			
 			if(!dragonArrive){
 				if(p_hitFire && !colpito && !caduto)  {
 					//sound->Play("hit");
@@ -248,7 +252,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				return_value = LIVELLOSUP;
 				break;
 			}
-			if(!dragonArrive){
+			if(!dragonArrive && timeEffect <= 0){
 				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
 					//sound->Play("dragon1");
 					spitting=true;
@@ -303,16 +307,14 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=true;
 
-			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				{
-					keyUp = true;
-					keyUpDown=true;
-				}	
-			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)
-				{
-					keyDown = true;
-					keyUpDown=true;
-				}	
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP){
+				keyUp = true;
+				keyUpDown=true;
+			}	
+			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)  {
+				keyDown = true;
+				keyUpDown=true;
+			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
 		}
@@ -322,11 +324,10 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT)
 				keyLeft=false;
 
-			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)
-				{
-					keyUp = false;
-					keyUpDown=false;
-				}	
+			if(ev.keyboard.keycode==ALLEGRO_KEY_UP)  {
+				keyUp = false;
+				keyUpDown=false;
+			}	
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_DOWN)  {
 					keyDown = false;
 					keyUpDown= false;
@@ -335,14 +336,16 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto, climbing,keyUpDown);
-			Draw(vite, punteggio, tempo, H_arma, colpito, fire);
-			//DA VEDERE DOPO
+			Draw(vite, punteggio, tempo, H_arma);
+
+			if(!drago->DrawFire(colpito,fire, timeEffect > 0))
+				fire=false;
+
 			if(tempo/60<=145)  {
-				if(!dragonSound)
-					{
-						//sound->Play("dragonloop");
-						dragonSound=true;
-					}	
+				if(!dragonSound)  {
+					//sound->Play("dragonloop");
+					dragonSound=true;
+				}	
 				if(drago->getX()<=530)  {
 					dragonArrive=false;
 				}
@@ -352,7 +355,11 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			}	
 
 			al_flip_display();
-			tempo--;
+			if(timeEffect > 0)
+				timeEffect--;
+			else
+				tempo--;
+
 			redraw = false;
 
 			//CONTROLLO VITTORIA
@@ -396,7 +403,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	return return_value;
 }
 
-void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito, bool &fire)  {
+void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma)  {
 	al_draw_bitmap(sfondo,0,0,0);
 			
 	if(vite>=1)
@@ -434,9 +441,6 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma, bool colpito
 	piat2->Draw();
 	scala1->Draw();
 	scala2->Draw();
-
-	if(!drago->DrawFire(colpito,fire))
-		fire=false;
 
 	if(shoot)
 		player->ArmaDraw(H_arma);

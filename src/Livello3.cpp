@@ -44,7 +44,7 @@ void Livello3::regolaPalle()  {
 CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
 	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, hook_colp=false,
-			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
+			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, p_hit=false,
 			bitmap_ = true, fullscreen=false, trans=true, hit=false, hit2=false,
 			climbing = false, keyUp= false, keyDown=false, keyUpDown=false,
 			throwBall=false, farquaadArrive=true, farquaadEscape=false, GPturn=true;
@@ -53,7 +53,8 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false; drawExplosion2=false;
 
-	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900, spawnY;
+	int 	tempo=9000, H_arma=0, ballTimer=400, escapeTimer=900,
+			spawnY, timeEffect=0;
 	CASO 	return_value = EXIT;
 
 	
@@ -76,17 +77,6 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
 			hit2 = false;
-			if(GPturn)
-				GP->bouncerPiattaforma(piat);
-			GP2->bouncerPiattaforma(piat);
-			if(GPturn)  {
-				GP->Bouncer();
-				GPturn = false;
-			}
-			else  {
-				GPturn = true;
-			}
-			GP2->Bouncer();
 
 			if(shoot)  {
 				hit = GP->hitByHook(player, spawnY);
@@ -94,6 +84,22 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			}
 			else  {
 				player->posizionaArma();
+			}
+			if(timeEffect <= 0)  {
+				if(GPturn)
+					GP->bouncerPiattaforma(piat);
+				GP2->bouncerPiattaforma(piat);
+				if(GPturn)  {
+					GP->Bouncer();
+					GPturn = false;
+				}
+				else  {
+					GPturn = true;
+				}
+				GP2->Bouncer();
+
+				//IF PALLA COLPISCE GIOCATORE
+				p_hit = GP->playerHit(player) || GP2->playerHit(player);
 			}
 
 			//RAMPINO HA COLPITO PALLA
@@ -114,11 +120,13 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				presa=false;
 			}
 
-			if(powerup->Spawned() && powerup->notArrivedTerrain(player->getY()+player->getDimY()))
-				powerup->Fall();
-			
-			if(powerup->Spawned())
-				powerup->playerTookIt(player);
+			if(powerup->Spawned())  {
+				if(powerup->notArrivedTerrain(player->getY()+player->getDimY()))
+					powerup->Fall();
+
+				if(powerup->playerTookIt(player) == 1)
+					timeEffect = 300;
+			}				
 
 			climbing = player->getY() != PLAYER_ALT_NORM && player->getY() != PLAYER_ALT_PIAT;
 
@@ -166,9 +174,6 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
-			//IF PALLA COLPISCE GIOCATORE
-			bool p_hit = GP->playerHit(player) || GP2->playerHit(player);
-
 			if(p_hit && !colpito && !caduto)  {
 				//sound->Play("hit");
 				return_value = VITAPERSA;
@@ -194,7 +199,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				shoot=false;
 			}
 			
-			if(!farquaadArrive)  {
+			if(!farquaadArrive && timeEffect <= 0)  {
 				if(ballTimer==0 || (ballTimer==150 && (player->getX()>=farquaad->getX()-30 && 
 				player->getY()==farquaad->getY()) && !caduto && escapeTimer!=0 && !farquaadEscape))  {
 					//sound->Play("hitlair");
@@ -294,7 +299,11 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				}	
 			}	
 			al_flip_display();
-			tempo--;
+			if(timeEffect > 0)
+				timeEffect--;
+			else
+				tempo--;
+
 			redraw = false;
 
 			//CONTROLLO VITTORIA

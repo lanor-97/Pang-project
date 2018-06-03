@@ -61,14 +61,16 @@ bool Drago::Draw(bool arrive,bool spitFire)  {
     return true;
 }
 
-bool Drago::DrawFire(bool colpitoFuoco, bool fire)  {
+bool Drago::DrawFire(bool colpitoFuoco, bool fire, bool time)  {
     if(fire && !colpitoFuoco)  {
-        if(posFuocoX>=-20)
-            posFuocoX-=4;
-        else  {
-            posFuocoX=posX+dimX/4;  
-            return false;
-        }    
+        if(!time)  {
+            if(posFuocoX>=-20)
+                posFuocoX-=4;
+            else  {
+                posFuocoX=posX+dimX/4;  
+                return false;
+            }
+        }
         al_draw_bitmap(fuoco,posFuocoX,posFuocoY,0);     
     }
     else if(colpitoFuoco)  {

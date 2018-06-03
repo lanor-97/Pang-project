@@ -49,10 +49,9 @@ bool Piattaforma::powerUpHere(PowerUp* powerup)  {
 		powerY = powerup->getY(),
 		powerDimY = powerup->getDimY();
 
-	bool 	b1 = powerX+powerDimX > posX,
-			b2 = powerX < posX+dimX,
-			b3 = powerY+powerDimY > posY,
-			b4 = powerY < posY+dimY;
+	bool 	b1 = powerX > posX + dimX,
+			b2 = powerX + powerDimX < posX,
+			b3 = powerY + powerDimY < posY;
 	
-	return !b1 || !b2 || !b3 || !b4;
+	return !b1 && !b2 && b3;
 }

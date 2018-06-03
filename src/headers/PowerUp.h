@@ -23,7 +23,7 @@ public:
     bool Spawned()  const  { return spawned; }
     void Fall()  { posY += 3; }
     bool notArrivedTerrain(int y)  { return posY+dimY <= y; }
-    void playerTookIt(Giocatore*);
+    int playerTookIt(Giocatore*);
     bool canSpawn()  { int x = rand()%100; return !spawned && x < 50; }
     void Spawn(int, int);
     void Draw()  { if(bitmap) al_draw_bitmap(bitmap, posX, posY, 0); }

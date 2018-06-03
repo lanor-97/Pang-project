@@ -43,7 +43,7 @@ public:
    	void setFrames(int f) {frames=f;}
 
     bool Draw(bool,bool);
-    bool DrawFire(bool,bool);
+    bool DrawFire(bool,bool,bool);
 
     bool hitFire(Giocatore*);
     

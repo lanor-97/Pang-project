@@ -121,7 +121,7 @@ bool Livello1::Pausa(bool& fullscreen, float res_info[])  {
 
 CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	//DICHIARAZIONE ALTRE VARIABILI 
-	bool 	colpito=false, sfondo2=false, presa=false, redraw = true, 
+	bool 	colpito=false, p_hit=false, sfondo2=false, presa=false, redraw = true, 
 			keyRight=false, keyLeft=false, keySpace=false, toLeft=false, 
 			bitmap_ = true, fullscreen=false, trans=true, hit=false,
 			next[4] = {false};
@@ -129,7 +129,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	drawShoot=false; caduto=false; shoot=false; 
 	MatchOver=false; drawExplosion=false;
 
-	int 	tempo=9000, H_arma=0, spawnY;
+	int 	tempo=9000, H_arma=0, spawnY, timeEffect = 0;
 	CASO 	return_value = EXIT;
 	
 	//sound =new SoundEffect();
@@ -149,7 +149,6 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 		al_wait_for_event(event_queue, &ev);
 		if(ev.type == ALLEGRO_EVENT_TIMER)  {
 			hit = false;
-			GP->Bouncer();
 
 			if(shoot)
 				hit = GP->hitByHook(player, spawnY);
@@ -170,8 +169,17 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(powerup->Spawned() && powerup->notArrivedTerrain(player->getY()+player->getDimY()))
 				powerup->Fall();
 			
-			if(powerup->Spawned())
-				powerup->playerTookIt(player);
+			if(powerup->Spawned())  {
+				if(powerup->playerTookIt(player) == 1)
+					timeEffect = 300;
+			}
+
+			if(timeEffect <= 0)  {
+				GP->Bouncer();
+				
+				//IF PALLA COLPISCE GIOCATORE
+				p_hit = GP->playerHit(player);
+			}
 			
 			if(!hit)
 				presa=false;
@@ -195,9 +203,6 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				shoot=true;
 				keySpace=false;
 			}
-
-			//IF PALLA COLPISCE GIOCATORE
-			bool p_hit = GP->playerHit(player);
 
 			if(p_hit && !colpito && !caduto)  {
 				//sound->Play("hit");
@@ -273,7 +278,10 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 		if(redraw && al_is_event_queue_empty(event_queue)) {
 			player->setDraw(keyLeft,keyRight,drawShoot,toLeft, caduto,false, false);
 			Draw(vite, tempo, punteggio, H_arma);
-			tempo--;
+			if(timeEffect > 0)
+				timeEffect--;
+			else
+				tempo--;
 
 			redraw = false;
 

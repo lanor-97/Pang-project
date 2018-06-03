@@ -105,8 +105,17 @@ int main(int argc, char **argv)  {
 				   current_level = L2;
 				   livello++;
 				}
-				else if(livello == 2)
+				else if(livello == 2)  {
 					current_level = L3;
+					livello++;
+				}
+				else if(livello == 3)  {
+					current_level = L1;
+					livello = 1;
+					punteggio = 0;
+					vite = 3;
+					break;
+				}
 	   		}
 	   		else if(c == MENU)
 	   			break;
@@ -130,6 +139,5 @@ int main(int argc, char **argv)  {
    	if(display)  {
    		al_destroy_display(display);
    	}
-   	cerr << "\n";
   	return 0;
 }

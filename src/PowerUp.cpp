@@ -19,7 +19,7 @@ void PowerUp::Spawn(int x, int y)  {
     spawned = true;
 }
 
-void PowerUp::playerTookIt(Giocatore* player)  {
+int PowerUp::playerTookIt(Giocatore* player)  {
     int playerX = player->getX(),
         playerY = player->getY(),
         playerDimX = player->getDimX(),
@@ -32,5 +32,10 @@ void PowerUp::playerTookIt(Giocatore* player)  {
     
     if(!b1 && !b2 && !b3 && !b4)  {
         spawned = false;
+        if(tipo == BOLLA)
+            return 0;
+        else
+            return 1;
     }
+    return -1;
 }

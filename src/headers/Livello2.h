@@ -13,7 +13,7 @@ public:
 	virtual ~Livello2();
 	virtual void regolaPalle();
 	virtual CASO Esegui(int, int&, float[]);
-	virtual void Draw(int, int, int, int, bool, bool&);
+	virtual void Draw(int, int, int, int);
 
 protected:
 	Scala *scala1=NULL, *scala2=NULL;
