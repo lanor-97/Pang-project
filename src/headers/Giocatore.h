@@ -10,15 +10,18 @@ private:
             dimY,
 			posX,
 			posY,
-            frames;
+            frames,
+			immuneTime = 0;
     bool    left, 
             right,
             drawShoot, 
             toLeft, 
             caduto, 
             climbing,
-            keyUpDown;    //per la funzione draw
+            keyUpDown,  //per la funzione draw
+			bubble;
   	ALLEGRO_BITMAP *bitmap;
+	ALLEGRO_BITMAP *bubble_bitmap;
     Animation animazione;
    	Arma* arma;
 
@@ -38,6 +41,7 @@ public:
   	void setY(int y)  { posY=y; }
   	void setArmaX(int x)  { arma->setX(x); }
   	void setArmaY(int y)  { arma->setY(y); }
+	void setImmuneTime(int t)  { immuneTime = t; }
   	void setFrames(int f) {frames=f;}
     void setDraw(bool, bool, bool, bool, bool, bool,bool);
 
@@ -45,6 +49,11 @@ public:
     void DrawVictory();
     void ArmaDraw(int H)  { arma->Draw(H); }
 
+	void decreaseImmune()  { immuneTime--; }
+	bool Immune() const  { return immuneTime > 0; }
+	bool Bubble() const  { return bubble; }
+	void activeBubble()  { bubble = true; }
+	void removeBubble()  { bubble = false; }
    	void posizionaArma()  { arma->setX(posX); arma->setY(posY+dimY+2); }
 	void muoviSx(bool, float);
     void muoviUp(bool, float);

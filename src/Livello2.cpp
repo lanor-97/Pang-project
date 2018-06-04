@@ -81,6 +81,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	blocco1 = new Blocco(250, 80, bloccoPietra);
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
+	player->removeBubble();
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	//musica->Play();
@@ -121,7 +122,10 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				else if(powerup->notArrivedTerrain(terrain))
 					powerup->Fall();
 
-				if(powerup->playerTookIt(player) == 1)
+				int effect = powerup->playerTookIt(player);
+				if(effect == 0)
+					player->activeBubble();
+				if(effect == 1)
 					timeEffect = 300;
 			}
 
@@ -134,7 +138,12 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				GP->Bouncer();
 
 				//IF PALLA COLPISCE PLAYER
-				p_hit = GP->playerHit(player);
+				p_hit = GP->playerHit(player, player->Bubble());
+				if(p_hit && player->Bubble())  {
+					p_hit = false;
+					player->removeBubble();
+					player->setImmuneTime(60);
+				}
 				//IF FUOCO COLPISCE PLAYER
 				p_hitFire=drago->hitFire(player);
 			}
@@ -174,7 +183,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				keySpace=false;
 			}
 
-			if(p_hit && !colpito && !caduto)  {
+			if(p_hit && !colpito && !caduto && !player->Immune())  {
 				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
@@ -191,6 +200,9 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				if(!p_hitFire && !p_hit)
 					colpito=false;
 			}
+
+			if(player->Immune())
+				player->decreaseImmune();
 
 			if(keyUp && player->getY() > PLAYER_ALT_PIAT)  {
 				climbing = true;

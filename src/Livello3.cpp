@@ -61,6 +61,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//sound=new SoundEffect();
 	//musica=new Music(3);
 	//al_reserve_samples(100);
+	player->removeBubble();
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	//musica->Play();
@@ -99,7 +100,13 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				GP2->Bouncer();
 
 				//IF PALLA COLPISCE GIOCATORE
-				p_hit = GP->playerHit(player) || GP2->playerHit(player);
+				p_hit = GP->playerHit(player,player->Bubble()) 
+					|| GP2->playerHit(player, player->Bubble());
+				if(p_hit && player->Bubble())  {
+					p_hit = false;
+					player->removeBubble();
+					player->setImmuneTime(60);
+				}
 			}
 
 			//RAMPINO HA COLPITO PALLA
@@ -120,11 +127,17 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				presa=false;
 			}
 
+			if(player->Immune())
+				player->decreaseImmune();
+
 			if(powerup->Spawned())  {
 				if(powerup->notArrivedTerrain(player->getY()+player->getDimY()))
 					powerup->Fall();
 
-				if(powerup->playerTookIt(player) == 1)
+				int effect = powerup->playerTookIt(player);
+				if(effect == 0)
+					player->activeBubble();
+				if(effect == 1)
 					timeEffect = 300;
 			}				
 
@@ -174,7 +187,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 					player->muoviUp(false, PLAYER_ALT_NORM);
 			}
 
-			if(p_hit && !colpito && !caduto)  {
+			if(p_hit && !colpito && !caduto && !player->Immune())  {
 				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;

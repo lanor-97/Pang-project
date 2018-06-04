@@ -87,7 +87,7 @@ bool GestorePalle::hitByHook(Giocatore* player, int& powerY)  {
 }
 
 
-bool GestorePalle::playerHit(Giocatore* player)  {
+bool GestorePalle::playerHit(Giocatore* player, bool bubble )  {
 	float 	x = player->getX(),
 			y = player->getY(),
 			dx = player->getDimX(),
@@ -103,11 +103,42 @@ bool GestorePalle::playerHit(Giocatore* player)  {
 				b3 = (*it)->getY() > y+dy,
 				b4 = (*it)->getY()+(*it)->getDim() < y;
 
+		if(!b1 && !b2 && !b3 && !b4)  {
+			if(!bubble)
+				return true;
 
-		
-		
-		if(!b1 && !b2 && !b3 && !b4)
+			float x = (*it)->getX(), c = (*it)->getCont();
+			explosion.setTipo((*it)->getSize());
+			explosion.setPosX((*it)->getX());
+			explosion.setPosY((*it)->getY());
+			COLOR co = (*it)->getColor();
+			SIZE s;
+			switch((*it)->getSize())  {
+				case GRA:	s = MED;
+				break;
+				
+				case MED: 	s = PIC;
+				break;
+				
+				case PIC:	balls.erase(it);
+							delete (*it);
+							return true;
+			}
+			Palla* p1 = new Palla(x, c, s, co, true);
+			Palla* p2 = new Palla(x, c, s, co, false);
+			p1->setY((*it)->getY());
+			p2->setY((*it)->getY());
+
+			if(p1->getCont() > 157 || p1->getCont() < -157)
+				p1->setBouncerY(-p1->getBouncerY());
+			if(p2->getCont() > 157 || p2->getCont() < -157)
+				p2->setBouncerY(-p2->getBouncerY());
+			balls.push_back(p1);
+			balls.push_back(p2);
+			balls.erase(it);
+			delete (*it);
 			return true;
+		}
 	}
 	return false;
 }

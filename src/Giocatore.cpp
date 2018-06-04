@@ -11,11 +11,16 @@ Giocatore::Giocatore(int f)  {
     animazione.setFrameCount(0);
     animazione.setFrameDelay(5);
     animazione.setCurrFrame(0);
+    bubble = false;
+    bubble_bitmap = al_load_bitmap("../images/bolla.png");
 }
 
 Giocatore::~Giocatore()  {
     if(bitmap)  {
         al_destroy_bitmap(bitmap); 
+    }
+    if(bubble_bitmap)  {
+        al_destroy_bitmap(bubble_bitmap);
     }
     delete arma;
 }
@@ -31,6 +36,9 @@ void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft
 }
 
 bool Giocatore::Draw(){
+    if(bubble)
+        al_draw_bitmap(bubble_bitmap,posX,posY,0);
+        
     if(climbing)  {
         if(!keyUpDown)
             setFrames(1);

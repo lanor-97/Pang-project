@@ -26,7 +26,7 @@ public:
 	void setSY(float sy)  { SY = sy; }
 	
 	bool hitByHook(Giocatore*, int&);
-	bool playerHit(Giocatore*);
+	bool playerHit(Giocatore*, bool);
 	bool Empty() const  { return balls.empty(); }
 
 	void Clear();

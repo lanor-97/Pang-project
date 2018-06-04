@@ -135,6 +135,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	//sound =new SoundEffect();
 	//musica=new Music(1);
 
+	player->removeBubble();
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	//musica->Play();
@@ -170,7 +171,10 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				powerup->Fall();
 			
 			if(powerup->Spawned())  {
-				if(powerup->playerTookIt(player) == 1)
+				int effect = powerup->playerTookIt(player);
+				if(effect == 0)
+					player->activeBubble();
+				if(effect == 1)
 					timeEffect = 300;
 			}
 
@@ -178,11 +182,19 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				GP->Bouncer();
 				
 				//IF PALLA COLPISCE GIOCATORE
-				p_hit = GP->playerHit(player);
+				p_hit = GP->playerHit(player, player->Bubble());
+				if(p_hit && player->Bubble())  {
+					p_hit = false;
+					player->removeBubble();
+					player->setImmuneTime(60);
+				}
 			}
 			
 			if(!hit)
 				presa=false;
+
+			if(player->Immune())
+				player->decreaseImmune();
 
 			//CONTROLLO MOVIMENTI DX/SX GIOCATORE
 			if(keyRight && !caduto && !drawShoot)  {
@@ -204,7 +216,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				keySpace=false;
 			}
 
-			if(p_hit && !colpito && !caduto)  {
+			if(p_hit && !colpito && !caduto && !player->Immune())  {
 				//sound->Play("hit");
 				return_value = VITAPERSA;
 				caduto=true;
