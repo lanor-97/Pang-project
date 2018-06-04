@@ -23,6 +23,7 @@ private:
   	ALLEGRO_BITMAP *bitmap;
 	ALLEGRO_BITMAP *bubble_bitmap;
     Animation animazione;
+	Animation animazione2;
    	Arma* arma;
 
 public:
