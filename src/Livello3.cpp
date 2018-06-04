@@ -325,12 +325,12 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				sound->Play("excellent");
 				sound->Play("applause");
 				sound->Play("levelCleared");*/
-				Transition(2);
+				Transition(4);
 				al_flush_event_queue(event_queue);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-						Transition(victory);
+						Transition(5);
 						al_rest(2);
 						break;
 					}
@@ -339,8 +339,21 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				break;
 			}
 		
-		}					
+		if(vite==1 && return_value==VITAPERSA){
+			al_flush_event_queue(event_queue);
+			Transition(6);
+				while(true)  {
+					al_wait_for_event(event_queue, &ev);
+					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+						break;
+					}
+				}
+			break;	
+		}
+
+		}							
 	}	
+	
 	//DISTRUGGO TUTTO
 	player->setX(SCREEN_W/2 - player->getDimX());
    	player->setY(SCREEN_H/1.37 - player->getDimY());

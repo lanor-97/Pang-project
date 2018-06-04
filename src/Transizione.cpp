@@ -76,6 +76,7 @@ void Transizione::setTipo(int t)  {
         case 6:
             tipo=gameOver;
             transition=al_load_bitmap("../images/gameOver.png");
+        break;
         default:
             transition = NULL;
     }

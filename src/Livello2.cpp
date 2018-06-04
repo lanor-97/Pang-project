@@ -391,8 +391,21 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				return_value = LIVELLOSUP;
 				break;
 			}
+
+
+		if(vite==1 && return_value==VITAPERSA){
+			al_flush_event_queue(event_queue);
+			Transition(6);
+				while(true)  {
+					al_wait_for_event(event_queue, &ev);
+					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
+						break;
+					}
+				}
+			break;	
+		}
 		
-		}					
+		}			
 	}
 	
 	//DISTRUGGO TUTTO
