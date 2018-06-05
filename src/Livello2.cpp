@@ -232,24 +232,36 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			if(player->getY() > piat1->getY())
 				hook_colp = piat1->hitByHook(player) || piat2->hitByHook(player);
 
-			if(blocco1)
+			if(blocco1)  {
 				if(blocco1->hitByHook(player))  {
 					//sound->Play("brick");
 					hook_colp = true;
 					blocco1->setExploded(true);
+					if(powerup->canSpawn())  {
+						powerup->Spawn(player->getArmaX(), blocco1->getY());
+					}
 				}
-			if(blocco2)
+			}
+			if(blocco2)  {
 				if(blocco2->hitByHook(player))  {
 					//sound->Play("brick");
 					hook_colp = true;
-					blocco2->setExploded(true);	
+					blocco2->setExploded(true);
+					if(powerup->canSpawn())  {
+						powerup->Spawn(player->getArmaX(), blocco2->getY());
+					}
 				}
-			if(blocco3)
+			}
+			if(blocco3)  {
 				if(blocco3->hitByHook(player))  {
 					//sound->Play("brick");
 					hook_colp = true;
-					blocco3->setExploded(true);	
+					blocco3->setExploded(true);
+					if(powerup->canSpawn())  {
+						powerup->Spawn(player->getArmaX(), blocco3->getY());
+					}	
 				}
+			}
 			
 			if(shoot && player->getArmaY()>0 && !presa && !hook_colp)  {
 				player->setArmaY(player->getArmaY() - 6);
