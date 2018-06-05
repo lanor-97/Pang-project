@@ -142,7 +142,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	al_start_timer(timer);
 	//sound->Play("swamp");
 	Transition(1);
-
+	player->setImmuneTime(0);
 	
 	//IL GIOCO VERO E PROPRIO
 	while(!MatchOver) {
@@ -186,7 +186,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				if(p_hit && player->Bubble())  {
 					p_hit = false;
 					player->removeBubble();
-					player->setImmuneTime(60);
+					player->setImmuneTime(120);
 				}
 			}
 			

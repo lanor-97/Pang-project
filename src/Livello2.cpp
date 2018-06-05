@@ -82,6 +82,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	blocco2 = new Blocco(292, 150, bloccoPietra);
 	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
 	player->removeBubble();
+	player->setImmuneTime(0);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	//musica->Play();

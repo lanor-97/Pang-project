@@ -6,6 +6,8 @@ Giocatore::Giocatore(int f)  {
     frames=f;
 	posX = 0;
 	posY = 0;
+    immuneTime=0;
+    immuneDrawCount=15;
 	bitmap = al_load_bitmap("../images/shrekFermoSinistra.png");
 	arma = new Arma(15, 0, 0);
     animazione.setFrameCount(0);
@@ -39,69 +41,87 @@ void Giocatore::setDraw(bool keyLeft, bool keyRight, bool drawShoot, bool toLeft
 }
 
 bool Giocatore::Draw(){
+
+    bool fermo=false;
+
     if(bubble)
         animazione2.eseguiFrame(bubble_bitmap,110,120,posX-20,posY-25,true,3);
-        
-    if(climbing)  {
-        if(!keyUpDown)
-            setFrames(1);
-        else
-            setFrames(5);
-        animazione.setFrameDelay(7);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekClimbing.png");
-        return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
-    }
-    else if(left && !drawShoot && !caduto)  {
-        setFrames(6);
-        animazione.setFrameDelay(5);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekSinistra.png");
-    }
 
-    else if(right && !drawShoot && !caduto)  {
-        setFrames(6);
-        animazione.setFrameDelay(5);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekDestra.png");
-    }
-    else if(drawShoot && toLeft && !caduto)  {
-        animazione.setFrameDelay(7);
-        setFrames(3);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekHookSinistra.png");
-    }
-    else if(drawShoot && !toLeft && !caduto)  {
-        animazione.setFrameDelay(7);
-        setFrames(3);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekHookDestra.png");
-    }
-    else if(caduto && toLeft)  {
-        setFrames(11);
-        animazione.setFrameDelay(7);
-        al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekColpitoSinistra.png");
-    }
-    else if(caduto && !toLeft)  {
-        setFrames(11);
-		animazione.setFrameDelay(7);
-		al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekColpitoDestra.png");
-    }
-    else if(!drawShoot && toLeft && !caduto)  {
-    	al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekFermoSinistra.png");
-        al_draw_bitmap(bitmap,posX,posY,0);
+    if(!Immune() || (immuneDrawCount<=5 && Immune())){
+
+        if(climbing)  {
+            if(!keyUpDown)
+                setFrames(1);
+            else
+                setFrames(5);
+            animazione.setFrameDelay(7);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekClimbing.png");
+            return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
+        }
+        else if(left && !drawShoot && !caduto)  {
+            setFrames(6);
+            animazione.setFrameDelay(5);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekSinistra.png");
+        }
+
+        else if(right && !drawShoot && !caduto)  {
+            setFrames(6);
+            animazione.setFrameDelay(5);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekDestra.png");
+        }
+        else if(drawShoot && toLeft && !caduto)  {
+            animazione.setFrameDelay(7);
+            setFrames(3);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekHookSinistra.png");
+        }
+        else if(drawShoot && !toLeft && !caduto)  {
+            animazione.setFrameDelay(7);
+            setFrames(3);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekHookDestra.png");
+        }
+        else if(caduto && toLeft)  {
+            setFrames(11);
+            animazione.setFrameDelay(7);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekColpitoSinistra.png");
+        }
+        else if(caduto && !toLeft)  {
+            setFrames(11);
+            animazione.setFrameDelay(7);
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekColpitoDestra.png");
+        }
+        else if(!drawShoot && toLeft && !caduto)  {
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekFermoSinistra.png");
+            al_draw_bitmap(bitmap,posX,posY,0);
+            fermo=true;
+        }
+        else if(!drawShoot && !caduto)  {
+            al_destroy_bitmap(bitmap);
+            bitmap = al_load_bitmap("../images/shrekFermoDestra.png");
+            al_draw_bitmap(bitmap,posX,posY,0);
+            fermo=true;
+        }
+        if(Immune())
+            immuneDrawCount--;
+
+         if(immuneDrawCount==0)
+            immuneDrawCount=15;
+
+        if(fermo)
         return true;
-    }
-    else if(!drawShoot && !caduto)  {
-    	al_destroy_bitmap(bitmap);
-        bitmap = al_load_bitmap("../images/shrekFermoDestra.png");
-        al_draw_bitmap(bitmap,posX,posY,0);
-        return true;
-    }
-    return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
+
+        return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
+        }
+    cout<<immuneDrawCount<<endl;    
+    immuneDrawCount--;
+    return true;
 }
 
 void Giocatore::DrawVictory()  {

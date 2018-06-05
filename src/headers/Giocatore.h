@@ -11,7 +11,8 @@ private:
 			posX,
 			posY,
             frames,
-			immuneTime = 0;
+			immuneDrawCount,
+			immuneTime;
     bool    left, 
             right,
             drawShoot, 

@@ -62,6 +62,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	//musica=new Music(3);
 	//al_reserve_samples(100);
 	player->removeBubble();
+	player->setImmuneTime(0);
 	regolaPalle();
 	al_flush_event_queue(event_queue);
 	//musica->Play();
