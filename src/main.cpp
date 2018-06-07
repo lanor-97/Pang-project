@@ -1,7 +1,7 @@
 //to compile (in src folder)
 //g++ *cpp -o main -lallegro -lallegro_main -lallegro_ttf -lallegro_image -lallegro_font -lallegro_audio -lallegro_acodec  -std=c++11
 
-//capire perchè seg fault sempre
+
 
 #include "headers/mainFunctions.h"
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv)  {
 	if(!al_install_keyboard())  {
 		cerr <<"failed to install keyboard\n";
 		return -1;
-	}/*
+	}
 	if(!al_install_audio()){
 		cerr <<"failed to install audio\n";
 		return -1;
@@ -57,7 +57,7 @@ int main(int argc, char **argv)  {
 		cerr<<"failed to reserve samples\n";
 		return -1;
 	}
-	*/
+	
 	//CREAZIONE DISPLAY + aggiustamento con transform
 	ALLEGRO_DISPLAY*		display = NULL;
 

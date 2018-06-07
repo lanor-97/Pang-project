@@ -8,6 +8,8 @@
 #include "Transizione.h"
 #include "Blocco.h"
 #include "PowerUp.h"
+#include "SoundEffect.h"
+#include "Music.h"
 
 enum CASO  { EXIT = 0, LIVELLOSUP, VITAPERSA, MENU };
 
@@ -39,8 +41,8 @@ protected:
 	ALLEGRO_BITMAP*			pausa_play=NULL;
 	ALLEGRO_BITMAP*			pausa_exit=NULL;
 	ALLEGRO_TRANSFORM 		redimencionamento;
-	//SoundEffect* sound=NULL;
-	//Music* musica=NULL;
+	SoundEffect* sound=NULL;
+	Music* musica=NULL;
 	Giocatore* player = NULL;
 	GestorePalle* GP = NULL;
 	Transizione transizione;

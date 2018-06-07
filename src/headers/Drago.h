@@ -42,7 +42,7 @@ public:
    	void setDimY(int d)  { dimY=d; }
    	void setFrames(int f) {frames=f;}
 
-    bool Draw(bool,bool);
+    bool Draw(bool,bool,bool);
     bool DrawFire(bool,bool,bool);
 
     bool hitFire(Giocatore*);

@@ -18,10 +18,10 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 	al_draw_bitmap(menu_play, 0, 0, 0);
 	al_flip_display();
 	
-	//SoundEffect* sound=new SoundEffect();
-	//Music* musica=new Music(1);
+	SoundEffect* sound=new SoundEffect();
+	Music* musica=new Music(1);
 
-	//musica->Play();
+	musica->Play();
 	while(!drawTransition)  {
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -38,13 +38,13 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 				drawTransition=true;
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT && play)  {
-				//sound->Play("menu");
+				sound->Play("menu");
 				play = false;
 				al_draw_bitmap(menu_exit,0,0,0);
 				al_flip_display();
 			}
 			else if(ev.keyboard.keycode==ALLEGRO_KEY_LEFT && !play)  {
-				//sound->Play("menu");
+				sound->Play("menu");
 				play = true;
 				al_draw_bitmap(menu_play,0,0,0);
 				al_flip_display();
@@ -93,8 +93,8 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 		al_destroy_event_queue(event_queue);
 	}
 	
-	//delete musica;
-	//delete sound;
+	delete musica;
+	delete sound;
 	return play;
 
 	return 0;

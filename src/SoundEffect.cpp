@@ -75,9 +75,9 @@ void SoundEffect::Play(string tipo){
         if(tipo=="brick")
             al_play_sample(brick,-1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
         if(tipo=="gameOver")       
-            al_play_sample(gameOver,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
+            al_play_sample(gameOver,2.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
         if(tipo=="gameOverMusic")
-            al_play_sample(gameOverMusic,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
+            al_play_sample(gameOverMusic,3.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
         if(tipo=="levelCleared")
             al_play_sample(levelCleared,3.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);        
 }

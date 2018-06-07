@@ -35,7 +35,7 @@ public:
    	void setdimY(int d)  { dimY=d; }
    	void setFrames(int f) {frames=f;}
 
-    bool Draw(bool,bool,bool);
+    bool Draw(bool,bool,bool,bool);
     void DrawVictory();
     
 };

@@ -31,10 +31,13 @@ void Farquaad::DrawVictory()  {
     animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames());
 }
 
-bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
+bool Farquaad::Draw(bool scappa, bool ball, bool arrive, bool timeRunning)  {
     if(ball && !scappa && !arrive)
     {
-        setFrames(5);
+        if(timeRunning)
+            setFrames(5);
+        else
+            setFrames(1); 
         animazione.setFrameDelay(10);
         farquaad=al_load_bitmap("../images/farquaadBall.png");
         if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), false,getFrames()))
@@ -42,7 +45,10 @@ bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
     }
     else if(arrive && !ball && !scappa)
     {
-        setFrames(3);
+        if(timeRunning)
+            setFrames(3);
+        else
+            setFrames(1); 
         animazione.setFrameDelay(7);
             posX--;
         farquaad=al_load_bitmap("../images/farquaadArriving.png");
@@ -51,7 +57,10 @@ bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
     }
     else if(scappa && !arrive && !ball)
     {
-        setFrames(3);
+        if(timeRunning)
+            setFrames(3);
+        else
+            setFrames(1); 
         animazione.setFrameDelay(7);
             posX++;       
         farquaad=al_load_bitmap("../images/farquaadScappa.png");
@@ -60,7 +69,10 @@ bool Farquaad::Draw(bool scappa, bool ball, bool arrive)  {
     }
     else
     {
-        setFrames(6);
+        if(timeRunning)
+            setFrames(6);
+        else
+            setFrames(1); 
         animazione.setFrameDelay(7);
         farquaad=al_load_bitmap("../images/farquaadFermo.png");
         if(!animazione.eseguiFrame(farquaad,getDimX(),getDimY(),getX(),getY(), true,getFrames()))
