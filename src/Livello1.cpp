@@ -299,6 +299,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			//CONTROLLO VITTORIA
 			if(GP->Empty())  {
+				//musica->Stop();
 				//sound->Play("excellent");
 				//sound->Play("applause");
 				Transition(2);
@@ -317,6 +318,9 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 		if(vite==1 && return_value==VITAPERSA){
 			al_flush_event_queue(event_queue);
+			//musica->Stop();
+			//sound->Play("gameOverMusic");
+			//sound->Play("gameOver");
 			Transition(6);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
