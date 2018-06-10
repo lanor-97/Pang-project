@@ -347,6 +347,11 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			}	
 			if(ev.keyboard.keycode==ALLEGRO_KEY_F)
 				toggleFullscreen(fullscreen, res_info);
+			if(ev.keyboard.keycode==ALLEGRO_KEY_M)
+				{
+						musica->Mute();
+						sound->Mute();
+				}		
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
 			if(ev.keyboard.keycode==ALLEGRO_KEY_RIGHT)

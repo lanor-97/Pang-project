@@ -42,6 +42,7 @@ SoundEffect::~SoundEffect(){
         al_destroy_sample(brick);
 }
 void SoundEffect::Play(string tipo){
+    if(!isMuted){
         if(tipo== "menu")
             al_play_sample(menu,1.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
         if(tipo== "ball")
@@ -79,5 +80,14 @@ void SoundEffect::Play(string tipo){
         if(tipo=="gameOverMusic")
             al_play_sample(gameOverMusic,3.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);
         if(tipo=="levelCleared")
-            al_play_sample(levelCleared,3.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);        
+            al_play_sample(levelCleared,3.0,0.0,1.0,ALLEGRO_PLAYMODE_ONCE,0);  
+    }              
+}
+void SoundEffect::Mute(){
+    if(isMuted)
+        isMuted=false;
+    else{
+        al_stop_samples();
+        isMuted=true;
+    }     
 }

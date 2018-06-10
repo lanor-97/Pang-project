@@ -19,7 +19,17 @@ Music::Music(int x){
     al_attach_sample_instance_to_mixer(instance,al_get_default_mixer());
 
 }
-
+void Music::Mute(){
+    if(isMuted){
+        al_set_sample_instance_playing(instance,true);
+        isMuted=false;
+    }    
+    else
+    {
+        al_set_sample_instance_playing(instance,false);
+        isMuted=true;  
+    }     
+}
 void Music::Play(){
-    al_play_sample_instance(instance);
+        al_play_sample_instance(instance);
 }

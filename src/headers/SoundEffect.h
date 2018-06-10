@@ -27,9 +27,11 @@ class SoundEffect{
         ALLEGRO_SAMPLE *gameOver;
         ALLEGRO_SAMPLE *gameOverMusic;
         ALLEGRO_SAMPLE *levelCleared;
+        bool isMuted=false;
     public:
         SoundEffect();
         ~SoundEffect();
+        void Mute();
         void Play(string tipo);
 };
 #endif

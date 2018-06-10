@@ -8,12 +8,14 @@ using namespace std;
 class Music{
     private:
         int tipo;
+        bool isMuted=false;
         ALLEGRO_SAMPLE *song;
         ALLEGRO_SAMPLE_INSTANCE *instance;
     public:
         Music(): song(NULL), instance(NULL), tipo(0){};
         ~Music(){al_destroy_sample_instance(instance);  al_destroy_sample(song);}
         Music(int x);
+        void Mute();
         void Stop(){al_stop_sample_instance(instance);}
         void Play();
 };

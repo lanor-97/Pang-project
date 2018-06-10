@@ -76,6 +76,11 @@ bool Menu(ALLEGRO_DISPLAY* display, float res_info[])  {
 					al_flip_display();
 				}
 			}
+			if(ev.keyboard.keycode==ALLEGRO_KEY_M)
+				{
+						musica->Mute();
+						sound->Mute();
+				}	
 		}
 
 		if(drawTransition && !play)
