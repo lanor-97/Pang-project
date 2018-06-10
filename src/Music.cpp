@@ -31,5 +31,6 @@ void Music::Mute(){
     }     
 }
 void Music::Play(){
+    if(!isMuted)
         al_play_sample_instance(instance);
 }

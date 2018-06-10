@@ -351,6 +351,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				{
 						musica->Mute();
 						sound->Mute();
+						sound->Play("dragonloop");
 				}		
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
