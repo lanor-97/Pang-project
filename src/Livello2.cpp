@@ -152,6 +152,12 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				}
 				//IF FUOCO COLPISCE PLAYER
 				p_hitFire=drago->hitFire(player);
+				if(p_hitFire && player->Bubble())  {
+					p_hit = false;
+					fire=false;
+					player->removeBubble();
+					player->setImmuneTime(60);
+				}
 			}
 
 			if(!hit)
@@ -197,7 +203,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			}
 
 			if(!dragonArrive){
-				if(p_hitFire && !colpito && !caduto)  {
+				if(p_hitFire && !colpito && !caduto && !player->Immune())  {
 					sound->Play("hit");
 					return_value = VITAPERSA;
 					caduto=true;
