@@ -19,7 +19,7 @@ public:
 	Livello1(float, float, Giocatore*, ALLEGRO_DISPLAY*, const int);
 	virtual ~Livello1();
 	virtual CASO Esegui(int, int&, float[]);
-	void Transition(int);
+	void Transition(int,int);
 	bool Pausa(bool&, float[]);
 	virtual void regolaPalle();
 	virtual void Draw(int, int, int, int);

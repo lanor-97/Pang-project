@@ -49,8 +49,8 @@ Livello2::~Livello2()  {
 }
 
 void Livello2::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W - 100, 157, MED, RED, true);
-	GP->aggiungiPalla(100, 157, MED, RED, false);
+	GP->aggiungiPalla(SCREEN_W - 300, 150, MED, RED, true);
+	GP->aggiungiPalla(300, 150, MED, RED, false);
 }
 
 CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
@@ -78,9 +78,9 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	sound=new SoundEffect();
 	musica=new Music(2);
 	al_reserve_samples(100);
-	blocco1 = new Blocco(250, 80, bloccoPietra);
-	blocco2 = new Blocco(292, 150, bloccoPietra);
-	blocco3 = new Blocco(390-blocco1->getDimX(), 80, bloccoPietra);
+	blocco1 = new Blocco(200, 130, bloccoPietra);
+	blocco2 = new Blocco(292, 170, bloccoPietra);
+	blocco3 = new Blocco(380, 130, bloccoPietra);
 	player->removeBubble();
 	player->setImmuneTime(0);
 	regolaPalle();
@@ -88,7 +88,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 	musica->Play();
 	al_start_timer(timer);
 	sound->Play("showtime");
-	Transition(1);
+	Transition(1,punteggio);
 	player->setY(PLAYER_ALT_NORM);
 	
 	//IL GIOCO VERO E PROPRIO
@@ -404,12 +404,12 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				
 				sound->Play("excellent");
 				sound->Play("applause");
-				Transition(2);
+				Transition(2,punteggio);
 				al_flush_event_queue(event_queue);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-						Transition(3);
+						Transition(3,punteggio);
 						al_rest(2);
 						break;
 					}
@@ -424,7 +424,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			musica->Stop();
 			sound->Play("gameOverMusic");
 			sound->Play("gameOver");
-			Transition(6);
+			Transition(6,punteggio);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {

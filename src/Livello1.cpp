@@ -25,7 +25,7 @@ Livello1::Livello1(float SW, float SH, Giocatore* p, ALLEGRO_DISPLAY* display1, 
 
 void Livello1::regolaPalle()  {
 	GP->aggiungiPalla(SCREEN_W/2, 157, GRA, GREEN, true);
-	GP->aggiungiPalla(50, 157, MED, GREEN, false);
+	GP->aggiungiPalla(50, 157, PIC, GREEN, false);
 }
 
 Livello1::~Livello1()  {
@@ -140,7 +140,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 	musica->Play();
 	al_start_timer(timer);
 	sound->Play("swamp");
-	Transition(1);
+	Transition(1,punteggio);
 	player->setImmuneTime(0);
 	
 	//IL GIOCO VERO E PROPRIO
@@ -310,12 +310,12 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 				
 				sound->Play("excellent");
 				sound->Play("applause");
-				Transition(2);
+				Transition(2,punteggio);
 				al_flush_event_queue(event_queue);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-						Transition(3);
+						Transition(3,punteggio);
 						al_rest(2);
 						break;
 					}
@@ -329,7 +329,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 			musica->Stop();
 			sound->Play("gameOverMusic");
 			sound->Play("gameOver");
-			Transition(6);
+			Transition(6,punteggio);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
@@ -353,7 +353,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 }
 
 
-void Livello1::Transition(int x)
+void Livello1::Transition(int x, int punteggio)
 {
 	bool trans=true;
 	double speed = al_get_timer_speed(timer);
@@ -377,12 +377,15 @@ void Livello1::Transition(int x)
 			if(x==2 || x==3)
 			{
 				player->DrawVictory();
-			}	
+			}
 			if(!transizione.Draw())  {
 				trans = false;
 				al_set_timer_speed(timer, speed);
 			}
-							
+			if(x==4 || x==5 || x==6)
+			{
+				al_draw_textf(font2,al_map_rgb(0,0,255),SCREEN_W/1.06,SCREEN_H/1.14,ALLEGRO_ALIGN_RIGHT,"%d",punteggio);
+			}				
 			al_flip_display();
 		}
 	}

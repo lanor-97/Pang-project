@@ -37,7 +37,7 @@ Livello3::~Livello3()  {
 }
 
 void Livello3::regolaPalle()  {
-	GP->aggiungiPalla(SCREEN_W - 100, 250, MED, BLUE, true);
+	GP->aggiungiPalla(SCREEN_W - 100, 250, PIC, BLUE, true);
 	GP2->aggiungiPalla(100, 100, PIC, BLUE, false);
 }
 
@@ -68,7 +68,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	musica->Play();
 	al_start_timer(timer);
 	sound->Play("getReady");
-	Transition(1);
+	Transition(1,punteggio);
 	player->setY(PLAYER_ALT_NORM);
 
 	//IL GIOCO VERO E PROPRIO
@@ -335,12 +335,12 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 				sound->Play("excellent");
 				sound->Play("applause");
 				sound->Play("levelCleared");
-				Transition(4);
+				Transition(4,punteggio);
 				al_flush_event_queue(event_queue);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
-						Transition(5);
+						Transition(5,punteggio);
 						al_rest(2);
 						break;
 					}
@@ -354,7 +354,7 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 			musica->Stop();
 			sound->Play("gameOverMusic");
 			sound->Play("gameOver");
-			Transition(6);
+			Transition(6,punteggio);
 				while(true)  {
 					al_wait_for_event(event_queue, &ev);
 					if(ev.type == ALLEGRO_EVENT_KEY_DOWN)  {
