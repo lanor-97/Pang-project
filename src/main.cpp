@@ -97,7 +97,12 @@ int main(int argc, char **argv)  {
 	   			vite = 0;
 	   		else if(c == VITAPERSA)  {
 	   			vite--;
+				if(punteggio>400)
+					punteggio-=400;
+				else
+					punteggio=0;
 				if(vite == 0)  {
+					punteggio=0;
 					livello = 1;
 					current_level = L1;
 					vite = 3;

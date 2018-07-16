@@ -512,6 +512,10 @@ void Livello2::Draw(int vite, int punteggio, int tempo, int H_arma)  {
 		if(caduto)  {
 			caduto=false;
 			MatchOver=true;
+			if(punteggio>300)
+				punteggio-=300;
+			else
+				punteggio=0;
 		}	
 		drawShoot=false;
 	}

@@ -130,7 +130,7 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
 
 	int 	tempo=9000, H_arma=0, spawnY, timeEffect = 0;
 	CASO 	return_value = EXIT;
-	
+
 	sound =new SoundEffect();
 	musica=new Music(1);
 	al_reserve_samples(100);
