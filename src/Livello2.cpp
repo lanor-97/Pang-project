@@ -153,10 +153,12 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				//IF FUOCO COLPISCE PLAYER
 				p_hitFire=drago->hitFire(player);
 				if(p_hitFire && player->Bubble())  {
-					p_hit = false;
-					fire=false;
 					player->removeBubble();
 					player->setImmuneTime(60);
+				}
+				else if(p_hitFire)  {
+					p_hit = false;
+					fire=false;
 				}
 			}
 
@@ -458,8 +460,6 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	powerup->Destroy();
-	delete musica;
-	delete sound;
 	return return_value;
 }
 

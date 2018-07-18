@@ -347,8 +347,6 @@ CASO Livello1::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	powerup->Destroy();
-	delete sound;
-	delete musica;
 	return return_value;
 }
 

@@ -373,8 +373,6 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
 	GP->Clear();
 	GP2->Clear();
 	powerup->Destroy();
-	delete musica;
-	delete sound;
 	return return_value;
 }
 	
