@@ -372,6 +372,8 @@ CASO Livello3::Esegui(int vite, int& punteggio, float res_info[])  {
    	player->setY(SCREEN_H/1.37 - player->getDimY());
 	GP->Clear();
 	GP2->Clear();
+	musica->Stop();
+	al_stop_samples();
 	powerup->Destroy();
 	return return_value;
 }
