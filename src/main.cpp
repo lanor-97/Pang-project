@@ -28,15 +28,13 @@ int main(int argc, char **argv)  {
      	cerr<<"failed to initialize allegro_image\n";
 		return -1;
    	}
-
-
-	if(!al_init_ttf_addon())  {
-		cerr<<"failed to initialize allegro_ttf\n";
+	if(!al_init_font_addon())  {
+		cerr<<"failed to initialize allegro_font\n";
 		return -1;
 	}
 
-	if(!al_init_font_addon())  {
-		cerr<<"failed to initialize allegro_font\n";
+	if(!al_init_ttf_addon())  {
+		cerr<<"failed to initialize allegro_ttf\n";
 		return -1;
 	}
 
