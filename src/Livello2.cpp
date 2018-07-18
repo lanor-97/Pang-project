@@ -150,15 +150,13 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 					player->removeBubble();
 					player->setImmuneTime(60);
 				}
+				
 				//IF FUOCO COLPISCE PLAYER
 				p_hitFire=drago->hitFire(player);
 				if(p_hitFire && player->Bubble())  {
 					player->removeBubble();
 					player->setImmuneTime(60);
-				}
-				else if(p_hitFire)  {
-					p_hit = false;
-					fire=false;
+					p_hitFire = false;
 				}
 			}
 
