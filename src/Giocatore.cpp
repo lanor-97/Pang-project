@@ -118,8 +118,7 @@ bool Giocatore::Draw(){
         return true;
 
         return animazione.eseguiFrame(bitmap, dimX, dimY,posX,posY, false,frames);
-        }
-    cout<<immuneDrawCount<<endl;    
+        } 
     immuneDrawCount--;
     return true;
 }
