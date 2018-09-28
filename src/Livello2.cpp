@@ -290,7 +290,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 			}
 			if(!dragonArrive && timeEffect <= 0){
 				if((fireCount==0 || (fireCount==150 && player->getX()>=470)) && !caduto)  {
-					sound->Play("dragon1");
+					//sound->Play("dragon1");
 					spitting=true;
 					fireCount=300;
 				}	
@@ -357,7 +357,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 				{
 						musica->Mute();
 						sound->Mute();
-						sound->Play("dragonloop");
+						//sound->Play("dragonloop");
 				}		
 		}
 		else if(ev.type==ALLEGRO_EVENT_KEY_UP)  {
@@ -385,7 +385,7 @@ CASO Livello2::Esegui(int vite, int& punteggio, float res_info[])  {
 
 			if(tempo/60<=145)  {
 				if(!dragonSound)  {
-					sound->Play("dragonloop");
+					//sound->Play("dragonloop");
 					dragonSound=true;
 				}	
 				if(drago->getX()<=530)  {

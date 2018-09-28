@@ -32,6 +32,8 @@ void Farquaad::DrawVictory()  {
 }
 
 bool Farquaad::Draw(bool scappa, bool ball, bool arrive, bool timeRunning)  {
+    if(farquaad) al_destroy_bitmap(farquaad);
+    
     if(ball && !scappa && !arrive)
     {
         if(timeRunning)
