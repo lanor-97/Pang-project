@@ -1,7 +1,8 @@
 # 🎮 PangDiSpagna
 
 ## Overview
-This is a **C++** game, developed as university project, inspired by the classic arcade game **Super Pang (Super Buster Bros.)**.
+
+This is a **C++** game, developed for the course "Programmazione ad Oggetti" @Università della Calabria, inspired by the classic arcade game **Super Pang (Super Buster Bros.)**.
 The goal is to clear each level by shooting and splitting all the bouncing bubbles, but beware—they split into smaller ones until they disappear entirely!
 
 ### Built With
